@@ -14,9 +14,9 @@ pub struct DbConn(pub PooledConnection<ConnectionManager<SqliteConnection>>);
 
 pub fn init_pool() -> SqlitePool {
     let manager = ConnectionManager::<SqliteConnection>::new(
-        std::env::var("DATABASE_URL").expect("Missing var"),
+        std::env::var("DATABASE_URL").expect("Missing env for DATABASE_URL"),
     );
-    Pool::new(manager).expect("db pool")
+    Pool::new(manager).expect("Failed to create the pool")
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for DbConn {
