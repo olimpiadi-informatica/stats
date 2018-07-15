@@ -9,3 +9,45 @@ table! {
         region -> Nullable<Text>,
     }
 }
+
+table! {
+    users (id) {
+        id -> Text,
+        name -> Text,
+        surname -> Text,
+        birth -> Nullable<Text>,
+        gender -> Nullable<Text>,
+    }
+}
+
+table! {
+    participations (user_id, contest_year) {
+        user_id -> Text,
+        contest_year -> Integer,
+        position -> Nullable<Integer>,
+        school -> Nullable<Text>,
+        venue -> Nullable<Text>,
+        region -> Nullable<Text>,
+        medal -> Nullable<Text>,
+        IOI -> Nullable<Bool>,
+        score -> Nullable<Float>,
+    }
+}
+
+table! {
+    tasks (name, contest_year) {
+        name -> Text,
+        contest_year -> Integer,
+        index -> Integer,
+        max_score -> Nullable<Float>,
+    }
+}
+
+table! {
+    task_scores (task_name, contest_year, user_id) {
+        task_name -> String,
+        contest_year -> Integer,
+        user_id -> String,
+        score -> Nullable<Float>,
+    }
+}
