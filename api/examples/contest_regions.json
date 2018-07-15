@@ -1,0 +1,13 @@
+[
+  {
+    "name": "FRI",
+    "num_participants": 8,
+    "num_medals": {
+      "gold": 1,
+      "silver": 2,
+      "bronze": 4
+    },
+    "max_score": 191,
+    "avg_score": 111.1125
+  }
+]

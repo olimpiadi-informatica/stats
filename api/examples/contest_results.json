@@ -1,0 +1,49 @@
+{
+  "tasks": ["caduta", "corteo", "specchi"],
+  "results": [
+    {
+      "rank": 1,
+      "contestant": {
+        "id": "8406cc432799527748f821a8d3b61be8",
+        "first_name": "Andrea",
+        "last_name": "Ciprietti"
+      },
+      "region": "ABR",
+      "score": 260,
+      "scores": [80, 100, 80],
+      "medal": "gold",
+      "past_participations": [
+        {
+          "year": 2016,
+          "medal": "gold"
+        },
+        {
+          "year": 2015,
+          "medal": "gold"
+        },
+        {
+          "year": 2014,
+          "medal": "silver"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "contestant": {
+        "id": "8406cc432799527748f821a8d3b61be8",
+        "first_name": "Paolo",
+        "last_name": "Battellani"
+      },
+      "region": "EMI",
+      "score": 234,
+      "scores": [91, 100, 43],
+      "medal": "gold",
+      "past_participations": [
+        {
+          "year": 2016,
+          "medal": null
+        }
+      ]
+    }
+  ]
+}

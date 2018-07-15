@@ -1,0 +1,115 @@
+error:
+  type: object
+  properties:
+    error: string
+
+contest:
+  type: object
+  properties:
+    year: integer
+    location: string?
+    region: string?
+    num_contestants: integer?
+    max_score_possible: number?
+    max_score: number?
+    avg_score: number?
+    tasks:
+      type: array?
+      items: string
+    medals:
+      type: object
+      properties:
+        gold:
+          type: object
+          properties:
+            number: integer?
+            cutoff:
+              type: number?
+              description: Minimum score to get this medal
+        silver:
+          type: object
+          properties:
+            number: integer?
+            cutoff:
+              type: number?
+              description: Minimum score to get this medal
+        bronze:
+          type: object
+          properties:
+            number: integer?
+            cutoff:
+              type: number?
+              description: Minimum score to get this medal
+  example: !include examples/contest.json
+
+contest_result:
+  type: object
+  properties:
+    rank: integer?
+    contestant:
+      type: object
+      properties:
+        id: string
+        first_name: string
+        last_name: string
+    region: string?
+    score: number?
+    scores:
+      type: array?
+      items: number
+    medal: string?
+    past_participations:
+      type: array
+      items:
+        type: object
+        properties:
+          year: integer
+          medal: string?
+  example: !include examples/contest_result.json
+
+contest_results:
+  type: object
+  properties:
+    tasks:
+      type: array
+      items: string
+    results:
+      type: array
+      items: contest_result
+  example: !include examples/contest_results.json
+
+contest_region:
+  type: object
+  properties:
+    name: string
+    # TODO: add position and border informations
+    num_participants: integer?
+    num_medals:
+      type: object
+      properties:
+        gold: integer?
+        silver: integer?
+        bronze: integer?
+    max_score: number?
+    avg_score: number?
+  example: !include examples/contest_region.json
+
+contest_regions:
+  type: array
+  items: contest_region
+  example: !include examples/contest_regions.json
+
+contest_task:
+  type: object
+  properties:
+    name: string
+    index: integer
+    max_score_possible: number?
+    max_score: number?
+    avg_score: number?
+  example: !include examples/contest_task.json
+
+contest_tasks:
+  type: array
+  items: contest_task
+  example: !include examples/contest_tasks.json

@@ -1,0 +1,26 @@
+[
+  {
+    "year": 2017,
+    "location": "Università degli Studi - Polo Ferrari - Trento",
+    "region": "TRE",
+    "num_contestants": 103,
+    "max_score_possible": 300,
+    "max_score": 260,
+    "avg_score": 61.1192233,
+    "tasks": ["caduta", "corteo", "specchi"],
+    "medals": {
+      "gold": {
+        "number": 5,
+        "cutoff": 191
+      },
+      "silver": {
+        "number": 10,
+        "cutoff": 111
+      },
+      "bronze": {
+        "number": 22,
+        "cutoff": 61
+      }
+    }
+  }
+]

@@ -1,0 +1,61 @@
+#%RAML 1.0
+title: oii-stats
+version: v1
+baseUri: https://stats.olinfo.it/api
+types: !include types.raml
+
+/contests:
+  get:
+    description: Get the list of the contests with basic information
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: contest
+            example: !include examples/contests.json
+  /{year}:
+    get:
+      description: Get the contest information for a single year
+      responses:
+        200:
+          body:
+            application/json:
+              type: contest
+              example: !include examples/contest.json
+        404:
+          body:
+            application/json:
+              type: error
+    uriParameters:
+      year: integer
+
+    /results:
+      get:
+        description: Get the list of participants with all the raw information
+        responses:
+          200:
+            body:
+              application/json:
+                type: contest_results
+                example: !include examples/contest_results.json
+
+    /regions:
+      get:
+        description: Get the list of regions and the grouped information
+        responses:
+          200:
+            body:
+              application/json:
+                type: contest_regions
+                example: !include examples/contest_regions.json
+
+    /tasks:
+      get:
+        description: Get the list of the tasks and grouped information
+        responses:
+          200:
+            body:
+              application/json:
+                type: contest_tasks
+                example: !include examples/contest_tasks.json
