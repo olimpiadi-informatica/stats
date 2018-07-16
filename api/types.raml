@@ -1,3 +1,6 @@
+# TODO at some point there will be in the responsed the links for the next and
+# previous years
+
 error:
   type: object
   properties:
@@ -104,6 +107,8 @@ contest_task:
   properties:
     name: string
     index: integer
+    # TODO add score multiplier for tasks with different weight, or maybe scale
+    # the scores directly in the db
     max_score_possible: number?
     max_score: number?
     avg_score: number?

@@ -14,14 +14,18 @@ extern crate serde_derive;
 extern crate serde_json;
 #[macro_use]
 extern crate diesel;
+#[macro_use]
+extern crate itertools;
 extern crate dotenv;
+extern crate num;
 
 mod controllers;
 mod db;
 mod schema;
 mod types;
+mod utility;
 
-use controllers::contest::*;
+use controllers::contest;
 use controllers::error::*;
 
 use diesel::result::Error;
@@ -40,7 +44,7 @@ fn main() {
 
     rocket::ignite()
         .manage(db::init_pool())
-        .mount("/", routes![index, search])
+        .mount("/", routes![contest::list, contest::search])
         .catch(errors![not_found])
         .launch();
 }

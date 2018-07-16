@@ -2,14 +2,17 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#[derive(Serialize, Deserialize, Queryable)]
+use schema::{contests, participations, tasks, users};
+
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
+#[primary_key(year)]
 pub struct Contest {
     pub year: i32,
     pub location: Option<String>,
     pub region: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Queryable)]
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
 pub struct User {
     pub id: String,
     pub name: String,
@@ -18,7 +21,10 @@ pub struct User {
     pub gender: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Queryable)]
+#[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug)]
+#[belongs_to(Contest, foreign_key = "contest_year")]
+#[belongs_to(User, foreign_key = "user_id")]
+#[primary_key(user_id, contest_year)]
 pub struct Participation {
     pub user_id: String,
     pub contest_year: i32,
@@ -31,7 +37,9 @@ pub struct Participation {
     pub score: Option<f32>,
 }
 
-#[derive(Serialize, Deserialize, Queryable)]
+#[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug)]
+#[belongs_to(Contest, foreign_key = "contest_year")]
+#[primary_key(name, contest_year)]
 pub struct Task {
     pub name: String,
     pub contest_year: i32,
