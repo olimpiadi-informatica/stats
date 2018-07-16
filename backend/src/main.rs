@@ -19,6 +19,10 @@ extern crate itertools;
 extern crate dotenv;
 extern crate num;
 
+use diesel::result::Error;
+use rocket::http::Status;
+use rocket::response::Failure;
+
 mod controllers;
 mod db;
 mod schema;
@@ -27,10 +31,6 @@ mod utility;
 
 use controllers::contest;
 use controllers::error::*;
-
-use diesel::result::Error;
-use rocket::http::Status;
-use rocket::response::Failure;
 
 pub fn error_status(error: Error) -> Failure {
     Failure(match error {
@@ -44,7 +44,10 @@ fn main() {
 
     rocket::ignite()
         .manage(db::init_pool())
-        .mount("/", routes![contest::list, contest::search])
+        .mount(
+            "/",
+            routes![contest::list, contest::search, contest::results],
+        )
         .catch(errors![not_found])
         .launch();
 }

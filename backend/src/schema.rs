@@ -34,6 +34,9 @@ table! {
     }
 }
 
+joinable!(participations -> users(user_id));
+allow_tables_to_appear_in_same_query!(participations, users);
+
 table! {
     tasks (name, contest_year) {
         name -> Text,
@@ -45,9 +48,9 @@ table! {
 
 table! {
     task_scores (task_name, contest_year, user_id) {
-        task_name -> String,
+        task_name -> Text,
         contest_year -> Integer,
-        user_id -> String,
+        user_id -> Text,
         score -> Nullable<Float>,
     }
 }

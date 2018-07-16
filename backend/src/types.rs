@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use schema::{contests, participations, tasks, users};
+use schema::{contests, participations, task_scores, tasks, users};
 
 #[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
 #[primary_key(year)]
@@ -47,7 +47,11 @@ pub struct Task {
     pub max_score: Option<f32>,
 }
 
-#[derive(Serialize, Deserialize, Queryable)]
+#[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug)]
+#[belongs_to(Task, foreign_key = "task_name")]
+#[belongs_to(Contest, foreign_key = "contest_year")]
+#[belongs_to(User, foreign_key = "user_id")]
+#[primary_key(task_name, contest_year, user_id)]
 pub struct TaskScore {
     pub task_name: String,
     pub contest_year: i32,
