@@ -11,9 +11,9 @@ types: !include types.raml
       200:
         body:
           application/json:
-            type: array
-            items: contest
+            type: contests
             example: !include examples/contests.json
+
   /{year}:
     get:
       description: Get the contest information for a single year

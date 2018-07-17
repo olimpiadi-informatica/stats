@@ -1,48 +1,50 @@
-[
-  {
-    "year": 2017,
-    "location": "Università degli Studi - Polo Ferrari - Trento",
-    "region": "TRE",
-    "num_contestants": 103,
-    "max_score_possible": 300,
-    "max_score": 260,
-    "avg_score": 61.1192233,
-    "tasks": [
-      {
-        "name": "caduta",
-        "index": 0,
-        "max_score_possible": 100,
-        "max_score": 100,
-        "avg_score": 29.320389
-      },
-      {
-        "name": "corteo",
-        "index": 1,
-        "max_score_possible": 100,
-        "max_score": 100,
-        "avg_score": 12.68233
-      },
-      {
-        "name": "specchi",
-        "index": 2,
-        "max_score_possible": 100,
-        "max_score": 80,
-        "avg_score": 19.116505
-      }
-    ],
-    "medals": {
-      "gold": {
-        "number": 5,
-        "cutoff": 191
-      },
-      "silver": {
-        "number": 10,
-        "cutoff": 111
-      },
-      "bronze": {
-        "number": 22,
-        "cutoff": 61
+{
+  "contests": [
+    {
+      "year": 2017,
+      "location": "Università degli Studi - Polo Ferrari - Trento",
+      "region": "TRE",
+      "num_contestants": 103,
+      "max_score_possible": 300,
+      "max_score": 260,
+      "avg_score": 61.1192233,
+      "tasks": [
+        {
+          "name": "caduta",
+          "index": 0,
+          "max_score_possible": 100,
+          "max_score": 100,
+          "avg_score": 29.320389
+        },
+        {
+          "name": "corteo",
+          "index": 1,
+          "max_score_possible": 100,
+          "max_score": 100,
+          "avg_score": 12.68233
+        },
+        {
+          "name": "specchi",
+          "index": 2,
+          "max_score_possible": 100,
+          "max_score": 80,
+          "avg_score": 19.116505
+        }
+      ],
+      "medals": {
+        "gold": {
+          "number": 5,
+          "cutoff": 191
+        },
+        "silver": {
+          "number": 10,
+          "cutoff": 111
+        },
+        "bronze": {
+          "number": 22,
+          "cutoff": 61
+        }
       }
     }
-  }
-]
+  ]
+}

@@ -45,6 +45,13 @@ contest:
               description: Minimum score to get this medal
   example: !include examples/contest.json
 
+contests:
+  type: object
+  properties:
+    contests:
+      type: array
+      items: contest
+
 contest_result:
   type: object
   properties:

@@ -44,6 +44,11 @@ pub struct ContestInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct ContestsInfo {
+    pub contests: Vec<ContestInfo>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Contestant {
     pub id: String,
     pub first_name: String,
@@ -364,9 +369,9 @@ pub fn get_contest_tasks(year: i32, conn: DbConn) -> Result<Json<ContestTasks>, 
 }
 
 #[get("/contests")]
-pub fn list(conn: DbConn) -> Result<Json<Vec<ContestInfo>>, Failure> {
+pub fn list(conn: DbConn) -> Result<Json<ContestsInfo>, Failure> {
     match get_contests_info(conn, None) {
-        Ok(contests) => Ok(Json(contests)),
+        Ok(contests) => Ok(Json(ContestsInfo { contests: contests })),
         Err(err) => Err(error_status(err)),
     }
 }
