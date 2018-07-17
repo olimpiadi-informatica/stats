@@ -46,7 +46,12 @@ fn main() {
         .manage(db::init_pool())
         .mount(
             "/",
-            routes![contest::list, contest::search, contest::results],
+            routes![
+                contest::list,
+                contest::search,
+                contest::results,
+                contest::regions
+            ],
         )
         .catch(errors![not_found])
         .launch();

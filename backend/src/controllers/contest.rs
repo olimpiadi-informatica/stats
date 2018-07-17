@@ -73,6 +73,27 @@ pub struct ContestResults {
     pub results: Vec<ContestResult>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestRegionNumMedals {
+    pub gold: Option<i32>,
+    pub silver: Option<i32>,
+    pub bronze: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestRegion {
+    pub name: String,
+    pub num_participants: Option<i32>,
+    pub num_medals: ContestRegionNumMedals,
+    pub max_score: Option<f32>,
+    pub avg_score: Option<f32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestRegions {
+    pub regions: Vec<ContestRegion>,
+}
+
 fn get_medal_info(participations: &Vec<Participation>, medal: &str) -> ContestInfoMedal {
     let medalist: Vec<&Participation> = participations
         .iter()
@@ -83,6 +104,19 @@ fn get_medal_info(participations: &Vec<Participation>, medal: &str) -> ContestIn
         cutoff: fold_with_none(Some(INFINITY), medalist.iter(), |min, part| {
             min_option(min, part.score)
         }),
+    }
+}
+
+fn count_medals(participations: &Vec<Participation>, medal: &str) -> Option<i32> {
+    if participations.is_empty() {
+        None
+    } else {
+        Some(
+            participations
+                .iter()
+                .filter(|p| p.medal.as_ref().map_or(false, |x| x.as_str() == medal))
+                .count() as i32,
+        )
     }
 }
 
@@ -218,6 +252,51 @@ pub fn get_contest_results(year: i32, conn: DbConn) -> Result<Json<ContestResult
     }))
 }
 
+pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<Json<ContestRegions>, Error> {
+    // throw a 404 if the contest doesn't exist, an empty set is retuned if the contest exists but
+    // there are no participations
+    schema::contests::table.find(year).first::<Contest>(&*conn)?;
+
+    let mut result: Vec<ContestRegion> = Vec::new();
+
+    for (region, participations) in schema::participations::table
+        .filter(
+            schema::participations::contest_year
+                .eq(year)
+                .and(schema::participations::region.is_not_null()),
+        )
+        .order(schema::participations::region)
+        .load::<Participation>(&*conn)?
+        .into_iter()
+        .group_by(|p| p.region.clone())
+        .into_iter()
+        .map(|(r, p)| (r, p.collect::<Vec<Participation>>()))
+    {
+        let region = region.ok_or(Error::NotFound)?;
+        let sum_score = fold_with_none(Some(0.0), participations.iter(), |m, p| {
+            add_option(m, p.score)
+        });
+        let mut num_medals = ContestRegionNumMedals {
+            gold: count_medals(&participations, "G"),
+            silver: count_medals(&participations, "S"),
+            bronze: count_medals(&participations, "B"),
+        };
+        let avg_score = sum_score.map(|sum| sum / (participations.len() as f32));
+
+        result.push(ContestRegion {
+            name: region,
+            num_participants: zero_is_none(participations.len() as i32),
+            num_medals: num_medals,
+            max_score: fold_with_none(Some(0.0), participations.iter(), |m, p| {
+                max_option(m, p.score)
+            }),
+            avg_score: avg_score,
+        });
+    }
+
+    Ok(Json(ContestRegions { regions: result }))
+}
+
 #[get("/contests")]
 pub fn list(conn: DbConn) -> Result<Json<Vec<ContestInfo>>, Failure> {
     match get_contests_info(conn, None) {
@@ -241,6 +320,14 @@ pub fn search(year: i32, conn: DbConn) -> Result<Json<ContestInfo>, Failure> {
 #[get("/contests/<year>/results")]
 pub fn results(year: i32, conn: DbConn) -> Result<Json<ContestResults>, Failure> {
     match get_contest_results(year, conn) {
+        Ok(res) => Ok(res),
+        Err(err) => Err(error_status(err)),
+    }
+}
+
+#[get("/contests/<year>/regions")]
+pub fn regions(year: i32, conn: DbConn) -> Result<Json<ContestRegions>, Failure> {
+    match get_contest_regions(year, conn) {
         Ok(res) => Ok(res),
         Err(err) => Err(error_status(err)),
     }

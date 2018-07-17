@@ -98,8 +98,11 @@ contest_region:
   example: !include examples/contest_region.json
 
 contest_regions:
-  type: array
-  items: contest_region
+  type: object
+  properties:
+    regions:
+      type: array
+      items: contest_region
   example: !include examples/contest_regions.json
 
 contest_task:
