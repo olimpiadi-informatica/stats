@@ -1,0 +1,26 @@
+{
+  "year": 2017,
+  "contestants": [
+    {
+      "contestant": {
+        "id": "8406cc432799527748f821a8d3b61be8",
+        "first_name": "Andrea",
+        "last_name": "Ciprietti"
+      },
+      "task_scores": [
+        {
+          "name": "caduta",
+          "score": 80
+        },
+        {
+          "name": "corteo",
+          "score": 100
+        },
+        {
+          "name": "specchi",
+          "score": 80
+        }
+      ]
+    }
+  ]
+}

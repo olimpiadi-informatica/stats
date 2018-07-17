@@ -1,0 +1,21 @@
+{
+  "id": "FRI",
+  "name": "Friuli-Venezia Giulia",
+  "contestants_per_year": [
+    {
+      "year": 2017,
+      "num_contestants": 49
+    }
+  ],
+  "medals_per_year": [
+    {
+      "year": 2017,
+      "num_medals": {
+        "gold": 1,
+        "silver": 2,
+        "bronze": 4
+      }
+    }
+  ],
+  "hosted": []
+}

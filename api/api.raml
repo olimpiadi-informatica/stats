@@ -15,6 +15,8 @@ types: !include types.raml
             example: !include examples/contests.json
 
   /{year}:
+    uriParameters:
+      year: integer
     get:
       description: Get the contest information for a single year
       responses:
@@ -27,8 +29,6 @@ types: !include types.raml
           body:
             application/json:
               type: error
-    uriParameters:
-      year: integer
 
     /results:
       get:
@@ -59,3 +59,35 @@ types: !include types.raml
               application/json:
                 type: contest_tasks
                 example: !include examples/contest_tasks.json
+
+/regions:
+  get:
+    description: Get the list of the regions with some basic information
+    responses:
+      200:
+        body:
+          application/json:
+            type: regions
+            example: !include examples/regions.json
+
+  /{region}:
+    uriParameters:
+      region: string
+    get:
+      description: Get the details of a single region
+      responses:
+        200:
+          body:
+            application/json:
+              type: detailed_region
+              example: !include examples/detailed_region.json
+
+    /results:
+      get:
+        description: Get the list of participants of a particular region
+        responses:
+          200:
+            body:
+              application/json:
+                type: region_results
+                example: !include examples/region_results.json

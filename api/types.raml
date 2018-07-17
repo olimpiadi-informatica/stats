@@ -6,6 +6,20 @@ error:
   properties:
     error: string
 
+num_medals:
+  type: object
+  properties:
+    gold: integer?
+    silver: integer?
+    bronze: integer?
+
+contestant:
+  type: object
+  properties:
+    id: string
+    first_name: string
+    last_name: string
+
 contest:
   type: object
   properties:
@@ -56,12 +70,7 @@ contest_result:
   type: object
   properties:
     rank: integer?
-    contestant:
-      type: object
-      properties:
-        id: string
-        first_name: string
-        last_name: string
+    contestant: contestant
     region: string?
     score: number?
     scores:
@@ -94,12 +103,7 @@ contest_region:
     name: string
     # TODO: add position and border informations
     num_participants: integer?
-    num_medals:
-      type: object
-      properties:
-        gold: integer?
-        silver: integer?
-        bronze: integer?
+    num_medals: num_medals
     max_score: number?
     avg_score: number?
   example: !include examples/contest_region.json
@@ -130,3 +134,79 @@ contest_tasks:
       type: array
       items: contest_task
   example: !include examples/contest_tasks.json
+
+region:
+  type: object
+  properties:
+    id: string
+    name: string
+    num_contestants: integer?
+    medals: num_medals
+    avg_contestants_per_year: number?
+    hosted:
+      type: array
+      items: integer
+  example: !include examples/region.json
+
+regions:
+  type: object
+  properties:
+    regions:
+      type: array
+      items: region
+  example: !include examples/regions.json
+
+detailed_region:
+  type: object
+  properties:
+    id: string
+    name: string
+    # TODO: add position and border informations
+    contestants_per_year:
+      type: array
+      items:
+        type: object
+        properties:
+          year: integer
+          num_contestants: integer
+    medals_per_year:
+      type: array
+      items:
+        type: object
+        properties:
+          year: integer
+          num_medals: num_medals
+    hosted:
+      type: array
+      items: integer
+  example: !include examples/detailed_region.json
+
+region_contestant_result:
+  type: object
+  properties:
+    contestant: contestant
+    task_scores:
+      type: array
+      items:
+        type: object
+        properties:
+          name: string
+          score: number?
+  example: !include examples/region_contestant_result.json
+
+region_result:
+  type: object
+  properties:
+    year: integer
+    contestants:
+      type: array
+      items: region_contestant_result
+  example: !include examples/region_result.json
+
+region_results:
+  type: object
+  properties:
+    results:
+      type: array
+      items: region_result
+  example: !include examples/region_results.json
