@@ -18,7 +18,7 @@ contest:
     avg_score: number?
     tasks:
       type: array?
-      items: string
+      items: contest_task
     medals:
       type: object
       properties:
@@ -113,6 +113,7 @@ contest_task:
     max_score_possible: number?
     max_score: number?
     avg_score: number?
+    # TODO add num_full_scores
   example: !include examples/contest_task.json
 
 contest_tasks:

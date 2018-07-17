@@ -39,7 +39,7 @@ pub struct ContestInfo {
     pub max_score_possible: Option<f32>,
     pub max_score: Option<f32>,
     pub avg_score: Option<f32>,
-    pub tasks: Vec<String>,
+    pub tasks: Vec<ContestTask>,
     pub medals: ContestInfoMedals,
 }
 
@@ -134,9 +134,23 @@ fn count_medals(participations: &Vec<Participation>, medal: &str) -> Option<i32>
     }
 }
 
+fn get_contest_task(task: &Task, task_scores: &Vec<TaskScore>) -> ContestTask {
+    let sum_score = fold_with_none(Some(0.0), task_scores.iter(), |m, s| add_option(m, s.score));
+    let avg_score = sum_score.map(|sum| sum / (task_scores.len() as f32));
+    ContestTask {
+        name: task.name.clone(),
+        index: task.index,
+        max_score_possible: task.max_score,
+        max_score: fold_with_none(Some(0.0), task_scores.iter(), |m, s| max_option(m, s.score)),
+        avg_score: avg_score,
+    }
+}
+
 fn get_contests_info(conn: DbConn, year: Option<i32>) -> Result<Vec<ContestInfo>, Error> {
     let contests = match year {
-        None => schema::contests::table.load::<Contest>(&*conn),
+        None => schema::contests::table
+            .order(schema::contests::columns::year.desc())
+            .load::<Contest>(&*conn),
         Some(year) => schema::contests::table
             .find(year)
             .first::<Contest>(&*conn)
@@ -148,6 +162,16 @@ fn get_contests_info(conn: DbConn, year: Option<i32>) -> Result<Vec<ContestInfo>
     let tasks = Task::belonging_to(&contests)
         .load::<Task>(&*conn)?
         .grouped_by(&contests);
+    let task_scores: HashMap<(i32, String), Vec<TaskScore>> = schema::task_scores::table
+        .filter(schema::task_scores::columns::contest_year.eq_any(contests.iter().map(|c| c.year)))
+        .order(schema::task_scores::columns::contest_year)
+        .then_order_by(schema::task_scores::columns::task_name)
+        .load::<TaskScore>(&*conn)?
+        .into_iter()
+        .group_by(|ts| (ts.contest_year, ts.task_name.clone()))
+        .into_iter()
+        .map(|p| (((p.0).0, (p.0).1.clone()), p.1.collect()))
+        .collect();
 
     let mut result: Vec<ContestInfo> = Vec::new();
 
@@ -172,7 +196,13 @@ fn get_contests_info(conn: DbConn, year: Option<i32>) -> Result<Vec<ContestInfo>
                 (Some(sum), Some(num)) => Some(sum / (num as f32)),
                 _ => None,
             },
-            tasks: tasks.iter().map(|t| t.name.clone()).collect(),
+            tasks: tasks
+                .iter()
+                .map(|t| {
+                    let scores = task_scores.get(&(contest.year, t.name.clone()));
+                    get_contest_task(t, scores.unwrap_or(&vec![]))
+                })
+                .collect(),
             medals: ContestInfoMedals {
                 gold: get_medal_info(&participations, "G"),
                 silver: get_medal_info(&participations, "S"),
@@ -320,25 +350,14 @@ pub fn get_contest_tasks(year: i32, conn: DbConn) -> Result<Json<ContestTasks>, 
         .order(schema::tasks::columns::index)
         .load::<Task>(&*conn)?
     {
-        let scores: Vec<Option<f32>> = schema::task_scores::table
+        let scores: Vec<TaskScore> = schema::task_scores::table
             .filter(
                 schema::task_scores::columns::contest_year
                     .eq(year)
                     .and(schema::task_scores::columns::task_name.eq(task.name.clone())),
             )
-            .select(schema::task_scores::columns::score)
-            .load::<Option<f32>>(&*conn)?;
-        let max_score = fold_with_none(Some(0.0), scores.iter(), |m, s| max_option(m, *s));
-        let sum_score = fold_with_none(Some(0.0), scores.iter(), |m, s| add_option(m, *s));
-        let avg_score = sum_score.map(|sum| sum / (scores.len() as f32));
-
-        result.push(ContestTask {
-            name: task.name.clone(),
-            index: task.index,
-            max_score_possible: task.max_score,
-            max_score: max_score,
-            avg_score: avg_score,
-        });
+            .load(&*conn)?;
+        result.push(get_contest_task(&task, &scores));
     }
 
     Ok(Json(ContestTasks { tasks: result }))
