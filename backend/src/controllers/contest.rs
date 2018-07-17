@@ -94,6 +94,20 @@ pub struct ContestRegions {
     pub regions: Vec<ContestRegion>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestTask {
+    pub name: String,
+    pub index: i32,
+    pub max_score_possible: Option<f32>,
+    pub max_score: Option<f32>,
+    pub avg_score: Option<f32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestTasks {
+    pub tasks: Vec<ContestTask>,
+}
+
 fn get_medal_info(participations: &Vec<Participation>, medal: &str) -> ContestInfoMedal {
     let medalist: Vec<&Participation> = participations
         .iter()
@@ -297,6 +311,39 @@ pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<Json<ContestRegion
     Ok(Json(ContestRegions { regions: result }))
 }
 
+pub fn get_contest_tasks(year: i32, conn: DbConn) -> Result<Json<ContestTasks>, Error> {
+    schema::contests::table.find(year).first::<Contest>(&*conn)?;
+
+    let mut result: Vec<ContestTask> = Vec::new();
+    for task in schema::tasks::table
+        .filter(schema::tasks::columns::contest_year.eq(year))
+        .order(schema::tasks::columns::index)
+        .load::<Task>(&*conn)?
+    {
+        let scores: Vec<Option<f32>> = schema::task_scores::table
+            .filter(
+                schema::task_scores::columns::contest_year
+                    .eq(year)
+                    .and(schema::task_scores::columns::task_name.eq(task.name.clone())),
+            )
+            .select(schema::task_scores::columns::score)
+            .load::<Option<f32>>(&*conn)?;
+        let max_score = fold_with_none(Some(0.0), scores.iter(), |m, s| max_option(m, *s));
+        let sum_score = fold_with_none(Some(0.0), scores.iter(), |m, s| add_option(m, *s));
+        let avg_score = sum_score.map(|sum| sum / (scores.len() as f32));
+
+        result.push(ContestTask {
+            name: task.name.clone(),
+            index: task.index,
+            max_score_possible: task.max_score,
+            max_score: max_score,
+            avg_score: avg_score,
+        });
+    }
+
+    Ok(Json(ContestTasks { tasks: result }))
+}
+
 #[get("/contests")]
 pub fn list(conn: DbConn) -> Result<Json<Vec<ContestInfo>>, Failure> {
     match get_contests_info(conn, None) {
@@ -328,6 +375,14 @@ pub fn results(year: i32, conn: DbConn) -> Result<Json<ContestResults>, Failure>
 #[get("/contests/<year>/regions")]
 pub fn regions(year: i32, conn: DbConn) -> Result<Json<ContestRegions>, Failure> {
     match get_contest_regions(year, conn) {
+        Ok(res) => Ok(res),
+        Err(err) => Err(error_status(err)),
+    }
+}
+
+#[get("/contests/<year>/tasks")]
+pub fn tasks(year: i32, conn: DbConn) -> Result<Json<ContestTasks>, Failure> {
+    match get_contest_tasks(year, conn) {
         Ok(res) => Ok(res),
         Err(err) => Err(error_status(err)),
     }

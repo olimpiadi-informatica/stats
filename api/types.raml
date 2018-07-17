@@ -110,14 +110,15 @@ contest_task:
   properties:
     name: string
     index: integer
-    # TODO add score multiplier for tasks with different weight, or maybe scale
-    # the scores directly in the db
     max_score_possible: number?
     max_score: number?
     avg_score: number?
   example: !include examples/contest_task.json
 
 contest_tasks:
-  type: array
-  items: contest_task
+  type: object
+  properties:
+    tasks:
+      type: array
+      items: contest_task
   example: !include examples/contest_tasks.json
