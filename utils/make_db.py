@@ -16,6 +16,7 @@ import openpyxl
 import string
 import sqlite3
 from typing import Optional, Dict, List
+import numpy as np
 
 STATIC_COLUMNS = {"position", "name", "surname", "birth", "school", "medal", "gender", "venue", "IOI", "score"}
 
@@ -258,6 +259,22 @@ def add_task_scores(cursor: sqlite3.Cursor, task_scores: List[TaskScore]):
         task_score.add_to_db(cursor)
 
 
+def get_task_coefficients(raw_participations: List[OrderedDict], task_names: List[str]):
+    if raw_participations[0]["score"] is None or raw_participations[0][task_names[0]] is None:
+        return [1]*len(task_names)
+    try:
+        for index in range(len(raw_participations)-len(task_names)):
+            participations = raw_participations[index:index+len(task_names)]
+            A = np.array([[p[task_name] for task_name in task_names] for p in participations])
+            b = np.array([p["score"] for p in participations])
+            if np.linalg.matrix_rank(A) == len(task_names) and np.all(A) and np.all(b):
+                break
+        x = np.linalg.solve(A, b)
+        return list(map(lambda x: int(round(x)), x))
+    except:
+        return [1]*len(task_names)
+
+
 def main(args):
     wb = openpyxl.load_workbook(args.file, data_only=True)
     sheets = wb.sheetnames
@@ -283,15 +300,24 @@ def main(args):
 
         raw_participations = dictify(wb[sheet_name])
         task_names = list(raw_participations[0].keys())[len(STATIC_COLUMNS):]
+        task_coefficients = dict(zip(task_names, get_task_coefficients(raw_participations, task_names)))
+
         for index, task_name in enumerate(task_names):
-            tasks[task_name] = Task(task_name, contest, index, max_scores[task_name] or None)
+            max_score = max_scores[task_name] or None
+            if max_score:
+                max_score *= task_coefficients[task_name]
+            tasks[task_name] = Task(task_name, contest, index, max_score)
+
         for raw_user in raw_participations:
             user = User(**raw_user)
             users[user] = user
             participation = Participation(user, contest, **raw_user)
             participations.append(participation)
             for task_name in task_names:
-                task_score = TaskScore(tasks[task_name], participation, raw_user[task_name])
+                score = raw_user[task_name]
+                if score:
+                    score *= task_coefficients[task_name]
+                task_score = TaskScore(tasks[task_name], participation, score)
                 task_scores.append(task_score)
 
     if args.drop and os.path.exists(args.db):

@@ -26,3 +26,4 @@ backend/target
 **/*.rs.bk
 
 *.sqlite3*
+*.xlsx
