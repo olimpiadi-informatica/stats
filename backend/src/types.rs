@@ -2,7 +2,20 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use schema::{contests, participations, task_scores, tasks, users};
+use schema::{contests, participations, regions, task_scores, tasks, users};
+
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
+#[primary_key(id)]
+pub struct Region {
+    pub id: String,
+    pub name: String,
+}
+
+impl PartialEq for Region {
+    fn eq(&self, other: &Region) -> bool {
+        self.id == other.id
+    }
+}
 
 #[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
 #[primary_key(year)]
@@ -21,7 +34,7 @@ pub struct User {
     pub gender: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug)]
+#[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug, Clone)]
 #[belongs_to(Contest, foreign_key = "contest_year")]
 #[belongs_to(User, foreign_key = "user_id")]
 #[primary_key(user_id, contest_year)]

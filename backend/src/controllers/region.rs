@@ -15,7 +15,7 @@ use controllers::{get_num_medals, NumMedals};
 use db::DbConn;
 use error_status;
 use schema;
-use types::{Contest, Participation};
+use types::{Contest, Participation, Region};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -35,10 +35,6 @@ pub struct RegionsInfo {
 
 fn get_regions_list(conn: DbConn) -> Result<RegionsInfo, Error> {
     let mut result: Vec<RegionInfo> = Vec::new();
-    let contests = schema::contests::table
-        .order(schema::contests::columns::region)
-        .then_order_by(schema::contests::columns::year)
-        .load::<Contest>(&*conn)?;
     // the avarage number of participations is computed using only the participations
     // from the contests that have all the regions known
     let invalid_contests: HashSet<i32> = HashSet::from_iter(
@@ -50,6 +46,10 @@ fn get_regions_list(conn: DbConn) -> Result<RegionsInfo, Error> {
             .iter()
             .cloned(),
     );
+    let contests = schema::contests::table
+        .order(schema::contests::columns::region)
+        .then_order_by(schema::contests::columns::year)
+        .load::<Contest>(&*conn)?;
     let hosts: HashMap<String, Vec<&Contest>> = (&contests)
         .into_iter()
         .group_by(|c| c.region.as_ref().unwrap_or(&"".to_string()).clone())
@@ -59,23 +59,25 @@ fn get_regions_list(conn: DbConn) -> Result<RegionsInfo, Error> {
 
     for (region, participations) in schema::participations::table
         .filter(schema::participations::region.is_not_null())
+        .left_join(schema::regions::table)
         .order(schema::participations::region)
-        .load::<Participation>(&*conn)?
+        .load::<(Participation, Option<Region>)>(&*conn)?
+        .iter()
+        .group_by(|(_p, r)| r)
         .into_iter()
-        .group_by(|p| p.region.clone())
-        .into_iter()
-        .map(|(r, p)| (r, p.collect::<Vec<Participation>>()))
+        // FIXME the .clone() here may be removed somehow
+        .map(|(r, p)| (r, p.map(|p| p.0.clone()).collect::<Vec<Participation>>()))
         .into_iter()
     {
-        let region = region.ok_or(Error::NotFound)?;
+        let region = region.as_ref().ok_or(Error::NotFound)?;
         let num_valid_participations = participations
             .iter()
             .filter(|p| !invalid_contests.contains(&p.contest_year))
             .count();
 
         result.push(RegionInfo {
-            id: region.clone(),
-            name: region.clone(), // TODO
+            id: region.id.clone(),
+            name: region.name.clone(),
             num_contestants: zero_is_none(participations.len() as i32),
             medals: get_num_medals(&participations),
             avg_contestants_per_year: zero_is_none(
@@ -83,7 +85,7 @@ fn get_regions_list(conn: DbConn) -> Result<RegionsInfo, Error> {
                     / ((contests.len() - invalid_contests.len()) as f32),
             ),
             hosted: hosts
-                .get(&region)
+                .get(&region.id)
                 .unwrap_or(&vec![])
                 .iter()
                 .map(|c| c.year)

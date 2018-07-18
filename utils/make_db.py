@@ -19,7 +19,28 @@ from typing import Optional, Dict, List
 import numpy as np
 
 STATIC_COLUMNS = {"position", "name", "surname", "birth", "school", "medal", "gender", "venue", "IOI", "score"}
-
+REGION_NAMES = {
+    "ABR": "Abruzzo",
+    "BAS": "Basilicata",
+    "CAL": "Calabria",
+    "CAM": "Campania",
+    "EMI": "Emilia-Romagna",
+    "FRI": "Friuli-Venezia Giulia",
+    "LAZ": "Lazio",
+    "LIG": "Liguria",
+    "LOM": "Lombardia",
+    "MAR": "Marche",
+    "MOL": "Molise",
+    "PIE": "Piemonte",
+    "PUG": "Puglia",
+    "SAR": "Sardegna",
+    "SIC": "Sicilia",
+    "TOS": "Toscana",
+    "TRE": "Trentino-Alto Adige",
+    "UMB": "Umbria",
+    "VAL": "Valle d'Aosta",
+    "VEN": "Veneto"
+}
 
 class User:
     def __init__(self, name: str, surname: str, birth: Optional[datetime.datetime], gender: str, **kwargs):
@@ -187,6 +208,10 @@ def create_schema(cursor: sqlite3.Cursor):
         PRAGMA JOURNAL_MODE = WAL;
         PRAGMA SYNCHRONOUS = NORMAL;
 
+        CREATE TABLE regions (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL
+        );
         CREATE TABLE users (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -198,7 +223,8 @@ def create_schema(cursor: sqlite3.Cursor):
             year INT PRIMARY KEY,
             location TEXT,
             region TEXT,
-            maps TEXT
+            maps TEXT,
+            FOREIGN KEY (region) REFERENCES regions(id)
         );
         CREATE TABLE participations (
             user_id TEXT NOT NULL,
@@ -212,7 +238,8 @@ def create_schema(cursor: sqlite3.Cursor):
             score FLOAT,
             PRIMARY KEY (user_id, contest_year),
             FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (contest_year) REFERENCES contests(year)
+            FOREIGN KEY (contest_year) REFERENCES contests(year),
+            FOREIGN KEY (region) REFERENCES regions(id)
         );
         CREATE TABLE tasks (
             name TEXT NOT NULL,
@@ -233,6 +260,15 @@ def create_schema(cursor: sqlite3.Cursor):
         );
     """)
 
+
+def add_regions(cursor: sqlite3.Cursor, regions: Dict[str, str]):
+    query = "INSERT INTO regions (id, name) VALUES (:id, :name)"
+    for id, name in regions.items():
+        try:
+            cursor.execute(query, {"id": id, "name": name})
+        except Exception as e:
+            print("Failed to insert region", (id, name))
+            print(e)
 
 def add_users(cursor: sqlite3.Cursor, users: Dict[User, User]):
     for user in users:
@@ -329,6 +365,7 @@ def main(args):
     cursor = database.cursor()
     create_schema(cursor)
 
+    add_regions(cursor, REGION_NAMES)
     add_users(cursor, users)
     add_contests(cursor, contests)
     add_participations(cursor, participations)

@@ -3,6 +3,13 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 table! {
+    regions (id) {
+        id -> Text,
+        name -> Text,
+    }
+}
+
+table! {
     contests (year) {
         year -> Integer,
         location -> Nullable<Text>,
@@ -35,7 +42,9 @@ table! {
 }
 
 joinable!(participations -> users(user_id));
+joinable!(participations -> regions(region));
 allow_tables_to_appear_in_same_query!(participations, users);
+allow_tables_to_appear_in_same_query!(participations, regions);
 
 table! {
     tasks (name, contest_year) {
