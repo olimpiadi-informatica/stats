@@ -31,6 +31,7 @@ mod utility;
 
 use controllers::contest;
 use controllers::error::*;
+use controllers::region;
 
 pub fn error_status(error: Error) -> Failure {
     Failure(match error {
@@ -51,7 +52,8 @@ fn main() {
                 contest::search,
                 contest::results,
                 contest::regions,
-                contest::tasks
+                contest::tasks,
+                region::list
             ],
         )
         .catch(errors![not_found])

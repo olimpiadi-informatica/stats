@@ -10,6 +10,7 @@ use rocket::response::Failure;
 use rocket_contrib::Json;
 use std::collections::HashMap;
 
+use controllers::{get_num_medals, NumMedals};
 use db::DbConn;
 use error_status;
 use schema;
@@ -79,17 +80,10 @@ pub struct ContestResults {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ContestRegionNumMedals {
-    pub gold: Option<i32>,
-    pub silver: Option<i32>,
-    pub bronze: Option<i32>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct ContestRegion {
     pub name: String,
     pub num_participants: Option<i32>,
-    pub num_medals: ContestRegionNumMedals,
+    pub num_medals: NumMedals,
     pub max_score: Option<f32>,
     pub avg_score: Option<f32>,
 }
@@ -123,19 +117,6 @@ fn get_medal_info(participations: &Vec<Participation>, medal: &str) -> ContestIn
         cutoff: fold_with_none(Some(INFINITY), medalist.iter(), |min, part| {
             min_option(min, part.score)
         }),
-    }
-}
-
-fn count_medals(participations: &Vec<Participation>, medal: &str) -> Option<i32> {
-    if participations.is_empty() {
-        None
-    } else {
-        Some(
-            participations
-                .iter()
-                .filter(|p| p.medal.as_ref().map_or(false, |x| x.as_str() == medal))
-                .count() as i32,
-        )
     }
 }
 
@@ -325,11 +306,7 @@ pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<Json<ContestRegion
         let sum_score = fold_with_none(Some(0.0), participations.iter(), |m, p| {
             add_option(m, p.score)
         });
-        let mut num_medals = ContestRegionNumMedals {
-            gold: count_medals(&participations, "G"),
-            silver: count_medals(&participations, "S"),
-            bronze: count_medals(&participations, "B"),
-        };
+        let mut num_medals = get_num_medals(&participations);
         let avg_score = sum_score.map(|sum| sum / (participations.len() as f32));
 
         result.push(ContestRegion {
