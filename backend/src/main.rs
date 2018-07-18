@@ -53,7 +53,8 @@ fn main() {
                 contest::results,
                 contest::regions,
                 contest::tasks,
-                region::list
+                region::list,
+                region::search
             ],
         )
         .catch(errors![not_found])
