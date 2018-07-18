@@ -10,7 +10,7 @@ use rocket::response::Failure;
 use rocket_contrib::Json;
 use std::collections::HashMap;
 
-use controllers::{get_num_medals, NumMedals};
+use controllers::{get_num_medals, Contestant, NumMedals};
 use db::DbConn;
 use error_status;
 use schema;
@@ -47,13 +47,6 @@ pub struct ContestInfo {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestsInfo {
     pub contests: Vec<ContestInfo>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Contestant {
-    pub id: String,
-    pub first_name: String,
-    pub last_name: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -11,6 +11,13 @@ pub struct NumMedals {
     pub bronze: Option<i32>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Contestant {
+    pub id: String,
+    pub first_name: String,
+    pub last_name: String,
+}
+
 fn count_medals(participations: &Vec<Participation>, medal: &str) -> Option<i32> {
     if participations.is_empty() {
         None

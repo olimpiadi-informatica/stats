@@ -11,11 +11,11 @@ use rocket_contrib::Json;
 use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 
-use controllers::{get_num_medals, NumMedals};
+use controllers::{get_num_medals, Contestant, NumMedals};
 use db::DbConn;
 use error_status;
 use schema;
-use types::{Contest, Participation, Region};
+use types::{Contest, Participation, Region, TaskScore, User};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -52,6 +52,31 @@ pub struct DetailedRegion {
     pub contestants_per_year: Vec<ContestantsPerYear>,
     pub medals_per_year: Vec<MedalsPerYear>,
     pub hosted: Vec<i32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RegionContestantTaskScore {
+    pub name: String,
+    pub score: Option<f32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RegionContestantResult {
+    pub contestant: Contestant,
+    pub rank: Option<i32>,
+    pub medal: Option<String>,
+    pub task_scores: Vec<RegionContestantTaskScore>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RegionResult {
+    pub year: i32,
+    pub contestants: Vec<RegionContestantResult>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RegionResults {
+    results: Vec<RegionResult>,
 }
 
 fn get_contests_without_full_regions(conn: &DbConn) -> Result<HashSet<i32>, Error> {
@@ -166,6 +191,93 @@ fn get_region_details(region: String, conn: DbConn) -> Result<DetailedRegion, Er
     })
 }
 
+fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Error> {
+    let participations = schema::participations::table
+        .filter(schema::participations::columns::region.eq(region))
+        .order(schema::participations::columns::contest_year)
+        .left_join(schema::users::table)
+        .load::<(Participation, Option<User>)>(&*conn)?;
+    let mut contest_years = participations
+        .iter()
+        .map(|p| p.0.contest_year)
+        .collect::<Vec<i32>>();
+    contest_years.sort();
+    contest_years.dedup();
+    let mut user_ids = participations
+        .iter()
+        .map(|p| p.0.user_id.clone())
+        .collect::<Vec<String>>();
+    user_ids.sort();
+    user_ids.dedup();
+    let participations = participations.into_iter().group_by(|p| p.0.contest_year);
+    let participations: HashMap<i32, Vec<(Participation, Option<User>)>> = participations
+        .into_iter()
+        .map(|(year, part)| (year, part.collect::<Vec<(Participation, Option<User>)>>()))
+        .collect();
+
+    let task_scores = schema::task_scores::table
+        .filter(schema::task_scores::columns::user_id.eq_any(user_ids))
+        .order(schema::task_scores::columns::contest_year)
+        .then_order_by(schema::task_scores::columns::user_id)
+        .load::<TaskScore>(&*conn)?;
+    let task_scores = task_scores.into_iter().group_by(|ts| ts.contest_year);
+    let task_scores = task_scores.into_iter().map(|(year, tss)| {
+        (
+            year,
+            tss.collect::<Vec<TaskScore>>()
+                .into_iter()
+                .group_by(|ts| ts.user_id.clone()),
+        )
+    });
+    let task_scores: HashMap<i32, HashMap<String, Vec<TaskScore>>> = task_scores
+        .into_iter()
+        .map(|(year, tss)| {
+            (
+                year,
+                HashMap::from_iter(
+                    tss.into_iter()
+                        .map(|(user_id, tss)| (user_id, tss.collect::<Vec<TaskScore>>())),
+                ),
+            )
+        })
+        .collect();
+
+    let mut result = Vec::new();
+    for year in contest_years {
+        let participations = participations.get(&year).ok_or(Error::NotFound)?;
+        let task_scores = task_scores.get(&year).ok_or(Error::NotFound)?;
+
+        let mut contestants = Vec::new();
+        for (p, u) in participations.iter() {
+            let u = u.as_ref().ok_or(Error::NotFound)?;
+            let scores = task_scores.get(&u.id.clone()).ok_or(Error::NotFound)?;
+            contestants.push(RegionContestantResult {
+                contestant: Contestant {
+                    id: u.id.clone(),
+                    first_name: u.name.clone(),
+                    last_name: u.surname.clone(),
+                },
+                rank: p.position,
+                medal: p.medal.clone(),
+                task_scores: scores
+                    .iter()
+                    .map(|s| RegionContestantTaskScore {
+                        name: s.task_name.clone(),
+                        score: s.score,
+                    })
+                    .collect(),
+            });
+        }
+
+        result.push(RegionResult {
+            year: year,
+            contestants: contestants,
+        });
+    }
+
+    Ok(RegionResults { results: result })
+}
+
 #[get("/regions")]
 pub fn list(conn: DbConn) -> Result<Json<RegionsInfo>, Failure> {
     match get_regions_list(conn) {
@@ -178,6 +290,14 @@ pub fn list(conn: DbConn) -> Result<Json<RegionsInfo>, Failure> {
 pub fn search(region: String, conn: DbConn) -> Result<Json<DetailedRegion>, Failure> {
     match get_region_details(region, conn) {
         Ok(region) => Ok(Json(region)),
+        Err(err) => Err(error_status(err)),
+    }
+}
+
+#[get("/regions/<region>/results")]
+pub fn results(region: String, conn: DbConn) -> Result<Json<RegionResults>, Failure> {
+    match get_region_results(region, conn) {
+        Ok(results) => Ok(Json(results)),
         Err(err) => Err(error_status(err)),
     }
 }

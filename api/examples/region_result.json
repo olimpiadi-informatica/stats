@@ -7,6 +7,8 @@
         "first_name": "Andrea",
         "last_name": "Ciprietti"
       },
+      "rank": 1,
+      "medal": "gold",
       "task_scores": [
         {
           "name": "caduta",
