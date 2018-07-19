@@ -91,3 +91,24 @@ types: !include types.raml
               application/json:
                 type: region_results
                 example: !include examples/region_results.json
+
+/tasks:
+  get:
+    description: Get the list of the tasks with some basic information
+    responses:
+      200:
+        body:
+          application/json:
+            type: tasks
+            example: !include examples/tasks.json
+  /{task}:
+    uriParameters:
+      task: string
+    get:
+      description: Get the detailed information about a task
+      responses:
+        200:
+          body:
+            application/json:
+              type: task_detail
+              example: !include examples/task_detail.json

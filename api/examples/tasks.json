@@ -1,0 +1,30 @@
+{
+  "tasks": [
+    {
+      "year": 2017,
+      "tasks": [
+        {
+            "name": "caduta",
+            "index": 0,
+            "max_score_possible": 100,
+            "max_score": 100,
+            "avg_score": 29.320389
+        },
+        {
+            "name": "corteo",
+            "index": 1,
+            "max_score_possible": 100,
+            "max_score": 100,
+            "avg_score": 12.68233
+        },
+        {
+            "name": "specchi",
+            "index": 2,
+            "max_score_possible": 100,
+            "max_score": 80,
+            "avg_score": 19.116505
+        }
+      ]
+    }
+  ]
+}

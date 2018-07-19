@@ -1,0 +1,26 @@
+{
+  "year": 2017,
+  "name": "caduta",
+  "index": 0,
+  "max_score_possible": 100,
+  "scores": [
+    {
+      "contestant": {
+          "id": "8406cc432799527748f821a8d3b61be8",
+          "first_name": "Andrea",
+          "last_name": "Ciprietti"
+      },
+      "rank": 1,
+      "score": 80
+    },
+    {
+      "contestant": {
+          "id": "20e60cb27ae30894ccb008b08745581c",
+          "first_name": "Paolo",
+          "last_name": "Battellani"
+      },
+      "rank": 2,
+      "score": 91
+    }
+  ]
+}

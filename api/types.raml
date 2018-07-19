@@ -1,4 +1,4 @@
-# TODO at some point there will be in the responsed the links for the next and
+# TODO at some point there will be in the responses the links for the next and
 # previous years
 
 error:
@@ -57,7 +57,6 @@ contest:
             cutoff:
               type: number?
               description: Minimum score to get this medal
-  example: !include examples/contest.json
 
 contests:
   type: object
@@ -65,7 +64,6 @@ contests:
     contests:
       type: array
       items: contest
-  example: !include examples/contests.json
 
 contest_result:
   type: object
@@ -95,7 +93,6 @@ contest_results:
     results:
       type: array
       items: contest_result
-  example: !include examples/contest_results.json
 
 contest_region:
   type: object
@@ -113,7 +110,6 @@ contest_regions:
     regions:
       type: array
       items: contest_region
-  example: !include examples/contest_regions.json
 
 contest_task:
   type: object
@@ -131,7 +127,6 @@ contest_tasks:
     tasks:
       type: array
       items: contest_task
-  example: !include examples/contest_tasks.json
 
 region:
   type: object
@@ -151,7 +146,6 @@ regions:
     regions:
       type: array
       items: region
-  example: !include examples/regions.json
 
 detailed_region:
   type: object
@@ -176,7 +170,6 @@ detailed_region:
     hosted:
       type: array
       items: integer
-  example: !include examples/detailed_region.json
 
 region_contestant_result:
   type: object
@@ -206,4 +199,41 @@ region_results:
     results:
       type: array
       items: region_result
-  example: !include examples/region_results.json
+
+task:
+  type: object
+  properties:
+    name: string
+    index: integer
+    max_score_possible: number?
+    max_score: number?
+    avg_score: number?
+
+tasks:
+  type: object
+  properties:
+    tasks:
+      type: array
+      items:
+        type: object
+        properties:
+          year: integer
+          tasks:
+            type: array
+            items: task
+
+task_detail:
+  type: object
+  properties:
+    year: integer
+    name: string
+    index: integer
+    max_score_possible: number?
+    scores:
+      type: array
+      items:
+        type: object
+        properties:
+          contestant: contestant
+          rank: integer?
+          score: number?
