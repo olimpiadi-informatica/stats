@@ -65,6 +65,7 @@ contests:
     contests:
       type: array
       items: contest
+  example: !include examples/contests.json
 
 contest_result:
   type: object
@@ -84,7 +85,6 @@ contest_result:
         properties:
           year: integer
           medal: string?
-  example: !include examples/contest_result.json
 
 contest_results:
   type: object
@@ -106,7 +106,6 @@ contest_region:
     num_medals: num_medals
     max_score: number?
     avg_score: number?
-  example: !include examples/contest_region.json
 
 contest_regions:
   type: object
@@ -125,7 +124,6 @@ contest_task:
     max_score: number?
     avg_score: number?
     # TODO add num_full_scores
-  example: !include examples/contest_task.json
 
 contest_tasks:
   type: object
@@ -146,7 +144,6 @@ region:
     hosted:
       type: array
       items: integer
-  example: !include examples/region.json
 
 regions:
   type: object
@@ -194,7 +191,6 @@ region_contestant_result:
         properties:
           name: string
           score: number?
-  example: !include examples/region_contestant_result.json
 
 region_result:
   type: object
@@ -203,7 +199,6 @@ region_result:
     contestants:
       type: array
       items: region_contestant_result
-  example: !include examples/region_result.json
 
 region_results:
   type: object
