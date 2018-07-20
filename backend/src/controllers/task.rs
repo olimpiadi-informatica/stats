@@ -4,14 +4,15 @@ use diesel::RunQueryDsl;
 use itertools::Itertools;
 use rocket::response::Failure;
 use rocket_contrib::Json;
-use std::collections::{HashMap, HashSet};
+use std::cmp::Ordering;
+use std::collections::HashMap;
 use std::iter::FromIterator;
 
-use controllers::{get_num_medals, Contestant, NumMedals};
+use controllers::{contestant_from_user, Contestant};
 use db::DbConn;
 use error_status;
 use schema;
-use types::{Participation, Region, Task, TaskScore, User};
+use types::{Participation, Task, TaskScore, User};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -32,6 +33,22 @@ pub struct TaskInfoList {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Tasks {
     pub tasks: Vec<TaskInfoList>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TaskDetailScore {
+    contestant: Contestant,
+    rank: Option<i32>,
+    score: Option<f32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TaskDetail {
+    year: i32,
+    name: String,
+    index: i32,
+    max_score_possible: Option<f32>,
+    scores: Vec<TaskDetailScore>,
 }
 
 fn get_task_list(conn: DbConn) -> Result<Tasks, Error> {
@@ -98,10 +115,57 @@ fn get_task_list(conn: DbConn) -> Result<Tasks, Error> {
     Ok(Tasks { tasks: result })
 }
 
+fn get_task_detail(year: i32, task_name: String, conn: DbConn) -> Result<TaskDetail, Error> {
+    let task = schema::tasks::table
+        .find((&task_name, year))
+        .first::<Task>(&*conn)?;
+    let scores: Vec<(TaskScore, Option<User>)> = schema::task_scores::table
+        .filter(
+            schema::task_scores::columns::contest_year
+                .eq(year)
+                .and(schema::task_scores::columns::task_name.eq(&task_name)),
+        )
+        .order(schema::task_scores::columns::user_id)
+        .left_join(schema::users::table)
+        .load(&*conn)?;
+    let participations: Vec<Participation> = schema::participations::table
+        .filter(schema::participations::columns::contest_year.eq(year))
+        .order(schema::participations::columns::user_id)
+        .load(&*conn)?;
+    if scores.len() != participations.len() {
+        return Err(Error::NotFound);
+    }
+    let mut result: Vec<TaskDetailScore> = Vec::new();
+    for ((score, user), participation) in izip!(scores, &participations) {
+        let user = user.ok_or(Error::NotFound)?;
+        result.push(TaskDetailScore {
+            contestant: contestant_from_user(&user),
+            rank: participation.position,
+            score: score.score,
+        });
+    }
+    result.sort_unstable_by(|a, b| a.score.partial_cmp(&b.score).unwrap_or(Ordering::Equal));
+    Ok(TaskDetail {
+        year: year,
+        name: task_name.clone(),
+        index: task.index,
+        max_score_possible: task.max_score,
+        scores: result,
+    })
+}
+
 #[get("/tasks")]
 pub fn list(conn: DbConn) -> Result<Json<Tasks>, Failure> {
     match get_task_list(conn) {
         Ok(tasks) => Ok(Json(tasks)),
+        Err(err) => Err(error_status(err)),
+    }
+}
+
+#[get("/tasks/<year>/<task>")]
+pub fn search(year: i32, task: String, conn: DbConn) -> Result<Json<TaskDetail>, Failure> {
+    match get_task_detail(year, task, conn) {
+        Ok(task) => Ok(Json(task)),
         Err(err) => Err(error_status(err)),
     }
 }

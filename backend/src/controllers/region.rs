@@ -11,7 +11,7 @@ use rocket_contrib::Json;
 use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 
-use controllers::{get_num_medals, Contestant, NumMedals};
+use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
 use db::DbConn;
 use error_status;
 use schema;
@@ -252,11 +252,7 @@ fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Err
             let u = u.as_ref().ok_or(Error::NotFound)?;
             let scores = task_scores.get(&u.id.clone()).ok_or(Error::NotFound)?;
             contestants.push(RegionContestantResult {
-                contestant: Contestant {
-                    id: u.id.clone(),
-                    first_name: u.name.clone(),
-                    last_name: u.surname.clone(),
-                },
+                contestant: contestant_from_user(&u),
                 rank: p.position,
                 medal: p.medal.clone(),
                 task_scores: scores

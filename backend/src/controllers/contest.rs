@@ -10,7 +10,7 @@ use rocket::response::Failure;
 use rocket_contrib::Json;
 use std::collections::HashMap;
 
-use controllers::{get_num_medals, Contestant, NumMedals};
+use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
 use db::DbConn;
 use error_status;
 use schema;
@@ -254,11 +254,7 @@ pub fn get_contest_results(year: i32, conn: DbConn) -> Result<Json<ContestResult
 
         results.push(ContestResult {
             rank: participation.position,
-            contestant: Contestant {
-                id: user_id,
-                first_name: user.name.clone(),
-                last_name: user.surname.clone(),
-            },
+            contestant: contestant_from_user(&user),
             region: participation.region.clone(),
             score: participation.score,
             scores: scores,

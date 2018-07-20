@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#![allow(proc_macro_derive_resolution_fallback)]
+#![allow(proc_macro_derive_resolution_fallback, non_snake_case)]
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
 
@@ -57,7 +57,8 @@ fn main() {
                 region::list,
                 region::search,
                 region::results,
-                task::list
+                task::list,
+                task::search
             ],
         )
         .catch(errors![not_found])
