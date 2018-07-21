@@ -51,3 +51,4 @@ pub mod contest;
 pub mod error;
 pub mod region;
 pub mod task;
+pub mod user;

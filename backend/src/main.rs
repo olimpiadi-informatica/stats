@@ -33,6 +33,7 @@ use controllers::contest;
 use controllers::error::*;
 use controllers::region;
 use controllers::task;
+use controllers::user;
 
 pub fn error_status(error: Error) -> Failure {
     Failure(match error {
@@ -58,7 +59,9 @@ fn main() {
                 region::search,
                 region::results,
                 task::list,
-                task::search
+                task::search,
+                user::list,
+                user::search
             ],
         )
         .catch(errors![not_found])

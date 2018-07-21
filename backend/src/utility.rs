@@ -36,13 +36,13 @@ pub fn zero_is_none<T: Zero>(val: T) -> Option<T> {
     }
 }
 
-pub fn fold_with_none<T: ExactSizeIterator, F>(
-    initial: Option<f32>,
-    iter: T,
+pub fn fold_with_none<T, I: ExactSizeIterator, F>(
+    initial: Option<T>,
+    iter: I,
     fold_fn: F,
-) -> Option<f32>
+) -> Option<T>
 where
-    F: FnMut(Option<f32>, <T as Iterator>::Item) -> Option<f32>,
+    F: FnMut(Option<T>, <I as Iterator>::Item) -> Option<T>,
 {
     match iter.len() {
         0 => None,
