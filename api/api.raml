@@ -113,3 +113,23 @@ types: !include types.raml
             application/json:
               type: task_detail
               example: !include examples/task_detail.json
+
+/users:
+  get:
+    description: Get the list of the users
+    responses:
+      200:
+        body:
+          application/json:
+            type: users
+            example: !include examples/users.json
+
+  /{user_id}:
+    get:
+      description: Get the details of a user
+      responses:
+        200:
+          body:
+            application/json:
+              type: user_detail
+              example: !include examples/user_detail.json

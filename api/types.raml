@@ -237,3 +237,44 @@ task_detail:
           contestant: contestant
           rank: integer?
           score: number?
+
+user:
+  type: object
+  properties:
+    contestant: contestant
+    num_medals: num_medals
+    best_rank: integer?
+    participations:
+      type: array
+      items:
+        type: object
+        properties:
+          year: integer
+          medal: string?
+
+users:
+  type: object
+  properties:
+    users:
+      type: array
+      items: user
+
+user_detail:
+  type: object
+  properties:
+    contestant: contestant
+    participations:
+      type: array
+      items:
+        type: object
+        properties:
+          year: integer
+          medal: string?
+          rank: integer?
+          scores:
+            type: array
+            items:
+              type: object
+              properties:
+                task: string
+                score: number?

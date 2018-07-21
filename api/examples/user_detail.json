@@ -1,0 +1,28 @@
+{
+  "contestant": {
+    "id": "8406cc432799527748f821a8d3b61be8",
+    "first_name": "Andrea",
+    "last_name": "Ciprietti"
+  },
+  "participations": [
+    {
+      "year": 2017,
+      "medal": "gold",
+      "rank": 1,
+      "scores": [
+        {
+          "task": "caduta",
+          "score": 80
+        },
+        {
+          "task": "corteo",
+          "score": 100
+        },
+        {
+          "task": "specchi",
+          "score": 80
+        }
+      ]
+    }
+  ]
+}
