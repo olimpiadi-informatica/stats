@@ -7,6 +7,14 @@ use std::cmp::PartialOrd;
 use std::iter::ExactSizeIterator;
 use std::ops::{Add, FnMut};
 
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub enum Medal {
+    Gold,
+    Silver,
+    Bronze,
+}
+
 pub fn add_option<T: Add<Output = T>>(a: Option<T>, b: Option<T>) -> Option<T> {
     match (a, b) {
         (Some(x), Some(y)) => Some(x + y),
@@ -47,5 +55,14 @@ where
     match iter.len() {
         0 => None,
         _ => iter.fold(initial, fold_fn),
+    }
+}
+
+pub fn medal_from_string(medal: &Option<String>) -> Option<Medal> {
+    match medal.as_ref().map(|m| m.as_str()) {
+        Some("G") => Some(Medal::Gold),
+        Some("S") => Some(Medal::Silver),
+        Some("B") => Some(Medal::Bronze),
+        _ => None,
     }
 }

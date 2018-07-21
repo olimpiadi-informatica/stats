@@ -20,6 +20,10 @@ contestant:
     first_name: string
     last_name: string
 
+medal:
+  type: string?
+  enum: [gold, silver, bronze, ~]
+
 contest:
   type: object
   properties:
@@ -75,14 +79,14 @@ contest_result:
     scores:
       type: array
       items: number?
-    medal: string?
+    medal: medal
     past_participations:
       type: array
       items:
         type: object
         properties:
           year: integer
-          medal: string?
+          medal: medal
 
 contest_results:
   type: object
@@ -176,7 +180,7 @@ region_contestant_result:
   properties:
     contestant: contestant
     rank: integer?
-    medal: string?
+    medal: medal
     task_scores:
       type: array
       items:
@@ -250,7 +254,7 @@ user:
         type: object
         properties:
           year: integer
-          medal: string?
+          medal: medal
 
 users:
   type: object
@@ -269,7 +273,7 @@ user_detail:
         type: object
         properties:
           year: integer
-          medal: string?
+          medal: medal
           rank: integer?
           scores:
             type: array

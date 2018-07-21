@@ -16,7 +16,7 @@ use utility::*;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInfoParticipation {
     pub year: i32,
-    pub medal: Option<String>,
+    pub medal: Option<Medal>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -41,7 +41,7 @@ pub struct UserDetailScore {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserDetailParticipation {
     pub year: i32,
-    pub medal: Option<String>,
+    pub medal: Option<Medal>,
     pub rank: Option<i32>,
     pub scores: Vec<UserDetailScore>,
 }
@@ -70,7 +70,7 @@ fn get_users_list(conn: DbConn) -> Result<Users, Error> {
                 .iter()
                 .map(|p| UserInfoParticipation {
                     year: p.contest_year,
-                    medal: p.medal.clone(),
+                    medal: medal_from_string(&p.medal),
                 })
                 .collect(),
         });
@@ -100,7 +100,7 @@ fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Error> {
         }
         result.push(UserDetailParticipation {
             year: year,
-            medal: participation.medal.clone(),
+            medal: medal_from_string(&participation.medal),
             rank: participation.position,
             scores: scores
                 .iter()

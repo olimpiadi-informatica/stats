@@ -64,7 +64,7 @@ pub struct RegionContestantTaskScore {
 pub struct RegionContestantResult {
     pub contestant: Contestant,
     pub rank: Option<i32>,
-    pub medal: Option<String>,
+    pub medal: Option<Medal>,
     pub task_scores: Vec<RegionContestantTaskScore>,
 }
 
@@ -254,7 +254,7 @@ fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Err
             contestants.push(RegionContestantResult {
                 contestant: contestant_from_user(&u),
                 rank: p.position,
-                medal: p.medal.clone(),
+                medal: medal_from_string(&p.medal),
                 task_scores: scores
                     .iter()
                     .map(|s| RegionContestantTaskScore {

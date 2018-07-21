@@ -52,7 +52,7 @@ pub struct ContestsInfo {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PastParticipation {
     pub year: i32,
-    pub medal: Option<String>,
+    pub medal: Option<Medal>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -62,7 +62,7 @@ pub struct ContestResult {
     pub region: Option<String>,
     pub score: Option<f32>,
     pub scores: Vec<Option<f32>>,
-    pub medal: Option<String>,
+    pub medal: Option<Medal>,
     pub past_participations: Vec<PastParticipation>,
 }
 
@@ -248,7 +248,7 @@ pub fn get_contest_results(year: i32, conn: DbConn) -> Result<Json<ContestResult
         }.iter()
             .map(|p| PastParticipation {
                 year: p.contest_year,
-                medal: p.medal.clone(),
+                medal: medal_from_string(&p.medal),
             })
             .collect();
 
@@ -258,7 +258,7 @@ pub fn get_contest_results(year: i32, conn: DbConn) -> Result<Json<ContestResult
             region: participation.region.clone(),
             score: participation.score,
             scores: scores,
-            medal: participation.medal.clone(),
+            medal: medal_from_string(&participation.medal),
             past_participations: old_parts,
         });
     }
