@@ -8,6 +8,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::iter::FromIterator;
 
+use cache::Cache;
 use controllers::{contestant_from_user, Contestant};
 use db::DbConn;
 use error_status;
@@ -209,17 +210,22 @@ fn get_task_detail(year: i32, task_name: String, conn: DbConn) -> Result<TaskDet
 }
 
 #[get("/tasks")]
-pub fn list(conn: DbConn) -> Result<Json<Tasks>, Failure> {
+pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<Tasks>, Failure> {
     match get_task_list(conn) {
-        Ok(tasks) => Ok(Json(tasks)),
+        Ok(tasks) => Ok(Json(cache.set(tasks))),
         Err(err) => Err(error_status(err)),
     }
 }
 
 #[get("/tasks/<year>/<task>")]
-pub fn search(year: i32, task: String, conn: DbConn) -> Result<Json<TaskDetail>, Failure> {
+pub fn search(
+    year: i32,
+    task: String,
+    conn: DbConn,
+    mut cache: Cache,
+) -> Result<Json<TaskDetail>, Failure> {
     match get_task_detail(year, task, conn) {
-        Ok(task) => Ok(Json(task)),
+        Ok(task) => Ok(Json(cache.set(task))),
         Err(err) => Err(error_status(err)),
     }
 }

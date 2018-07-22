@@ -10,6 +10,7 @@ use rocket::response::Failure;
 use rocket_contrib::Json;
 use std::collections::HashMap;
 
+use cache::Cache;
 use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
 use db::DbConn;
 use error_status;
@@ -282,7 +283,7 @@ fn get_contest_info(conn: DbConn, year: i32) -> Result<ContestDetail, Error> {
     })
 }
 
-pub fn get_contest_results(year: i32, conn: DbConn) -> Result<Json<ContestResults>, Error> {
+pub fn get_contest_results(year: i32, conn: DbConn) -> Result<ContestResults, Error> {
     schema::contests::table.find(year).first::<Contest>(&*conn)?;
     let tasks = schema::tasks::table
         .filter(schema::tasks::columns::contest_year.eq(year))
@@ -356,14 +357,14 @@ pub fn get_contest_results(year: i32, conn: DbConn) -> Result<Json<ContestResult
 
     results.sort_by_key(|r| r.rank);
 
-    Ok(Json(ContestResults {
+    Ok(ContestResults {
         navigation: get_contest_navigation(year, conn)?,
         tasks: tasks.iter().map(|t| t.name.clone()).collect(),
         results: results,
-    }))
+    })
 }
 
-pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<Json<ContestRegions>, Error> {
+pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<ContestRegions, Error> {
     // throw a 404 if the contest doesn't exist, an empty set is retuned if the contest exists but
     // there are no participations
     schema::contests::table.find(year).first::<Contest>(&*conn)?;
@@ -401,13 +402,13 @@ pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<Json<ContestRegion
         });
     }
 
-    Ok(Json(ContestRegions {
+    Ok(ContestRegions {
         navigation: get_contest_navigation(year, conn)?,
         regions: result,
-    }))
+    })
 }
 
-pub fn get_contest_tasks(year: i32, conn: DbConn) -> Result<Json<ContestTasks>, Error> {
+pub fn get_contest_tasks(year: i32, conn: DbConn) -> Result<ContestTasks, Error> {
     schema::contests::table.find(year).first::<Contest>(&*conn)?;
 
     let mut result: Vec<ContestTask> = Vec::new();
@@ -426,48 +427,48 @@ pub fn get_contest_tasks(year: i32, conn: DbConn) -> Result<Json<ContestTasks>, 
         result.push(get_contest_task(&task, &scores));
     }
 
-    Ok(Json(ContestTasks {
+    Ok(ContestTasks {
         navigation: get_contest_navigation(year, conn)?,
         tasks: result,
-    }))
+    })
 }
 
 #[get("/contests")]
-pub fn list(conn: DbConn) -> Result<Json<ContestsInfo>, Failure> {
+pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<ContestsInfo>, Failure> {
     match get_contest_list(conn) {
-        Ok(contests) => Ok(Json(ContestsInfo { contests: contests })),
+        Ok(contests) => Ok(Json(cache.set(ContestsInfo { contests: contests }))),
         Err(err) => Err(error_status(err)),
     }
 }
 
 #[get("/contests/<year>")]
-pub fn search(year: i32, conn: DbConn) -> Result<Json<ContestDetail>, Failure> {
+pub fn search(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<ContestDetail>, Failure> {
     match get_contest_info(conn, year) {
-        Ok(contest) => Ok(Json(contest)),
+        Ok(contest) => Ok(Json(cache.set(contest))),
         Err(err) => Err(error_status(err)),
     }
 }
 
 #[get("/contests/<year>/results")]
-pub fn results(year: i32, conn: DbConn) -> Result<Json<ContestResults>, Failure> {
+pub fn results(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<ContestResults>, Failure> {
     match get_contest_results(year, conn) {
-        Ok(res) => Ok(res),
+        Ok(res) => Ok(Json(cache.set(res))),
         Err(err) => Err(error_status(err)),
     }
 }
 
 #[get("/contests/<year>/regions")]
-pub fn regions(year: i32, conn: DbConn) -> Result<Json<ContestRegions>, Failure> {
+pub fn regions(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<ContestRegions>, Failure> {
     match get_contest_regions(year, conn) {
-        Ok(res) => Ok(res),
+        Ok(res) => Ok(Json(cache.set(res))),
         Err(err) => Err(error_status(err)),
     }
 }
 
 #[get("/contests/<year>/tasks")]
-pub fn tasks(year: i32, conn: DbConn) -> Result<Json<ContestTasks>, Failure> {
+pub fn tasks(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<ContestTasks>, Failure> {
     match get_contest_tasks(year, conn) {
-        Ok(res) => Ok(res),
+        Ok(res) => Ok(Json(cache.set(res))),
         Err(err) => Err(error_status(err)),
     }
 }

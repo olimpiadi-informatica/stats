@@ -10,6 +10,7 @@ extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
+extern crate serde;
 #[macro_use]
 extern crate serde_json;
 #[macro_use]
@@ -18,11 +19,15 @@ extern crate diesel;
 extern crate itertools;
 extern crate dotenv;
 extern crate num;
+#[macro_use]
+extern crate lazy_static;
 
 use diesel::result::Error;
 use rocket::http::Status;
 use rocket::response::Failure;
+use rocket::Catcher;
 
+mod cache;
 mod controllers;
 mod db;
 mod schema;
@@ -64,6 +69,7 @@ fn main() {
                 user::search
             ],
         )
+        .catch(vec![Catcher::new(200, cache::handle_cache)])
         .catch(errors![not_found])
         .launch();
 }

@@ -6,6 +6,7 @@ use rocket::response::Failure;
 use rocket_contrib::Json;
 use std::i32;
 
+use cache::Cache;
 use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
 use db::DbConn;
 use error_status;
@@ -118,17 +119,21 @@ fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Error> {
 }
 
 #[get("/users")]
-pub fn list(conn: DbConn) -> Result<Json<Users>, Failure> {
+pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<Users>, Failure> {
     match get_users_list(conn) {
-        Ok(users) => Ok(Json(users)),
+        Ok(users) => Ok(Json(cache.set(users))),
         Err(err) => Err(error_status(err)),
     }
 }
 
 #[get("/users/<user_id>")]
-pub fn search(user_id: String, conn: DbConn) -> Result<Json<UserDetail>, Failure> {
+pub fn search(
+    user_id: String,
+    conn: DbConn,
+    mut cache: Cache,
+) -> Result<Json<UserDetail>, Failure> {
     match get_user_detail(user_id, conn) {
-        Ok(users) => Ok(Json(users)),
+        Ok(users) => Ok(Json(cache.set(users))),
         Err(err) => Err(error_status(err)),
     }
 }

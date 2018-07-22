@@ -11,6 +11,7 @@ use rocket_contrib::Json;
 use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 
+use cache::Cache;
 use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
 use db::DbConn;
 use error_status;
@@ -311,25 +312,33 @@ fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Err
 }
 
 #[get("/regions")]
-pub fn list(conn: DbConn) -> Result<Json<RegionsInfo>, Failure> {
+pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<RegionsInfo>, Failure> {
     match get_regions_list(conn) {
-        Ok(regions) => Ok(Json(regions)),
+        Ok(regions) => Ok(Json(cache.set(regions))),
         Err(err) => Err(error_status(err)),
     }
 }
 
 #[get("/regions/<region>")]
-pub fn search(region: String, conn: DbConn) -> Result<Json<DetailedRegion>, Failure> {
+pub fn search(
+    region: String,
+    conn: DbConn,
+    mut cache: Cache,
+) -> Result<Json<DetailedRegion>, Failure> {
     match get_region_details(region, conn) {
-        Ok(region) => Ok(Json(region)),
+        Ok(region) => Ok(Json(cache.set(region))),
         Err(err) => Err(error_status(err)),
     }
 }
 
 #[get("/regions/<region>/results")]
-pub fn results(region: String, conn: DbConn) -> Result<Json<RegionResults>, Failure> {
+pub fn results(
+    region: String,
+    conn: DbConn,
+    mut cache: Cache,
+) -> Result<Json<RegionResults>, Failure> {
     match get_region_results(region, conn) {
-        Ok(results) => Ok(Json(results)),
+        Ok(results) => Ok(Json(cache.set(results))),
         Err(err) => Err(error_status(err)),
     }
 }
