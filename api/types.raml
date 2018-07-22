@@ -1,6 +1,3 @@
-# TODO at some point there will be in the responses the links for the next and
-# previous years
-
 error:
   type: object
   properties:
@@ -24,10 +21,60 @@ medal:
   type: string?
   enum: [gold, silver, bronze, ~]
 
+contest_info_task:
+  type: object
+  properties:
+    name: string
+    index: integer
+    max_score_possible: number?
+
 contest:
   type: object
   properties:
     year: integer
+    location: string?
+    region: string?
+    num_contestants: integer?
+    max_score_possible: number?
+    max_score: number?
+    avg_score: number?
+    tasks:
+      type: array
+      items: contest_info_task
+    medals:
+      type: object
+      properties:
+        gold:
+          type: object
+          properties:
+            number: integer?
+            cutoff:
+              type: number?
+              description: Minimum score to get this medal
+        silver:
+          type: object
+          properties:
+            number: integer?
+            cutoff:
+              type: number?
+              description: Minimum score to get this medal
+        bronze:
+          type: object
+          properties:
+            number: integer?
+            cutoff:
+              type: number?
+              description: Minimum score to get this medal
+
+contest_detail:
+  type: object
+  properties:
+    year: integer
+    navigation:
+      type: object
+      properties:
+        previous: integer?
+        next: integer?
     location: string?
     region: string?
     num_contestants: integer?
@@ -91,6 +138,11 @@ contest_result:
 contest_results:
   type: object
   properties:
+    navigation:
+      type: object
+      properties:
+        previous: integer?
+        next: integer?
     tasks:
       type: array
       items: string
@@ -111,6 +163,11 @@ contest_region:
 contest_regions:
   type: object
   properties:
+    navigation:
+      type: object
+      properties:
+        previous: integer?
+        next: integer?
     regions:
       type: array
       items: contest_region
@@ -128,6 +185,11 @@ contest_task:
 contest_tasks:
   type: object
   properties:
+    navigation:
+      type: object
+      properties:
+        previous: integer?
+        next: integer?
     tasks:
       type: array
       items: contest_task
@@ -156,6 +218,11 @@ detailed_region:
   properties:
     id: string
     name: string
+    navigation:
+      type: object
+      properties:
+        previous: string?
+        next: string?
     # TODO: add position and border informations
     contestants_per_year:
       type: array
@@ -200,6 +267,11 @@ region_result:
 region_results:
   type: object
   properties:
+    navigation:
+      type: object
+      properties:
+        previous: string?
+        next: string?
     results:
       type: array
       items: region_result
@@ -232,6 +304,21 @@ task_detail:
     year: integer
     name: string
     index: integer
+    navigation:
+      type: object
+      properties:
+        previous:
+          type: object
+          required: false
+          properties:
+            year: integer
+            name: string
+        next:
+          type: object
+          required: false
+          properties:
+            year: integer
+            name: string
     max_score_possible: number?
     scores:
       type: array

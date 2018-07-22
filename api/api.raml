@@ -23,7 +23,7 @@ types: !include types.raml
         200:
           body:
             application/json:
-              type: contest
+              type: contest_detail
               example: !include examples/contest.json
         404:
           body:
@@ -39,6 +39,10 @@ types: !include types.raml
               application/json:
                 type: contest_results
                 example: !include examples/contest_results.json
+          404:
+            body:
+              application/json:
+                type: error
 
     /regions:
       get:
@@ -49,6 +53,10 @@ types: !include types.raml
               application/json:
                 type: contest_regions
                 example: !include examples/contest_regions.json
+          404:
+            body:
+              application/json:
+                type: error
 
     /tasks:
       get:
@@ -59,6 +67,10 @@ types: !include types.raml
               application/json:
                 type: contest_tasks
                 example: !include examples/contest_tasks.json
+          404:
+            body:
+              application/json:
+                type: error
 
 /regions:
   get:
@@ -81,6 +93,10 @@ types: !include types.raml
             application/json:
               type: detailed_region
               example: !include examples/detailed_region.json
+        404:
+          body:
+            application/json:
+              type: error
 
     /results:
       get:
@@ -91,6 +107,10 @@ types: !include types.raml
               application/json:
                 type: region_results
                 example: !include examples/region_results.json
+          404:
+            body:
+              application/json:
+                type: error
 
 /tasks:
   get:
@@ -101,6 +121,11 @@ types: !include types.raml
           application/json:
             type: tasks
             example: !include examples/tasks.json
+      404:
+        body:
+          application/json:
+            type: error
+
   /{year}/{task}:
     uriParameters:
       year: integer
@@ -113,6 +138,10 @@ types: !include types.raml
             application/json:
               type: task_detail
               example: !include examples/task_detail.json
+        404:
+          body:
+            application/json:
+              type: error
 
 /users:
   get:
@@ -133,3 +162,7 @@ types: !include types.raml
             application/json:
               type: user_detail
               example: !include examples/user_detail.json
+        404:
+          body:
+            application/json:
+              type: error

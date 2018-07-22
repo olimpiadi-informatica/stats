@@ -19,6 +19,12 @@ use types::{Contest, Participation, Region, TaskScore, User};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct RegionNavigation {
+    pub previous: Option<String>,
+    pub next: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RegionInfo {
     pub id: String,
     pub name: String,
@@ -49,6 +55,7 @@ pub struct MedalsPerYear {
 pub struct DetailedRegion {
     pub id: String,
     pub name: String,
+    pub navigation: RegionNavigation,
     pub contestants_per_year: Vec<ContestantsPerYear>,
     pub medals_per_year: Vec<MedalsPerYear>,
     pub hosted: Vec<i32>,
@@ -76,7 +83,32 @@ pub struct RegionResult {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegionResults {
-    results: Vec<RegionResult>,
+    pub navigation: RegionNavigation,
+    pub results: Vec<RegionResult>,
+}
+
+fn get_region_navigation(current: &str, conn: DbConn) -> Result<RegionNavigation, Error> {
+    let mut regions = schema::regions::table
+        .select(schema::regions::columns::id)
+        .order(schema::regions::columns::id)
+        .load::<String>(&*conn)?;
+    let index = regions.iter().position(|r| r.as_str() == current);
+
+    Ok(RegionNavigation {
+        previous: match index {
+            Some(0) => None,
+            Some(i) => Some(regions.swap_remove(i - 1)),
+            None => None,
+        },
+        next: match index {
+            Some(i) => if i < regions.len() - 1 {
+                Some(regions.swap_remove(i + 1))
+            } else {
+                None
+            },
+            None => None,
+        },
+    })
 }
 
 fn get_contests_without_full_regions(conn: &DbConn) -> Result<HashSet<i32>, Error> {
@@ -185,6 +217,7 @@ fn get_region_details(region: String, conn: DbConn) -> Result<DetailedRegion, Er
     Ok(DetailedRegion {
         id: region.id.clone(),
         name: region.name.clone(),
+        navigation: get_region_navigation(region.id.as_str(), conn)?,
         contestants_per_year: contestants_per_year,
         medals_per_year: medals_per_year,
         hosted: hosted,
@@ -193,7 +226,7 @@ fn get_region_details(region: String, conn: DbConn) -> Result<DetailedRegion, Er
 
 fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Error> {
     let participations = schema::participations::table
-        .filter(schema::participations::columns::region.eq(region))
+        .filter(schema::participations::columns::region.eq(&region))
         .order(schema::participations::columns::contest_year)
         .left_join(schema::users::table)
         .load::<(Participation, Option<User>)>(&*conn)?;
@@ -271,7 +304,10 @@ fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Err
         });
     }
 
-    Ok(RegionResults { results: result })
+    Ok(RegionResults {
+        navigation: get_region_navigation(region.as_str(), conn)?,
+        results: result,
+    })
 }
 
 #[get("/regions")]

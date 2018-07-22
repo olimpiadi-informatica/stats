@@ -32,8 +32,15 @@ pub struct ContestInfoMedals {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ContestInfo {
+pub struct ContestNavigation {
+    pub previous: Option<i32>,
+    pub next: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestDetail {
     pub year: i32,
+    pub navigation: ContestNavigation,
     pub location: Option<String>,
     pub region: Option<String>,
     pub num_contestants: Option<i32>,
@@ -42,11 +49,6 @@ pub struct ContestInfo {
     pub avg_score: Option<f32>,
     pub tasks: Vec<ContestTask>,
     pub medals: ContestInfoMedals,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ContestsInfo {
-    pub contests: Vec<ContestInfo>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -68,6 +70,7 @@ pub struct ContestResult {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestResults {
+    pub navigation: ContestNavigation,
     pub tasks: Vec<String>,
     pub results: Vec<ContestResult>,
 }
@@ -83,6 +86,7 @@ pub struct ContestRegion {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestRegions {
+    pub navigation: ContestNavigation,
     pub regions: Vec<ContestRegion>,
 }
 
@@ -97,7 +101,33 @@ pub struct ContestTask {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestTasks {
+    pub navigation: ContestNavigation,
     pub tasks: Vec<ContestTask>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestInfoTask {
+    pub name: String,
+    pub index: i32,
+    pub max_score_possible: Option<f32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestInfo {
+    pub year: i32,
+    pub location: Option<String>,
+    pub region: Option<String>,
+    pub num_contestants: Option<i32>,
+    pub max_score_possible: Option<f32>,
+    pub max_score: Option<f32>,
+    pub avg_score: Option<f32>,
+    pub tasks: Vec<ContestInfoTask>,
+    pub medals: ContestInfoMedals,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestsInfo {
+    pub contests: Vec<ContestInfo>,
 }
 
 fn get_medal_info(participations: &Vec<Participation>, medal: &str) -> ContestInfoMedal {
@@ -125,35 +155,40 @@ fn get_contest_task(task: &Task, task_scores: &Vec<TaskScore>) -> ContestTask {
     }
 }
 
-fn get_contests_info(conn: DbConn, year: Option<i32>) -> Result<Vec<ContestInfo>, Error> {
-    let contests = match year {
-        None => schema::contests::table
-            .order(schema::contests::columns::year.desc())
-            .load::<Contest>(&*conn),
-        Some(year) => schema::contests::table
-            .find(year)
-            .first::<Contest>(&*conn)
-            .map(|c| vec![c]),
-    }?;
+fn get_contest_navigation(year: i32, conn: DbConn) -> Result<ContestNavigation, Error> {
+    let years = schema::contests::table
+        .select(schema::contests::columns::year)
+        .order(schema::contests::columns::year)
+        .load::<i32>(&*conn)?;
+    let index = years.iter().position(|y| *y == year);
+    Ok(ContestNavigation {
+        previous: match index {
+            Some(0) => None,
+            Some(i) => Some(years[i - 1]),
+            None => None,
+        },
+        next: match index {
+            Some(i) => if i == years.len() - 1 {
+                None
+            } else {
+                Some(years[i + 1])
+            },
+            None => None,
+        },
+    })
+}
+
+fn get_contest_list(conn: DbConn) -> Result<Vec<ContestInfo>, Error> {
+    let contests = schema::contests::table
+        .order(schema::contests::columns::year.desc())
+        .load::<Contest>(&*conn)?;
     let participations = Participation::belonging_to(&contests)
         .load::<Participation>(&*conn)?
         .grouped_by(&contests);
     let tasks = Task::belonging_to(&contests)
         .load::<Task>(&*conn)?
         .grouped_by(&contests);
-    let task_scores: HashMap<(i32, String), Vec<TaskScore>> = schema::task_scores::table
-        .filter(schema::task_scores::columns::contest_year.eq_any(contests.iter().map(|c| c.year)))
-        .order(schema::task_scores::columns::contest_year)
-        .then_order_by(schema::task_scores::columns::task_name)
-        .load::<TaskScore>(&*conn)?
-        .into_iter()
-        .group_by(|ts| (ts.contest_year, ts.task_name.clone()))
-        .into_iter()
-        .map(|p| (((p.0).0, (p.0).1.clone()), p.1.collect()))
-        .collect();
-
     let mut result: Vec<ContestInfo> = Vec::new();
-
     for (contest, participations, tasks) in izip!(&contests, &participations, &tasks) {
         let num_contestants = zero_is_none(participations.len() as i32);
         let score_sum = participations
@@ -177,9 +212,10 @@ fn get_contests_info(conn: DbConn, year: Option<i32>) -> Result<Vec<ContestInfo>
             },
             tasks: tasks
                 .iter()
-                .map(|t| {
-                    let scores = task_scores.get(&(contest.year, t.name.clone()));
-                    get_contest_task(t, scores.unwrap_or(&vec![]))
+                .map(|t| ContestInfoTask {
+                    name: t.name.clone(),
+                    index: t.index,
+                    max_score_possible: t.max_score,
                 })
                 .collect(),
             medals: ContestInfoMedals {
@@ -192,7 +228,62 @@ fn get_contests_info(conn: DbConn, year: Option<i32>) -> Result<Vec<ContestInfo>
     Ok(result)
 }
 
+fn get_contest_info(conn: DbConn, year: i32) -> Result<ContestDetail, Error> {
+    let contest = schema::contests::table.find(year).first::<Contest>(&*conn)?;
+    let participations = schema::participations::table
+        .filter(schema::participations::columns::contest_year.eq(year))
+        .load::<Participation>(&*conn)?;
+    let tasks = schema::tasks::table
+        .filter(schema::tasks::columns::contest_year.eq(year))
+        .load::<Task>(&*conn)?;
+    let task_scores: HashMap<String, Vec<TaskScore>> = schema::task_scores::table
+        .filter(schema::task_scores::columns::contest_year.eq(year))
+        .order(schema::task_scores::columns::task_name)
+        .load::<TaskScore>(&*conn)?
+        .into_iter()
+        .group_by(|ts| ts.task_name.clone())
+        .into_iter()
+        .map(|p| (p.0.clone(), p.1.collect()))
+        .collect();
+
+    let score_sum = participations
+        .iter()
+        .fold(Some(0.0), |sum, part| add_option(sum, part.score));
+    let num_contestants = zero_is_none(participations.len() as i32);
+
+    Ok(ContestDetail {
+        year: contest.year,
+        navigation: get_contest_navigation(year, conn)?,
+        location: contest.location.clone(),
+        region: contest.region.clone(),
+        num_contestants: num_contestants,
+        max_score_possible: fold_with_none(Some(0.0), tasks.iter(), |sum, task| {
+            add_option(sum, task.max_score)
+        }),
+        max_score: fold_with_none(Some(0.0), participations.iter(), |max, part| {
+            max_option(max, part.score)
+        }),
+        avg_score: match (score_sum, num_contestants) {
+            (Some(sum), Some(num)) => Some(sum / (num as f32)),
+            _ => None,
+        },
+        tasks: tasks
+            .iter()
+            .map(|t| {
+                let scores = task_scores.get(&t.name);
+                get_contest_task(t, scores.unwrap_or(&vec![]))
+            })
+            .collect(),
+        medals: ContestInfoMedals {
+            gold: get_medal_info(&participations, "G"),
+            silver: get_medal_info(&participations, "S"),
+            bronze: get_medal_info(&participations, "B"),
+        },
+    })
+}
+
 pub fn get_contest_results(year: i32, conn: DbConn) -> Result<Json<ContestResults>, Error> {
+    schema::contests::table.find(year).first::<Contest>(&*conn)?;
     let tasks = schema::tasks::table
         .filter(schema::tasks::columns::contest_year.eq(year))
         .order(schema::tasks::columns::index.asc())
@@ -266,6 +357,7 @@ pub fn get_contest_results(year: i32, conn: DbConn) -> Result<Json<ContestResult
     results.sort_by_key(|r| r.rank);
 
     Ok(Json(ContestResults {
+        navigation: get_contest_navigation(year, conn)?,
         tasks: tasks.iter().map(|t| t.name.clone()).collect(),
         results: results,
     }))
@@ -309,7 +401,10 @@ pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<Json<ContestRegion
         });
     }
 
-    Ok(Json(ContestRegions { regions: result }))
+    Ok(Json(ContestRegions {
+        navigation: get_contest_navigation(year, conn)?,
+        regions: result,
+    }))
 }
 
 pub fn get_contest_tasks(year: i32, conn: DbConn) -> Result<Json<ContestTasks>, Error> {
@@ -331,25 +426,24 @@ pub fn get_contest_tasks(year: i32, conn: DbConn) -> Result<Json<ContestTasks>, 
         result.push(get_contest_task(&task, &scores));
     }
 
-    Ok(Json(ContestTasks { tasks: result }))
+    Ok(Json(ContestTasks {
+        navigation: get_contest_navigation(year, conn)?,
+        tasks: result,
+    }))
 }
 
 #[get("/contests")]
 pub fn list(conn: DbConn) -> Result<Json<ContestsInfo>, Failure> {
-    match get_contests_info(conn, None) {
+    match get_contest_list(conn) {
         Ok(contests) => Ok(Json(ContestsInfo { contests: contests })),
         Err(err) => Err(error_status(err)),
     }
 }
 
 #[get("/contests/<year>")]
-pub fn search(year: i32, conn: DbConn) -> Result<Json<ContestInfo>, Failure> {
-    let items = get_contests_info(conn, Some(year));
-    match items {
-        Ok(mut items) => match items.len() {
-            1 => Ok(Json(items.remove(0))),
-            _ => Err(error_status(Error::NotFound)),
-        },
+pub fn search(year: i32, conn: DbConn) -> Result<Json<ContestDetail>, Failure> {
+    match get_contest_info(conn, year) {
+        Ok(contest) => Ok(Json(contest)),
         Err(err) => Err(error_status(err)),
     }
 }

@@ -1,5 +1,9 @@
 {
   "id": "FRI",
+  "navigation": {
+    "previous": "EMI",
+    "next": "LAZ"
+  },
   "name": "Friuli-Venezia Giulia",
   "contestants_per_year": [
     {

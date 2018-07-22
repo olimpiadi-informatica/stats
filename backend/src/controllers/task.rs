@@ -16,6 +16,18 @@ use types::{Participation, Task, TaskScore, User};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct TaskNavigationDirection {
+    pub year: i32,
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TaskNavigation {
+    pub previous: Option<TaskNavigationDirection>,
+    pub next: Option<TaskNavigationDirection>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct TaskInfo {
     pub name: String,
     pub index: i32,
@@ -47,8 +59,49 @@ pub struct TaskDetail {
     year: i32,
     name: String,
     index: i32,
+    navigation: TaskNavigation,
     max_score_possible: Option<f32>,
     scores: Vec<TaskDetailScore>,
+}
+
+fn get_task_navigation(year: i32, name: &str, conn: DbConn) -> Result<TaskNavigation, Error> {
+    let tasks = schema::tasks::table
+        .filter(
+            schema::tasks::columns::contest_year
+                .ge(year - 1)
+                .and(schema::tasks::columns::contest_year.le(year + 1)),
+        )
+        .order(schema::tasks::columns::contest_year)
+        .then_order_by(schema::tasks::columns::index)
+        .select((
+            schema::tasks::columns::contest_year,
+            schema::tasks::columns::name,
+        ))
+        .load::<(i32, String)>(&*conn)?;
+    let index = tasks
+        .iter()
+        .position(|(y, n)| *y == year && n.as_str() == name);
+    Ok(TaskNavigation {
+        previous: match index {
+            Some(0) => None,
+            Some(i) => Some(TaskNavigationDirection {
+                year: tasks[i - 1].0,
+                name: tasks[i - 1].1.clone(),
+            }),
+            None => None,
+        },
+        next: match index {
+            Some(i) => if i == tasks.len() - 1 {
+                None
+            } else {
+                Some(TaskNavigationDirection {
+                    year: tasks[i + 1].0,
+                    name: tasks[i + 1].1.clone(),
+                })
+            },
+            None => None,
+        },
+    })
 }
 
 fn get_task_list(conn: DbConn) -> Result<Tasks, Error> {
@@ -149,6 +202,7 @@ fn get_task_detail(year: i32, task_name: String, conn: DbConn) -> Result<TaskDet
         year: year,
         name: task_name.clone(),
         index: task.index,
+        navigation: get_task_navigation(year, task_name.as_str(), conn)?,
         max_score_possible: task.max_score,
         scores: result,
     })

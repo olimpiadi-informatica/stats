@@ -1,5 +1,9 @@
 {
   "year": 2017,
+  "navigation": {
+    "previous": 2016,
+    "next": null
+  },
   "location": "Università degli Studi - Polo Ferrari - Trento",
   "region": "TRE",
   "num_contestants": 103,

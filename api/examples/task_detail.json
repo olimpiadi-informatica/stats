@@ -2,6 +2,16 @@
   "year": 2017,
   "name": "caduta",
   "index": 0,
+  "navigation": {
+    "previous": {
+      "year": 2016,
+      "name": "classifica"
+    },
+    "next": {
+      "year": 2017,
+      "name": "corteo"
+    }
+  },
   "max_score_possible": 100,
   "scores": [
     {
