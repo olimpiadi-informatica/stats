@@ -166,3 +166,15 @@ types: !include types.raml
           body:
             application/json:
               type: error
+
+/search:
+  get:
+    queryParameters:
+      q: string
+    description: Search for users, tasks or contests
+    responses:
+      200:
+        body:
+          application/json:
+            type: search_results
+            example: !include examples/search_results.json

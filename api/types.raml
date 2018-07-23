@@ -369,3 +369,45 @@ user_detail:
               properties:
                 task: string
                 score: number?
+
+search_result_user:
+  type: object
+  properties:
+    contestant: contestant
+
+search_result_task:
+  type: object
+  properties:
+    task:
+      type: object
+      properties:
+        year: integer
+        name: string
+
+search_result_contest:
+  type: object
+  properties:
+    contest:
+      type: object
+      properties:
+        year: integer
+        location: string?
+
+search_result_region:
+  type: object
+  properties:
+    region:
+      type: object
+      properties:
+        id: string
+        name: string
+
+search_result:
+  type: search_result_user | search_result_task | search_result_contest | search_result_region
+
+search_results:
+  type: object
+  properties:
+    results:
+      type: array
+      items: search_result
