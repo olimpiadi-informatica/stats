@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #![allow(proc_macro_derive_resolution_fallback, non_snake_case)]
-#![feature(plugin)]
+#![feature(plugin, custom_derive)]
 #![plugin(rocket_codegen)]
 
 extern crate rocket;
@@ -37,6 +37,7 @@ mod utility;
 use controllers::contest;
 use controllers::error::*;
 use controllers::region;
+use controllers::search;
 use controllers::task;
 use controllers::user;
 
@@ -66,7 +67,8 @@ fn main() {
                 task::list,
                 task::search,
                 user::list,
-                user::search
+                user::search,
+                search::search
             ],
         )
         .catch(vec![Catcher::new(200, cache::handle_cache)])
