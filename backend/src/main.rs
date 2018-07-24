@@ -44,7 +44,10 @@ use controllers::user;
 pub fn error_status(error: Error) -> Failure {
     Failure(match error {
         Error::NotFound => Status::NotFound,
-        _ => Status::InternalServerError,
+        _ => {
+            println!("{:?}", error);
+            Status::InternalServerError
+        }
     })
 }
 

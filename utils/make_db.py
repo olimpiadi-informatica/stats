@@ -68,9 +68,12 @@ class User:
     def add_to_db(self, cursor: sqlite3.Cursor):
         query = "INSERT INTO users (id, name, surname, birth, gender) VALUES " \
                 "(:id, :name, :surname, :birth, :gender)"
+        query_fts = "INSERT INTO users_fts4 (id, name, surname) VALUES " \
+                    "(:id, :name, :surname)"
         try:
             cursor.execute(query, {"id": self.id(), "name": self.name, "surname": self.surname, "birth": self.birth,
                                    "gender": self.gender})
+            cursor.execute(query_fts, {"id": self.id(), "name": self.name, "surname": self.surname})
         except Exception as e:
             print("Failed to insert user", self)
             print(e)
@@ -95,9 +98,13 @@ class Contest:
     def add_to_db(self, cursor: sqlite3.Cursor):
         query = "INSERT INTO contests (year, location, region, maps) VALUES " \
                 "(:year, :location, :region, :maps)"
+        query_fts = "INSERT INTO contests_fts4 (year, location, region, full_region) VALUES " \
+                "(:year, :location, :region, :full_region)"
         try:
             cursor.execute(query, {"year": self.year, "location": self.location, "region": self.region,
                                    "maps": self.maps})
+            cursor.execute(query_fts, {"year": self.year, "location": self.location, "region": self.region,
+                                       "full_region": REGION_NAMES[self.region]})
         except Exception as e:
             print("Failed to insert contest", self)
             print(e)
@@ -119,9 +126,12 @@ class Task:
     def add_to_db(self, cursor: sqlite3.Cursor):
         query = "INSERT INTO tasks (name, contest_year, \"index\", max_score) VALUES " \
                 "(:name, :contest_year, :index, :max_score)"
+        query_fts = "INSERT INTO tasks_fts4 (contest_year, name) VALUES " \
+                "(:name, :contest_year)"
         try:
             cursor.execute(query, {"name": self.name, "contest_year": self.contest.year, "index": self.index,
                                    "max_score": self.max_score})
+            cursor.execute(query_fts, {"name": self.name, "contest_year": self.contest.year})
         except Exception as e:
             print("Failed to insert task", self)
             print(e)
@@ -212,6 +222,7 @@ def create_schema(cursor: sqlite3.Cursor):
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL
         );
+        CREATE VIRTUAL TABLE regions_fts4 USING fts4(id, name);
         CREATE TABLE users (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -219,6 +230,7 @@ def create_schema(cursor: sqlite3.Cursor):
             birth TEXT,
             gender TEXT
         );
+        CREATE VIRTUAL TABLE users_fts4 USING fts4(id, name, surname);
         CREATE TABLE contests (
             year INT PRIMARY KEY,
             location TEXT,
@@ -226,6 +238,7 @@ def create_schema(cursor: sqlite3.Cursor):
             maps TEXT,
             FOREIGN KEY (region) REFERENCES regions(id)
         );
+        CREATE VIRTUAL TABLE contests_fts4 USING fts4(year, location, region, full_region);
         CREATE TABLE participations (
             user_id TEXT NOT NULL,
             contest_year INT NOT NULL,
@@ -249,6 +262,7 @@ def create_schema(cursor: sqlite3.Cursor):
             PRIMARY KEY (name, contest_year),
             FOREIGN KEY (contest_year) REFERENCES contests(year)
         );
+        CREATE VIRTUAL TABLE tasks_fts4 USING fts4(name, contest_year);
         CREATE TABLE task_scores (
             task_name TEXT NOT NULL,
             contest_year INT NOT NULL,
@@ -263,9 +277,11 @@ def create_schema(cursor: sqlite3.Cursor):
 
 def add_regions(cursor: sqlite3.Cursor, regions: Dict[str, str]):
     query = "INSERT INTO regions (id, name) VALUES (:id, :name)"
+    query_fts = "INSERT INTO regions_fts4 (id, name) VALUES (:id, :name)"
     for id, name in regions.items():
         try:
             cursor.execute(query, {"id": id, "name": name})
+            cursor.execute(query_fts, {"id": id, "name": name})
         except Exception as e:
             print("Failed to insert region", (id, name))
             print(e)
