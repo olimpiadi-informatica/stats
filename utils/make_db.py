@@ -232,7 +232,7 @@ def create_schema(cursor: sqlite3.Cursor):
         );
         CREATE VIRTUAL TABLE users_fts4 USING fts4(id, name, surname);
         CREATE TABLE contests (
-            year INT PRIMARY KEY,
+            year UNSIGNED INT PRIMARY KEY,
             location TEXT,
             region TEXT,
             maps TEXT,
@@ -241,7 +241,7 @@ def create_schema(cursor: sqlite3.Cursor):
         CREATE VIRTUAL TABLE contests_fts4 USING fts4(year, location, region, full_region);
         CREATE TABLE participations (
             user_id TEXT NOT NULL,
-            contest_year INT NOT NULL,
+            contest_year UNSIGNED INT NOT NULL,
             position INT,
             school TEXT,
             venue TEXT,
@@ -256,7 +256,7 @@ def create_schema(cursor: sqlite3.Cursor):
         );
         CREATE TABLE tasks (
             name TEXT NOT NULL,
-            contest_year INT NOT NULL,
+            contest_year UNSIGNED INT NOT NULL,
             "index" INT NOT NULL,
             max_score FLOAT,
             PRIMARY KEY (name, contest_year),
@@ -265,7 +265,7 @@ def create_schema(cursor: sqlite3.Cursor):
         CREATE VIRTUAL TABLE tasks_fts4 USING fts4(name, contest_year);
         CREATE TABLE task_scores (
             task_name TEXT NOT NULL,
-            contest_year INT NOT NULL,
+            contest_year UNSIGNED INT NOT NULL,
             user_id TEXT NOT NULL,
             score FLOAT,
             PRIMARY KEY (task_name, contest_year, user_id),

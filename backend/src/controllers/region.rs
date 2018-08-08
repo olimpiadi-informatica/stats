@@ -16,7 +16,7 @@ use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
 use db::DbConn;
 use error_status;
 use schema;
-use types::{Contest, Participation, Region, TaskScore, User};
+use types::{Contest, Participation, Region, TaskScore, User, Year};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -29,10 +29,10 @@ pub struct RegionNavigation {
 pub struct RegionInfo {
     pub id: String,
     pub name: String,
-    pub num_contestants: Option<i32>,
+    pub num_contestants: Option<usize>,
     pub medals: NumMedals,
     pub avg_contestants_per_year: Option<f32>,
-    pub hosted: Vec<i32>,
+    pub hosted: Vec<Year>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -42,13 +42,13 @@ pub struct RegionsInfo {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestantsPerYear {
-    pub year: i32,
-    pub num_contestants: i32,
+    pub year: Year,
+    pub num_contestants: usize,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct MedalsPerYear {
-    pub year: i32,
+    pub year: Year,
     pub num_medals: NumMedals,
 }
 
@@ -59,7 +59,7 @@ pub struct DetailedRegion {
     pub navigation: RegionNavigation,
     pub contestants_per_year: Vec<ContestantsPerYear>,
     pub medals_per_year: Vec<MedalsPerYear>,
-    pub hosted: Vec<i32>,
+    pub hosted: Vec<Year>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -71,14 +71,14 @@ pub struct RegionContestantTaskScore {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegionContestantResult {
     pub contestant: Contestant,
-    pub rank: Option<i32>,
+    pub rank: Option<usize>,
     pub medal: Option<Medal>,
     pub task_scores: Vec<RegionContestantTaskScore>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegionResult {
-    pub year: i32,
+    pub year: Year,
     pub contestants: Vec<RegionContestantResult>,
 }
 
@@ -112,13 +112,13 @@ fn get_region_navigation(current: &str, conn: DbConn) -> Result<RegionNavigation
     })
 }
 
-fn get_contests_without_full_regions(conn: &DbConn) -> Result<HashSet<i32>, Error> {
+fn get_contests_without_full_regions(conn: &DbConn) -> Result<HashSet<Year>, Error> {
     Ok(HashSet::from_iter(
         schema::participations::table
             .filter(schema::participations::columns::region.is_null())
             .select(schema::participations::columns::contest_year)
             .distinct()
-            .load::<i32>(&**conn)?
+            .load::<Year>(&**conn)?
             .iter()
             .cloned(),
     ))
@@ -161,7 +161,7 @@ fn get_regions_list(conn: DbConn) -> Result<RegionsInfo, Error> {
         result.push(RegionInfo {
             id: region.id.clone(),
             name: region.name.clone(),
-            num_contestants: zero_is_none(participations.len() as i32),
+            num_contestants: zero_is_none(participations.len()),
             medals: get_num_medals(&participations),
             avg_contestants_per_year: zero_is_none(
                 (num_valid_participations as f32)
@@ -183,7 +183,7 @@ fn get_region_details(region: String, conn: DbConn) -> Result<DetailedRegion, Er
     let region = schema::regions::table.find(region).first::<Region>(&*conn)?;
     let invalid_contests = get_contests_without_full_regions(&conn)?;
 
-    let participations: Vec<(i32, Vec<Participation>)> = schema::participations::table
+    let participations: Vec<(Year, Vec<Participation>)> = schema::participations::table
         .filter(schema::participations::columns::region.eq(Some(&region.id)))
         .order(schema::participations::columns::contest_year)
         .load::<Participation>(&*conn)?
@@ -198,7 +198,7 @@ fn get_region_details(region: String, conn: DbConn) -> Result<DetailedRegion, Er
         .filter(|(year, _parts)| !invalid_contests.contains(year))
         .map(|(year, parts)| ContestantsPerYear {
             year: *year,
-            num_contestants: (parts.len() as i32),
+            num_contestants: parts.len(),
         })
         .collect();
     let medals_per_year = (&participations)
@@ -213,7 +213,7 @@ fn get_region_details(region: String, conn: DbConn) -> Result<DetailedRegion, Er
         .filter(schema::contests::columns::region.eq(Some(&region.id)))
         .order(schema::contests::columns::year)
         .select(schema::contests::columns::year)
-        .load::<i32>(&*conn)?;
+        .load::<Year>(&*conn)?;
 
     Ok(DetailedRegion {
         id: region.id.clone(),
@@ -234,7 +234,7 @@ fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Err
     let mut contest_years = participations
         .iter()
         .map(|p| p.0.contest_year)
-        .collect::<Vec<i32>>();
+        .collect::<Vec<Year>>();
     contest_years.sort();
     contest_years.dedup();
     let mut user_ids = participations
@@ -244,7 +244,7 @@ fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Err
     user_ids.sort();
     user_ids.dedup();
     let participations = participations.into_iter().group_by(|p| p.0.contest_year);
-    let participations: HashMap<i32, Vec<(Participation, Option<User>)>> = participations
+    let participations: HashMap<Year, Vec<(Participation, Option<User>)>> = participations
         .into_iter()
         .map(|(year, part)| (year, part.collect::<Vec<(Participation, Option<User>)>>()))
         .collect();
@@ -263,7 +263,7 @@ fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Err
                 .group_by(|ts| ts.user_id.clone()),
         )
     });
-    let task_scores: HashMap<i32, HashMap<String, Vec<TaskScore>>> = task_scores
+    let task_scores: HashMap<Year, HashMap<String, Vec<TaskScore>>> = task_scores
         .into_iter()
         .map(|(year, tss)| {
             (
@@ -287,7 +287,7 @@ fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults, Err
             let scores = task_scores.get(&u.id.clone()).ok_or(Error::NotFound)?;
             contestants.push(RegionContestantResult {
                 contestant: contestant_from_user(&u),
-                rank: p.position,
+                rank: p.position.map(|p| p as usize),
                 medal: medal_from_string(&p.medal),
                 task_scores: scores
                     .iter()

@@ -8,14 +8,24 @@ use rocket_contrib::Json;
 use controllers::Contestant;
 use db::DbConn;
 use error_status;
+use types::Year;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub enum SearchResult {
     Contestant(Contestant),
-    Task { year: i32, name: String },
-    Contest { year: i32, location: Option<String> },
-    Region { id: String, name: String },
+    Task {
+        year: Year,
+        name: String,
+    },
+    Contest {
+        year: Year,
+        location: Option<String>,
+    },
+    Region {
+        id: String,
+        name: String,
+    },
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -49,7 +59,7 @@ fn search_user(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
 }
 
 fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let tasks: Vec<(i32, String)> = sql::<(Integer, Text)>(
+    let tasks: Vec<(String, Year)> = sql::<(Text, Integer)>(
         "SELECT contest_year, name
         FROM tasks_fts4
         WHERE tasks_fts4 MATCH ",
@@ -59,14 +69,14 @@ fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
     Ok(tasks
         .iter()
         .map(|t| SearchResult::Task {
-            year: t.0,
-            name: t.1.clone(),
+            year: t.1,
+            name: t.0.clone(),
         })
         .collect())
 }
 
 fn search_contest(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let contests: Vec<(i32, Option<String>)> = sql::<(Integer, Nullable<Text>)>(
+    let contests: Vec<(Year, Option<String>)> = sql::<(Integer, Nullable<Text>)>(
         "SELECT year, location
         FROM contests_fts4
         WHERE contests_fts4 MATCH ",

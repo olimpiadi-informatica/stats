@@ -16,12 +16,12 @@ use db::DbConn;
 use error_status;
 use schema;
 use std::f32::INFINITY;
-use types::{Contest, Participation, Task, TaskScore, User};
+use types::{Contest, Participation, Task, TaskScore, User, Year};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestInfoMedal {
-    pub number: Option<i32>,
+    pub number: Option<usize>,
     pub cutoff: Option<f32>,
 }
 
@@ -34,17 +34,17 @@ pub struct ContestInfoMedals {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestNavigation {
-    pub previous: Option<i32>,
-    pub next: Option<i32>,
+    pub previous: Option<Year>,
+    pub next: Option<Year>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestDetail {
-    pub year: i32,
+    pub year: Year,
     pub navigation: ContestNavigation,
     pub location: Option<String>,
     pub region: Option<String>,
-    pub num_contestants: Option<i32>,
+    pub num_contestants: Option<usize>,
     pub max_score_possible: Option<f32>,
     pub max_score: Option<f32>,
     pub avg_score: Option<f32>,
@@ -54,13 +54,13 @@ pub struct ContestDetail {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PastParticipation {
-    pub year: i32,
+    pub year: Year,
     pub medal: Option<Medal>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestResult {
-    pub rank: Option<i32>,
+    pub rank: Option<usize>,
     pub contestant: Contestant,
     pub region: Option<String>,
     pub score: Option<f32>,
@@ -79,7 +79,7 @@ pub struct ContestResults {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestRegion {
     pub name: String,
-    pub num_participants: Option<i32>,
+    pub num_participants: Option<usize>,
     pub num_medals: NumMedals,
     pub max_score: Option<f32>,
     pub avg_score: Option<f32>,
@@ -94,7 +94,7 @@ pub struct ContestRegions {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestTask {
     pub name: String,
-    pub index: i32,
+    pub index: usize,
     pub max_score_possible: Option<f32>,
     pub max_score: Option<f32>,
     pub avg_score: Option<f32>,
@@ -109,16 +109,16 @@ pub struct ContestTasks {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestInfoTask {
     pub name: String,
-    pub index: i32,
+    pub index: usize,
     pub max_score_possible: Option<f32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestInfo {
-    pub year: i32,
+    pub year: Year,
     pub location: Option<String>,
     pub region: Option<String>,
-    pub num_contestants: Option<i32>,
+    pub num_contestants: Option<usize>,
     pub max_score_possible: Option<f32>,
     pub max_score: Option<f32>,
     pub avg_score: Option<f32>,
@@ -137,7 +137,7 @@ fn get_medal_info(participations: &Vec<Participation>, medal: &str) -> ContestIn
         .filter(|part| part.medal.as_ref().map_or(false, |m| m.as_str() == medal))
         .collect();
     ContestInfoMedal {
-        number: zero_is_none(medalist.len() as i32),
+        number: zero_is_none(medalist.len()),
         cutoff: fold_with_none(Some(INFINITY), medalist.iter(), |min, part| {
             min_option(min, part.score)
         }),
@@ -149,18 +149,18 @@ fn get_contest_task(task: &Task, task_scores: &Vec<TaskScore>) -> ContestTask {
     let avg_score = sum_score.map(|sum| sum / (task_scores.len() as f32));
     ContestTask {
         name: task.name.clone(),
-        index: task.index,
+        index: task.index as usize,
         max_score_possible: task.max_score,
         max_score: fold_with_none(Some(0.0), task_scores.iter(), |m, s| max_option(m, s.score)),
         avg_score: avg_score,
     }
 }
 
-fn get_contest_navigation(year: i32, conn: DbConn) -> Result<ContestNavigation, Error> {
+fn get_contest_navigation(year: Year, conn: DbConn) -> Result<ContestNavigation, Error> {
     let years = schema::contests::table
         .select(schema::contests::columns::year)
         .order(schema::contests::columns::year)
-        .load::<i32>(&*conn)?;
+        .load::<Year>(&*conn)?;
     let index = years.iter().position(|y| *y == year);
     Ok(ContestNavigation {
         previous: match index {
@@ -191,7 +191,7 @@ fn get_contest_list(conn: DbConn) -> Result<Vec<ContestInfo>, Error> {
         .grouped_by(&contests);
     let mut result: Vec<ContestInfo> = Vec::new();
     for (contest, participations, tasks) in izip!(&contests, &participations, &tasks) {
-        let num_contestants = zero_is_none(participations.len() as i32);
+        let num_contestants = zero_is_none(participations.len());
         let score_sum = participations
             .iter()
             .fold(Some(0.0), |sum, part| add_option(sum, part.score));
@@ -215,7 +215,7 @@ fn get_contest_list(conn: DbConn) -> Result<Vec<ContestInfo>, Error> {
                 .iter()
                 .map(|t| ContestInfoTask {
                     name: t.name.clone(),
-                    index: t.index,
+                    index: t.index as usize,
                     max_score_possible: t.max_score,
                 })
                 .collect(),
@@ -229,7 +229,7 @@ fn get_contest_list(conn: DbConn) -> Result<Vec<ContestInfo>, Error> {
     Ok(result)
 }
 
-fn get_contest_info(conn: DbConn, year: i32) -> Result<ContestDetail, Error> {
+fn get_contest_info(conn: DbConn, year: Year) -> Result<ContestDetail, Error> {
     let contest = schema::contests::table.find(year).first::<Contest>(&*conn)?;
     let participations = schema::participations::table
         .filter(schema::participations::columns::contest_year.eq(year))
@@ -250,7 +250,7 @@ fn get_contest_info(conn: DbConn, year: i32) -> Result<ContestDetail, Error> {
     let score_sum = participations
         .iter()
         .fold(Some(0.0), |sum, part| add_option(sum, part.score));
-    let num_contestants = zero_is_none(participations.len() as i32);
+    let num_contestants = zero_is_none(participations.len());
 
     Ok(ContestDetail {
         year: contest.year,
@@ -283,7 +283,7 @@ fn get_contest_info(conn: DbConn, year: i32) -> Result<ContestDetail, Error> {
     })
 }
 
-pub fn get_contest_results(year: i32, conn: DbConn) -> Result<ContestResults, Error> {
+pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, Error> {
     schema::contests::table.find(year).first::<Contest>(&*conn)?;
     let tasks = schema::tasks::table
         .filter(schema::tasks::columns::contest_year.eq(year))
@@ -345,7 +345,7 @@ pub fn get_contest_results(year: i32, conn: DbConn) -> Result<ContestResults, Er
             .collect();
 
         results.push(ContestResult {
-            rank: participation.position,
+            rank: participation.position.map(|p| p as usize),
             contestant: contestant_from_user(&user),
             region: participation.region.clone(),
             score: participation.score,
@@ -364,7 +364,7 @@ pub fn get_contest_results(year: i32, conn: DbConn) -> Result<ContestResults, Er
     })
 }
 
-pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<ContestRegions, Error> {
+pub fn get_contest_regions(year: Year, conn: DbConn) -> Result<ContestRegions, Error> {
     // throw a 404 if the contest doesn't exist, an empty set is retuned if the contest exists but
     // there are no participations
     schema::contests::table.find(year).first::<Contest>(&*conn)?;
@@ -393,7 +393,7 @@ pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<ContestRegions, Er
 
         result.push(ContestRegion {
             name: region,
-            num_participants: zero_is_none(participations.len() as i32),
+            num_participants: zero_is_none(participations.len()),
             num_medals: num_medals,
             max_score: fold_with_none(Some(0.0), participations.iter(), |m, p| {
                 max_option(m, p.score)
@@ -408,7 +408,7 @@ pub fn get_contest_regions(year: i32, conn: DbConn) -> Result<ContestRegions, Er
     })
 }
 
-pub fn get_contest_tasks(year: i32, conn: DbConn) -> Result<ContestTasks, Error> {
+pub fn get_contest_tasks(year: Year, conn: DbConn) -> Result<ContestTasks, Error> {
     schema::contests::table.find(year).first::<Contest>(&*conn)?;
 
     let mut result: Vec<ContestTask> = Vec::new();
@@ -442,7 +442,7 @@ pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<ContestsInfo>, Failur
 }
 
 #[get("/contests/<year>")]
-pub fn search(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<ContestDetail>, Failure> {
+pub fn search(year: Year, conn: DbConn, mut cache: Cache) -> Result<Json<ContestDetail>, Failure> {
     match get_contest_info(conn, year) {
         Ok(contest) => Ok(Json(cache.set(contest))),
         Err(err) => Err(error_status(err)),
@@ -450,7 +450,11 @@ pub fn search(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<ContestD
 }
 
 #[get("/contests/<year>/results")]
-pub fn results(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<ContestResults>, Failure> {
+pub fn results(
+    year: Year,
+    conn: DbConn,
+    mut cache: Cache,
+) -> Result<Json<ContestResults>, Failure> {
     match get_contest_results(year, conn) {
         Ok(res) => Ok(Json(cache.set(res))),
         Err(err) => Err(error_status(err)),
@@ -458,7 +462,11 @@ pub fn results(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<Contest
 }
 
 #[get("/contests/<year>/regions")]
-pub fn regions(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<ContestRegions>, Failure> {
+pub fn regions(
+    year: Year,
+    conn: DbConn,
+    mut cache: Cache,
+) -> Result<Json<ContestRegions>, Failure> {
     match get_contest_regions(year, conn) {
         Ok(res) => Ok(Json(cache.set(res))),
         Err(err) => Err(error_status(err)),
@@ -466,7 +474,7 @@ pub fn regions(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<Contest
 }
 
 #[get("/contests/<year>/tasks")]
-pub fn tasks(year: i32, conn: DbConn, mut cache: Cache) -> Result<Json<ContestTasks>, Failure> {
+pub fn tasks(year: Year, conn: DbConn, mut cache: Cache) -> Result<Json<ContestTasks>, Failure> {
     match get_contest_tasks(year, conn) {
         Ok(res) => Ok(Json(cache.set(res))),
         Err(err) => Err(error_status(err)),

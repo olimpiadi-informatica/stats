@@ -13,12 +13,12 @@ use controllers::{contestant_from_user, Contestant};
 use db::DbConn;
 use error_status;
 use schema;
-use types::{Participation, Task, TaskScore, User};
+use types::{Participation, Task, TaskScore, User, Year};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskNavigationDirection {
-    pub year: i32,
+    pub year: Year,
     pub name: String,
 }
 
@@ -31,7 +31,7 @@ pub struct TaskNavigation {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskInfo {
     pub name: String,
-    pub index: i32,
+    pub index: usize,
     pub max_score_possible: Option<f32>,
     pub max_score: Option<f32>,
     pub avg_score: Option<f32>,
@@ -39,7 +39,7 @@ pub struct TaskInfo {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskInfoList {
-    pub year: i32,
+    pub year: Year,
     pub tasks: Vec<TaskInfo>,
 }
 
@@ -51,21 +51,21 @@ pub struct Tasks {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskDetailScore {
     contestant: Contestant,
-    rank: Option<i32>,
+    rank: Option<usize>,
     score: Option<f32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskDetail {
-    year: i32,
+    year: Year,
     name: String,
-    index: i32,
+    index: usize,
     navigation: TaskNavigation,
     max_score_possible: Option<f32>,
     scores: Vec<TaskDetailScore>,
 }
 
-fn get_task_navigation(year: i32, name: &str, conn: DbConn) -> Result<TaskNavigation, Error> {
+fn get_task_navigation(year: Year, name: &str, conn: DbConn) -> Result<TaskNavigation, Error> {
     let tasks = schema::tasks::table
         .filter(
             schema::tasks::columns::contest_year
@@ -78,7 +78,7 @@ fn get_task_navigation(year: i32, name: &str, conn: DbConn) -> Result<TaskNaviga
             schema::tasks::columns::contest_year,
             schema::tasks::columns::name,
         ))
-        .load::<(i32, String)>(&*conn)?;
+        .load::<(Year, String)>(&*conn)?;
     let index = tasks
         .iter()
         .position(|(y, n)| *y == year && n.as_str() == name);
@@ -119,7 +119,7 @@ fn get_task_list(conn: DbConn) -> Result<Tasks, Error> {
                 .group_by(|ts| ts.task_name.clone()),
         )
     });
-    let task_scores: HashMap<i32, HashMap<String, Vec<TaskScore>>> = task_scores
+    let task_scores: HashMap<Year, HashMap<String, Vec<TaskScore>>> = task_scores
         .into_iter()
         .map(|(year, tss)| {
             (
@@ -152,7 +152,7 @@ fn get_task_list(conn: DbConn) -> Result<Tasks, Error> {
             let avg_score = sum_score.map(|sum| sum / (scores.len() as f32));
             task_info.push(TaskInfo {
                 name: task.name.clone(),
-                index: task.index,
+                index: task.index as usize,
                 max_score_possible: task.max_score,
                 max_score: fold_with_none(Some(0.0), scores.iter().map(|ts| ts.score), |m, s| {
                     max_option(m, s)
@@ -169,7 +169,7 @@ fn get_task_list(conn: DbConn) -> Result<Tasks, Error> {
     Ok(Tasks { tasks: result })
 }
 
-fn get_task_detail(year: i32, task_name: String, conn: DbConn) -> Result<TaskDetail, Error> {
+fn get_task_detail(year: Year, task_name: String, conn: DbConn) -> Result<TaskDetail, Error> {
     let task = schema::tasks::table
         .find((&task_name, year))
         .first::<Task>(&*conn)?;
@@ -194,7 +194,7 @@ fn get_task_detail(year: i32, task_name: String, conn: DbConn) -> Result<TaskDet
         let user = user.ok_or(Error::NotFound)?;
         result.push(TaskDetailScore {
             contestant: contestant_from_user(&user),
-            rank: participation.position,
+            rank: participation.position.map(|p| p as usize),
             score: score.score,
         });
     }
@@ -202,7 +202,7 @@ fn get_task_detail(year: i32, task_name: String, conn: DbConn) -> Result<TaskDet
     Ok(TaskDetail {
         year: year,
         name: task_name.clone(),
-        index: task.index,
+        index: task.index as usize,
         navigation: get_task_navigation(year, task_name.as_str(), conn)?,
         max_score_possible: task.max_score,
         scores: result,
@@ -219,7 +219,7 @@ pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<Tasks>, Failure> {
 
 #[get("/tasks/<year>/<task>")]
 pub fn search(
-    year: i32,
+    year: Year,
     task: String,
     conn: DbConn,
     mut cache: Cache,

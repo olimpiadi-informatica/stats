@@ -6,9 +6,9 @@ use types::{Participation, User};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct NumMedals {
-    pub gold: Option<i32>,
-    pub silver: Option<i32>,
-    pub bronze: Option<i32>,
+    pub gold: Option<usize>,
+    pub silver: Option<usize>,
+    pub bronze: Option<usize>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -26,7 +26,7 @@ fn contestant_from_user(user: &User) -> Contestant {
     }
 }
 
-fn count_medals(participations: &Vec<Participation>, medal: &str) -> Option<i32> {
+fn count_medals(participations: &Vec<Participation>, medal: &str) -> Option<usize> {
     if participations.is_empty() {
         None
     } else {
@@ -34,7 +34,7 @@ fn count_medals(participations: &Vec<Participation>, medal: &str) -> Option<i32>
             participations
                 .iter()
                 .filter(|p| p.medal.as_ref().map_or(false, |x| x.as_str() == medal))
-                .count() as i32,
+                .count(),
         )
     }
 }

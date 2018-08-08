@@ -4,6 +4,10 @@
 
 use schema::{contests, participations, regions, task_scores, tasks, users};
 
+// it would be nice to have a u32 here but diesel does not like unsigned integers
+// with sqlite
+pub type Year = i32;
+
 #[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
 #[primary_key(id)]
 pub struct Region {
@@ -20,7 +24,7 @@ impl PartialEq for Region {
 #[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
 #[primary_key(year)]
 pub struct Contest {
-    pub year: i32,
+    pub year: Year,
     pub location: Option<String>,
     pub region: Option<String>,
 }
@@ -40,7 +44,7 @@ pub struct User {
 #[primary_key(user_id, contest_year)]
 pub struct Participation {
     pub user_id: String,
-    pub contest_year: i32,
+    pub contest_year: Year,
     pub position: Option<i32>,
     pub school: Option<String>,
     pub venue: Option<String>,
@@ -55,7 +59,7 @@ pub struct Participation {
 #[primary_key(name, contest_year)]
 pub struct Task {
     pub name: String,
-    pub contest_year: i32,
+    pub contest_year: Year,
     pub index: i32,
     pub max_score: Option<f32>,
 }
@@ -67,7 +71,7 @@ pub struct Task {
 #[primary_key(task_name, contest_year, user_id)]
 pub struct TaskScore {
     pub task_name: String,
-    pub contest_year: i32,
+    pub contest_year: Year,
     pub user_id: String,
     pub score: Option<f32>,
 }

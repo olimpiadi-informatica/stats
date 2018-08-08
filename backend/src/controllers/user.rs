@@ -4,19 +4,19 @@ use diesel::RunQueryDsl;
 use itertools::Itertools;
 use rocket::response::Failure;
 use rocket_contrib::Json;
-use std::i32;
+use std::usize;
 
 use cache::Cache;
 use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
 use db::DbConn;
 use error_status;
 use schema;
-use types::{Participation, TaskScore, User};
+use types::{Participation, TaskScore, User, Year};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInfoParticipation {
-    pub year: i32,
+    pub year: Year,
     pub medal: Option<Medal>,
 }
 
@@ -24,7 +24,7 @@ pub struct UserInfoParticipation {
 pub struct UserInfo {
     pub contestant: Contestant,
     pub num_medals: NumMedals,
-    pub best_rank: Option<i32>,
+    pub best_rank: Option<usize>,
     pub participations: Vec<UserInfoParticipation>,
 }
 
@@ -41,9 +41,9 @@ pub struct UserDetailScore {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserDetailParticipation {
-    pub year: i32,
+    pub year: Year,
     pub medal: Option<Medal>,
-    pub rank: Option<i32>,
+    pub rank: Option<usize>,
     pub scores: Vec<UserDetailScore>,
 }
 
@@ -64,8 +64,8 @@ fn get_users_list(conn: DbConn) -> Result<Users, Error> {
         result.push(UserInfo {
             contestant: contestant_from_user(&user),
             num_medals: get_num_medals(&participations),
-            best_rank: fold_with_none(Some(i32::MAX), participations.iter(), |b, p| {
-                min_option(b, p.position)
+            best_rank: fold_with_none(Some(usize::MAX), participations.iter(), |b, p| {
+                min_option(b, p.position.map(|p| p as usize))
             }),
             participations: participations
                 .iter()
@@ -93,7 +93,7 @@ fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Error> {
         .group_by(|ts| ts.contest_year)
         .into_iter()
         .map(|(year, scores)| (year, scores.collect::<Vec<TaskScore>>()))
-        .collect::<Vec<(i32, Vec<TaskScore>)>>();
+        .collect::<Vec<(Year, Vec<TaskScore>)>>();
     let mut result: Vec<UserDetailParticipation> = Vec::new();
     for (participation, (year, scores)) in izip!(participations, scores) {
         if participation.contest_year != year {
@@ -102,7 +102,7 @@ fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Error> {
         result.push(UserDetailParticipation {
             year: year,
             medal: medal_from_string(&participation.medal),
-            rank: participation.position,
+            rank: participation.position.map(|p| p as usize),
             scores: scores
                 .iter()
                 .map(|s| UserDetailScore {
