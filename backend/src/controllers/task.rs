@@ -198,7 +198,12 @@ fn get_task_detail(year: Year, task_name: String, conn: DbConn) -> Result<TaskDe
             score: score.score,
         });
     }
-    result.sort_unstable_by(|a, b| a.score.partial_cmp(&b.score).unwrap_or(Ordering::Equal));
+    // sort by score desc and then by rank asc
+    result.sort_unstable_by(|a, b| {
+        (b.score, a.rank)
+            .partial_cmp(&(a.score, b.rank))
+            .unwrap_or(Ordering::Equal)
+    });
     Ok(TaskDetail {
         year: year,
         name: task_name.clone(),
