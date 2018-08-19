@@ -114,24 +114,27 @@ class Contest:
 
 
 class Task:
-    def __init__(self, name: str, contest: Contest, index: int, max_score: float):
+    def __init__(self, name: str, contest: Contest, index: int, max_score: float, title: str, link: Optional[str]):
         self.name = name
         self.contest = contest
         self.index = index
         self.max_score = max_score
+        self.title = title
+        self.link = link
 
     def id(self) -> str:
         return "%s-%s" % (self.contest.id(), self.name)
 
     def add_to_db(self, cursor: sqlite3.Cursor):
-        query = "INSERT INTO tasks (name, contest_year, \"index\", max_score) VALUES " \
-                "(:name, :contest_year, :index, :max_score)"
-        query_fts = "INSERT INTO tasks_fts4 (contest_year, name) VALUES " \
-                "(:name, :contest_year)"
+        query = "INSERT INTO tasks (name, contest_year, \"index\", max_score, title, link) VALUES " \
+                "(:name, :contest_year, :index, :max_score, :title, :link)"
+        query_fts = "INSERT INTO tasks_fts4 (contest_year, name, title, link) VALUES " \
+                "(:name, :contest_year, :title, :link)"
         try:
             cursor.execute(query, {"name": self.name, "contest_year": self.contest.year, "index": self.index,
-                                   "max_score": self.max_score})
-            cursor.execute(query_fts, {"name": self.name, "contest_year": self.contest.year})
+                                   "max_score": self.max_score, "title": self.title, "link": self.link})
+            cursor.execute(query_fts, {"name": self.name, "contest_year": self.contest.year,
+                                       "title": self.title, "link": self.link})
         except Exception as e:
             print("Failed to insert task", self)
             print(e)
@@ -259,10 +262,12 @@ def create_schema(cursor: sqlite3.Cursor):
             contest_year UNSIGNED INT NOT NULL,
             "index" INT NOT NULL,
             max_score FLOAT,
+            title TEXT NOT NULL,
+            link TEXT,
             PRIMARY KEY (name, contest_year),
             FOREIGN KEY (contest_year) REFERENCES contests(year)
         );
-        CREATE VIRTUAL TABLE tasks_fts4 USING fts4(name, contest_year);
+        CREATE VIRTUAL TABLE tasks_fts4 USING fts4(name, contest_year, title, link);
         CREATE TABLE task_scores (
             task_name TEXT NOT NULL,
             contest_year UNSIGNED INT NOT NULL,
@@ -338,7 +343,7 @@ def main(args):
     task_scores = list()
 
     task_sheet = wb["tasks"]
-    max_scores = dict((task["task_name"], task["max_score"]) for task in dictify(task_sheet))
+    task_meta = dict((task["task_name"], dict(task)) for task in dictify(task_sheet))
 
     contests_sheet = wb["contests"]
     locations = dict((int(contest["year"]), contest) for contest in dictify(contests_sheet))
@@ -355,10 +360,13 @@ def main(args):
         task_coefficients = dict(zip(task_names, get_task_coefficients(raw_participations, task_names)))
 
         for index, task_name in enumerate(task_names):
-            max_score = max_scores[task_name] or None
+            meta = task_meta.get(task_name, dict())
+            max_score = meta.get("max_score")
+            title = meta.get("title")
+            link = meta.get("link")
             if max_score:
                 max_score *= task_coefficients[task_name]
-            tasks[task_name] = Task(task_name, contest, index, max_score)
+            tasks[task_name] = Task(task_name, contest, index, max_score, title, link)
 
         for raw_user in raw_participations:
             user = User(**raw_user)

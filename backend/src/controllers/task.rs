@@ -31,6 +31,8 @@ pub struct TaskNavigation {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskInfo {
     pub name: String,
+    pub title: String,
+    pub link: Option<String>,
     pub index: usize,
     pub max_score_possible: Option<f32>,
     pub max_score: Option<f32>,
@@ -59,6 +61,8 @@ pub struct TaskDetailScore {
 pub struct TaskDetail {
     year: Year,
     name: String,
+    title: String,
+    link: Option<String>,
     index: usize,
     navigation: TaskNavigation,
     max_score_possible: Option<f32>,
@@ -152,6 +156,8 @@ fn get_task_list(conn: DbConn) -> Result<Tasks, Error> {
             let avg_score = sum_score.map(|sum| sum / (scores.len() as f32));
             task_info.push(TaskInfo {
                 name: task.name.clone(),
+                title: task.title.clone(),
+                link: task.link.clone(),
                 index: task.index as usize,
                 max_score_possible: task.max_score,
                 max_score: fold_with_none(Some(0.0), scores.iter().map(|ts| ts.score), |m, s| {
@@ -207,6 +213,8 @@ fn get_task_detail(year: Year, task_name: String, conn: DbConn) -> Result<TaskDe
     Ok(TaskDetail {
         year: year,
         name: task_name.clone(),
+        title: task.title.clone(),
+        link: task.link.clone(),
         index: task.index as usize,
         navigation: get_task_navigation(year, task_name.as_str(), conn)?,
         max_score_possible: task.max_score,

@@ -25,6 +25,8 @@ contest_info_task:
   type: object
   properties:
     name: string
+    title: string
+    link: string?
     index: integer
     max_score_possible: number?
 
@@ -176,6 +178,8 @@ contest_task:
   type: object
   properties:
     name: string
+    title: string
+    link: string?
     index: integer
     max_score_possible: number?
     max_score: number?
@@ -280,6 +284,8 @@ task:
   type: object
   properties:
     name: string
+    title: string
+    link: string?
     index: integer
     max_score_possible: number?
     max_score: number?
@@ -303,6 +309,8 @@ task_detail:
   properties:
     year: integer
     name: string
+    title: string
+    link: string?
     index: integer
     navigation:
       type: object
@@ -383,6 +391,8 @@ search_result_task:
       properties:
         year: integer
         name: string
+        title: string
+        link: string?
 
 search_result_contest:
   type: object

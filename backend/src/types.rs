@@ -62,6 +62,8 @@ pub struct Task {
     pub contest_year: Year,
     pub index: i32,
     pub max_score: Option<f32>,
+    pub title: String,
+    pub link: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug)]

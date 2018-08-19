@@ -94,6 +94,8 @@ pub struct ContestRegions {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestTask {
     pub name: String,
+    pub title: String,
+    pub link: Option<String>,
     pub index: usize,
     pub max_score_possible: Option<f32>,
     pub max_score: Option<f32>,
@@ -109,6 +111,8 @@ pub struct ContestTasks {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestInfoTask {
     pub name: String,
+    pub title: String,
+    pub link: Option<String>,
     pub index: usize,
     pub max_score_possible: Option<f32>,
 }
@@ -149,6 +153,8 @@ fn get_contest_task(task: &Task, task_scores: &Vec<TaskScore>) -> ContestTask {
     let avg_score = sum_score.map(|sum| sum / (task_scores.len() as f32));
     ContestTask {
         name: task.name.clone(),
+        title: task.title.clone(),
+        link: task.link.clone(),
         index: task.index as usize,
         max_score_possible: task.max_score,
         max_score: fold_with_none(Some(0.0), task_scores.iter(), |m, s| max_option(m, s.score)),
@@ -215,6 +221,8 @@ fn get_contest_list(conn: DbConn) -> Result<Vec<ContestInfo>, Error> {
                 .iter()
                 .map(|t| ContestInfoTask {
                     name: t.name.clone(),
+                    title: t.title.clone(),
+                    link: t.link.clone(),
                     index: t.index as usize,
                     max_score_possible: t.max_score,
                 })

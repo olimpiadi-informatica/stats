@@ -17,6 +17,8 @@ pub enum SearchResult {
     Task {
         year: Year,
         name: String,
+        title: String,
+        link: String,
     },
     Contest {
         year: Year,
@@ -59,8 +61,8 @@ fn search_user(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
 }
 
 fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let tasks: Vec<(String, Year)> = sql::<(Text, Integer)>(
-        "SELECT contest_year, name
+    let tasks: Vec<(String, Year, String, String)> = sql::<(Text, Integer, Text, Text)>(
+        "SELECT contest_year, name, title, link
         FROM tasks_fts4
         WHERE tasks_fts4 MATCH ",
     ).bind::<Text, _>(q)
@@ -71,6 +73,8 @@ fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
         .map(|t| SearchResult::Task {
             year: t.1,
             name: t.0.clone(),
+            title: t.2.clone(),
+            link: t.3.clone(),
         })
         .collect())
 }

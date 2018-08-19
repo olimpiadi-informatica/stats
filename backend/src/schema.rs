@@ -52,6 +52,8 @@ table! {
         contest_year -> Integer,
         index -> Integer,
         max_score -> Nullable<Float>,
+        title -> Text,
+        link -> Nullable<Text>,
     }
 }
 
