@@ -1,10 +1,11 @@
 import { createStore, applyMiddleware } from 'redux'
 import ReduxThunk from 'redux-thunk'
+import promise from 'redux-promise'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import rootReducer from 'reducers'
 
 export default function configureStore(initialState = {}) {
-  const middlewares = [ReduxThunk]
+  const middlewares = [ReduxThunk, promise]
   const enhancers = [
     applyMiddleware(...middlewares),
     // other store enhancers if any

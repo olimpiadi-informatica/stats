@@ -1,3 +1,6 @@
 // Counter
 export const INCREMENT_COUNTER = 'INCREMENT_COUNTER'
 export const DECREMENT_COUNTER = 'DECREMENT_COUNTER'
+//Contests
+export const FETCH_CONTESTS = 'FETCH_CONTESTS'
+export const FETCH_CONTEST = 'FETCH_CONTEST'

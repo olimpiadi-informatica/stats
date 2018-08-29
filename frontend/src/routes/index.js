@@ -1,19 +1,24 @@
 import React from 'react'
-import { CounterContainer } from 'containers'
+// import { CounterContainer } from 'containers'
+import { ContestsContainer } from 'containers'
+import { ContestContainer } from 'containers'
 import { Header } from 'components'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 
-const Container = styled.div`text-align: center;`
+// const Container = styled.div`text-align: center;`
 
 function Routes() {
   return (
-    <Router>
-      <Container>
-        <Header />
-        <Route path="/" component={CounterContainer} />
-      </Container>
-    </Router>
+    <BrowserRouter>
+      <div>
+        <Switch>
+          <Route path="/contests" component={ContestsContainer} />
+          <Route path="/contest/:year" component={ContestContainer} />
+          <Route path="/" component={ContestsContainer} />
+        </Switch>
+      </div>
+    </BrowserRouter>
   )
 }
 
