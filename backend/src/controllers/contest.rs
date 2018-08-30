@@ -34,13 +34,13 @@ pub struct ContestInfoMedals {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestNavigation {
+    pub current: Year,
     pub previous: Option<Year>,
     pub next: Option<Year>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestDetail {
-    pub year: Year,
     pub navigation: ContestNavigation,
     pub location: Option<String>,
     pub region: Option<String>,
@@ -169,6 +169,7 @@ fn get_contest_navigation(year: Year, conn: DbConn) -> Result<ContestNavigation,
         .load::<Year>(&*conn)?;
     let index = years.iter().position(|y| *y == year);
     Ok(ContestNavigation {
+        current: year,
         previous: match index {
             Some(0) => None,
             Some(i) => Some(years[i - 1]),
@@ -261,7 +262,6 @@ fn get_contest_info(conn: DbConn, year: Year) -> Result<ContestDetail, Error> {
     let num_contestants = zero_is_none(participations.len());
 
     Ok(ContestDetail {
-        year: contest.year,
         navigation: get_contest_navigation(year, conn)?,
         location: contest.location.clone(),
         region: contest.region.clone(),

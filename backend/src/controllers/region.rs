@@ -21,6 +21,7 @@ use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegionNavigation {
+    pub current: String,
     pub previous: Option<String>,
     pub next: Option<String>,
 }
@@ -54,7 +55,6 @@ pub struct MedalsPerYear {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct DetailedRegion {
-    pub id: String,
     pub name: String,
     pub navigation: RegionNavigation,
     pub contestants_per_year: Vec<ContestantsPerYear>,
@@ -96,6 +96,7 @@ fn get_region_navigation(current: &str, conn: DbConn) -> Result<RegionNavigation
     let index = regions.iter().position(|r| r.as_str() == current);
 
     Ok(RegionNavigation {
+        current: current.to_string(),
         previous: match index {
             Some(0) => None,
             Some(i) => Some(regions.swap_remove(i - 1)),
@@ -216,7 +217,6 @@ fn get_region_details(region: String, conn: DbConn) -> Result<DetailedRegion, Er
         .load::<Year>(&*conn)?;
 
     Ok(DetailedRegion {
-        id: region.id.clone(),
         name: region.name.clone(),
         navigation: get_region_navigation(region.id.as_str(), conn)?,
         contestants_per_year: contestants_per_year,

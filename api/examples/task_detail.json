@@ -1,10 +1,12 @@
 {
-  "year": 2017,
-  "name": "caduta",
   "title": "Pazza gioia",
   "link": "https://training.olinfo.it/#/task/oii_caduta/statement",
   "index": 0,
   "navigation": {
+    "current": {
+      "year": 2017,
+      "name": "caduta"
+    },
     "previous": {
       "year": 2016,
       "name": "classifica"

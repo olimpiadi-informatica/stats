@@ -24,6 +24,7 @@ pub struct TaskNavigationDirection {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskNavigation {
+    pub current: TaskNavigationDirection,
     pub previous: Option<TaskNavigationDirection>,
     pub next: Option<TaskNavigationDirection>,
 }
@@ -59,8 +60,6 @@ pub struct TaskDetailScore {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskDetail {
-    year: Year,
-    name: String,
     title: String,
     link: Option<String>,
     index: usize,
@@ -87,6 +86,10 @@ fn get_task_navigation(year: Year, name: &str, conn: DbConn) -> Result<TaskNavig
         .iter()
         .position(|(y, n)| *y == year && n.as_str() == name);
     Ok(TaskNavigation {
+        current: TaskNavigationDirection {
+            year: year,
+            name: name.to_string(),
+        },
         previous: match index {
             Some(0) => None,
             Some(i) => Some(TaskNavigationDirection {
@@ -211,8 +214,6 @@ fn get_task_detail(year: Year, task_name: String, conn: DbConn) -> Result<TaskDe
             .unwrap_or(Ordering::Equal)
     });
     Ok(TaskDetail {
-        year: year,
-        name: task_name.clone(),
         title: task.title.clone(),
         link: task.link.clone(),
         index: task.index as usize,
