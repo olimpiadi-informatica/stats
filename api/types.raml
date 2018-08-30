@@ -30,11 +30,19 @@ contest_info_task:
     index: integer
     max_score_possible: number?
 
+location:
+  type: object
+  properties:
+    location: string?
+    gmaps: string?
+    latitude: number?
+    longitude: number?
+
 contest:
   type: object
   properties:
     year: integer
-    location: string?
+    location: location
     region: string?
     num_contestants: integer?
     max_score_possible: number?
@@ -77,7 +85,7 @@ contest_detail:
         current: integer
         previous: integer?
         next: integer?
-    location: string?
+    location: location
     region: string?
     num_contestants: integer?
     max_score_possible: number?

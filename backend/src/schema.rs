@@ -13,6 +13,9 @@ table! {
     contests (year) {
         year -> Integer,
         location -> Nullable<Text>,
+        gmaps -> Nullable<Text>,
+        latitude -> Nullable<Float>,
+        longitude -> Nullable<Float>,
         region -> Nullable<Text>,
     }
 }
