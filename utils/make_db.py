@@ -112,7 +112,7 @@ class User:
         self.name = name
         self.surname = surname
         self.birth = None  # type: Optional[datetime.date]
-        if birth is not None:
+        if birth is not None and isinstance(birth, datetime.datetime):
             self.birth = birth.date()
         self.gender = gender
 
