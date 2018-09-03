@@ -1,34 +1,36 @@
 import React from 'react'
 import logo from 'assets/logo.svg'
 import styled, { keyframes } from 'styled-components'
-
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`
-
-const TopBar = styled.div`
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: #fff;
-
-  .redux-logo {
-    animation: ${rotate360} infinite 20s linear;
-    height: 80px;
-  }
-`
+import { Link } from 'react-router-dom'
 
 function Header() {
   return (
-    <TopBar>
-      <img src={logo} className="redux-logo" alt="logo" />
-      <h2>Welcome to Create Redux App</h2>
-    </TopBar>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <Link className="navbar-brand" to="#">Navbar</Link>
+      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className="collapse navbar-collapse" id="navbarNav">
+        <ul className="navbar-nav">
+          <li className="nav-item active">
+            <Link className="nav-link" to="#">Home <span className="sr-only">(current)</span></Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/contests">Contests</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/contestants">Contestants</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/regions">Regions</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/tasks">Tasks</Link>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
   )
 }
 

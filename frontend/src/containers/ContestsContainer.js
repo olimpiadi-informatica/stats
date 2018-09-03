@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 class ContestsContainer extends Component {
 
   componentDidMount() {
-    this.props.fetchContests();
+    this.props.fetchContests()
   }
 
   renderContest() {
@@ -21,9 +21,9 @@ class ContestsContainer extends Component {
           <li className='list-group-item ' >
             <div className='row align-items-center'>
               <div className='col-12'>
-                <Link to={`/contest/${contest.year}`}>{contest.location} {contest.year}</Link>
+                <Link to={`/contest/${contest.year}`}>{contest.location.location} {contest.year}</Link>
               </div>
-              <div className='col-5'>
+              <div className='col-6'>
                 <div>{num_contestants}</div>
                 <div>{max_score_possible}</div>
                 <div>{max_score}</div>
