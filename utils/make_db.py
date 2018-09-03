@@ -42,12 +42,77 @@ REGION_NAMES = {
     "VEN": "Veneto"
 }
 
+DB_SCHEMA = """
+PRAGMA FOREIGN_KEYS = ON;
+PRAGMA JOURNAL_MODE = WAL;
+PRAGMA SYNCHRONOUS = NORMAL;
+
+CREATE TABLE regions (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL
+);
+CREATE VIRTUAL TABLE regions_fts4 USING fts4(id, name);
+CREATE TABLE users (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    surname TEXT NOT NULL,
+    birth TEXT,
+    gender TEXT
+);
+CREATE VIRTUAL TABLE users_fts4 USING fts4(id, name, surname);
+CREATE TABLE contests (
+    year UNSIGNED INT PRIMARY KEY,
+    location TEXT,
+    gmaps TEXT,
+    latitude FLOAT,
+    longitude FLOAT,
+    region TEXT,
+    FOREIGN KEY (region) REFERENCES regions(id)
+);
+CREATE VIRTUAL TABLE contests_fts4 USING fts4(year, location, region, full_region);
+CREATE TABLE participations (
+    user_id TEXT NOT NULL,
+    contest_year UNSIGNED INT NOT NULL,
+    position INT,
+    school TEXT,
+    venue TEXT,
+    region TEXT,
+    medal TEXT,
+    IOI BOOLEAN,
+    score FLOAT,
+    PRIMARY KEY (user_id, contest_year),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (contest_year) REFERENCES contests(year),
+    FOREIGN KEY (region) REFERENCES regions(id)
+);
+CREATE TABLE tasks (
+    name TEXT NOT NULL,
+    contest_year UNSIGNED INT NOT NULL,
+    "index" INT NOT NULL,
+    max_score FLOAT,
+    title TEXT NOT NULL,
+    link TEXT,
+    PRIMARY KEY (name, contest_year),
+    FOREIGN KEY (contest_year) REFERENCES contests(year)
+);
+CREATE VIRTUAL TABLE tasks_fts4 USING fts4(name, contest_year, title, link);
+CREATE TABLE task_scores (
+    task_name TEXT NOT NULL,
+    contest_year UNSIGNED INT NOT NULL,
+    user_id TEXT NOT NULL,
+    score FLOAT,
+    PRIMARY KEY (task_name, contest_year, user_id),
+    FOREIGN KEY (task_name, contest_year) REFERENCES tasks(name, contest_year),
+    FOREIGN KEY (user_id, contest_year) REFERENCES participations(user_id, contest_year)
+);
+"""
+
 class User:
     def __init__(self, name: str, surname: str, birth: Optional[datetime.datetime], gender: str, **kwargs):
         self.name = name
         self.surname = surname
         self.birth = None  # type: Optional[datetime.date]
-        if birth is not None:
+        if birth is not None and isinstance(birth, datetime.datetime):
             self.birth = birth.date()
         self.gender = gender
 
@@ -86,23 +151,25 @@ class User:
 
 
 class Contest:
-    def __init__(self, year: int, location: Optional[str], region: Optional[str], maps: Optional[str]):
+    def __init__(self, year: int, location: Optional[str], region: Optional[str], gmaps: Optional[str], latitude: Optional[float], longitude: Optional[float]):
         self.year = year
         self.location = location
         self.region = region
-        self.maps = maps
+        self.gmaps = gmaps
+        self.latitude = latitude
+        self.longitude = longitude
 
     def id(self) -> str:
         return str(self.year)
 
     def add_to_db(self, cursor: sqlite3.Cursor):
-        query = "INSERT INTO contests (year, location, region, maps) VALUES " \
-                "(:year, :location, :region, :maps)"
+        query = "INSERT INTO contests (year, location, region, gmaps, latitude, longitude) VALUES " \
+                "(:year, :location, :region, :gmaps, :latitude, :longitude)"
         query_fts = "INSERT INTO contests_fts4 (year, location, region, full_region) VALUES " \
                 "(:year, :location, :region, :full_region)"
         try:
             cursor.execute(query, {"year": self.year, "location": self.location, "region": self.region,
-                                   "maps": self.maps})
+                                   "gmaps": self.gmaps, "latitude": self.latitude, "longitude": self.longitude})
             cursor.execute(query_fts, {"year": self.year, "location": self.location, "region": self.region,
                                        "full_region": REGION_NAMES[self.region]})
         except Exception as e:
@@ -216,68 +283,7 @@ def dictify(sheet):
 
 
 def create_schema(cursor: sqlite3.Cursor):
-    cursor.executescript("""
-        PRAGMA FOREIGN_KEYS = ON;
-        PRAGMA JOURNAL_MODE = WAL;
-        PRAGMA SYNCHRONOUS = NORMAL;
-
-        CREATE TABLE regions (
-            id TEXT PRIMARY KEY,
-            name TEXT NOT NULL
-        );
-        CREATE VIRTUAL TABLE regions_fts4 USING fts4(id, name);
-        CREATE TABLE users (
-            id TEXT PRIMARY KEY,
-            name TEXT NOT NULL,
-            surname TEXT NOT NULL,
-            birth TEXT,
-            gender TEXT
-        );
-        CREATE VIRTUAL TABLE users_fts4 USING fts4(id, name, surname);
-        CREATE TABLE contests (
-            year UNSIGNED INT PRIMARY KEY,
-            location TEXT,
-            region TEXT,
-            maps TEXT,
-            FOREIGN KEY (region) REFERENCES regions(id)
-        );
-        CREATE VIRTUAL TABLE contests_fts4 USING fts4(year, location, region, full_region);
-        CREATE TABLE participations (
-            user_id TEXT NOT NULL,
-            contest_year UNSIGNED INT NOT NULL,
-            position INT,
-            school TEXT,
-            venue TEXT,
-            region TEXT,
-            medal TEXT,
-            IOI BOOLEAN,
-            score FLOAT,
-            PRIMARY KEY (user_id, contest_year),
-            FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (contest_year) REFERENCES contests(year),
-            FOREIGN KEY (region) REFERENCES regions(id)
-        );
-        CREATE TABLE tasks (
-            name TEXT NOT NULL,
-            contest_year UNSIGNED INT NOT NULL,
-            "index" INT NOT NULL,
-            max_score FLOAT,
-            title TEXT NOT NULL,
-            link TEXT,
-            PRIMARY KEY (name, contest_year),
-            FOREIGN KEY (contest_year) REFERENCES contests(year)
-        );
-        CREATE VIRTUAL TABLE tasks_fts4 USING fts4(name, contest_year, title, link);
-        CREATE TABLE task_scores (
-            task_name TEXT NOT NULL,
-            contest_year UNSIGNED INT NOT NULL,
-            user_id TEXT NOT NULL,
-            score FLOAT,
-            PRIMARY KEY (task_name, contest_year, user_id),
-            FOREIGN KEY (task_name, contest_year) REFERENCES tasks(name, contest_year),
-            FOREIGN KEY (user_id, contest_year) REFERENCES participations(user_id, contest_year)
-        );
-    """)
+    cursor.executescript(DB_SCHEMA)
 
 
 def add_regions(cursor: sqlite3.Cursor, regions: Dict[str, str]):
@@ -352,7 +358,7 @@ def main(args):
         if not sheet_name.isdigit():
             continue
         year = int(sheet_name)
-        contest = Contest(year, locations[year]["location"], locations[year]["region"], locations[year]["maps"])
+        contest = Contest(year, locations[year]["location"], locations[year]["region"], locations[year]["gmaps"], locations[year]["latitude"], locations[year]["longitude"])
         contests[year] = contest
 
         raw_participations = dictify(wb[sheet_name])

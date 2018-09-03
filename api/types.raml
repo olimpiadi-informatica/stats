@@ -30,11 +30,19 @@ contest_info_task:
     index: integer
     max_score_possible: number?
 
+location:
+  type: object
+  properties:
+    location: string?
+    gmaps: string?
+    latitude: number?
+    longitude: number?
+
 contest:
   type: object
   properties:
     year: integer
-    location: string?
+    location: location
     region: string?
     num_contestants: integer?
     max_score_possible: number?
@@ -71,13 +79,13 @@ contest:
 contest_detail:
   type: object
   properties:
-    year: integer
     navigation:
       type: object
       properties:
+        current: integer
         previous: integer?
         next: integer?
-    location: string?
+    location: location
     region: string?
     num_contestants: integer?
     max_score_possible: number?
@@ -143,6 +151,7 @@ contest_results:
     navigation:
       type: object
       properties:
+        current: integer
         previous: integer?
         next: integer?
     tasks:
@@ -168,6 +177,7 @@ contest_regions:
     navigation:
       type: object
       properties:
+        current: integer
         previous: integer?
         next: integer?
     regions:
@@ -192,6 +202,7 @@ contest_tasks:
     navigation:
       type: object
       properties:
+        current: integer
         previous: integer?
         next: integer?
     tasks:
@@ -220,11 +231,11 @@ regions:
 detailed_region:
   type: object
   properties:
-    id: string
     name: string
     navigation:
       type: object
       properties:
+        current: string
         previous: string?
         next: string?
     # TODO: add position and border informations
@@ -274,6 +285,7 @@ region_results:
     navigation:
       type: object
       properties:
+        current: string
         previous: string?
         next: string?
     results:
@@ -307,14 +319,18 @@ tasks:
 task_detail:
   type: object
   properties:
-    year: integer
-    name: string
     title: string
     link: string?
     index: integer
     navigation:
       type: object
       properties:
+        current:
+          type: object
+          required: false
+          properties:
+            year: integer
+            name: string
         previous:
           type: object
           required: false

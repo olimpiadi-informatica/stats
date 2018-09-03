@@ -1,10 +1,15 @@
 {
-  "year": 2017,
   "navigation": {
+    "current": 2017,
     "previous": 2016,
     "next": null
   },
-  "location": "Università degli Studi - Polo Ferrari - Trento",
+  "location": {
+    "location": "Università degli Studi - Polo Ferrari - Trento",
+    "gmaps": "https://goo.gl/maps/xyxXeaQ7Cjr",
+    "latitude": 46.0673201,
+    "longitude": 11.1466664,
+  },
   "region": "TRE",
   "num_contestants": 103,
   "max_score_possible": 300,

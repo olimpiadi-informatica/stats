@@ -26,6 +26,9 @@ impl PartialEq for Region {
 pub struct Contest {
     pub year: Year,
     pub location: Option<String>,
+    pub gmaps: Option<String>,
+    pub latitude: Option<f32>,
+    pub longitude: Option<f32>,
     pub region: Option<String>,
 }
 

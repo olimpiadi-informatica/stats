@@ -34,15 +34,23 @@ pub struct ContestInfoMedals {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestNavigation {
+    pub current: Year,
     pub previous: Option<Year>,
     pub next: Option<Year>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ContestDetail {
-    pub year: Year,
-    pub navigation: ContestNavigation,
+pub struct ContestLocation {
     pub location: Option<String>,
+    pub gmaps: Option<String>,
+    pub latitude: Option<f32>,
+    pub longitude: Option<f32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ContestDetail {
+    pub navigation: ContestNavigation,
+    pub location: ContestLocation,
     pub region: Option<String>,
     pub num_contestants: Option<usize>,
     pub max_score_possible: Option<f32>,
@@ -120,7 +128,7 @@ pub struct ContestInfoTask {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestInfo {
     pub year: Year,
-    pub location: Option<String>,
+    pub location: ContestLocation,
     pub region: Option<String>,
     pub num_contestants: Option<usize>,
     pub max_score_possible: Option<f32>,
@@ -148,6 +156,15 @@ fn get_medal_info(participations: &Vec<Participation>, medal: &str) -> ContestIn
     }
 }
 
+fn get_contest_location(contest: &Contest) -> ContestLocation {
+    ContestLocation {
+        location: contest.location.clone(),
+        gmaps: contest.gmaps.clone(),
+        latitude: contest.latitude,
+        longitude: contest.longitude,
+    }
+}
+
 fn get_contest_task(task: &Task, task_scores: &Vec<TaskScore>) -> ContestTask {
     let sum_score = fold_with_none(Some(0.0), task_scores.iter(), |m, s| add_option(m, s.score));
     let avg_score = sum_score.map(|sum| sum / (task_scores.len() as f32));
@@ -169,6 +186,7 @@ fn get_contest_navigation(year: Year, conn: DbConn) -> Result<ContestNavigation,
         .load::<Year>(&*conn)?;
     let index = years.iter().position(|y| *y == year);
     Ok(ContestNavigation {
+        current: year,
         previous: match index {
             Some(0) => None,
             Some(i) => Some(years[i - 1]),
@@ -204,7 +222,7 @@ fn get_contest_list(conn: DbConn) -> Result<Vec<ContestInfo>, Error> {
 
         result.push(ContestInfo {
             year: contest.year,
-            location: contest.location.clone(),
+            location: get_contest_location(&contest),
             region: contest.region.clone(),
             num_contestants: num_contestants,
             max_score_possible: fold_with_none(Some(0.0), tasks.iter(), |sum, task| {
@@ -261,9 +279,8 @@ fn get_contest_info(conn: DbConn, year: Year) -> Result<ContestDetail, Error> {
     let num_contestants = zero_is_none(participations.len());
 
     Ok(ContestDetail {
-        year: contest.year,
         navigation: get_contest_navigation(year, conn)?,
-        location: contest.location.clone(),
+        location: get_contest_location(&contest),
         region: contest.region.clone(),
         num_contestants: num_contestants,
         max_score_possible: fold_with_none(Some(0.0), tasks.iter(), |sum, task| {
