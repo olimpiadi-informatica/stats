@@ -5,6 +5,7 @@ import contests from './contests'
 import contestants from './contestants'
 import tasks from './tasks'
 import regions from './regions'
+import search from './search'
 
 const rootReducer = combineReducers({
   counter,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   // results,
   contestants,
   tasks,
-  regions
+  regions,
+  search
 })
 
 export default rootReducer

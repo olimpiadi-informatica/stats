@@ -10,8 +10,9 @@ class ContestsContainer extends Component {
     this.props.fetchContests()
   }
 
-  renderContest() {
-    return _.map(this.props.contests, (contest) => {
+  renderContest(contests_r) {
+    return _.map(contests_r, (contest) => {
+      console.log(contest.year);
       const num_contestants = contest.num_contestants ? <div> num_contestants: {contest.num_contestants}</div> : ''
       const max_score_possible = contest.max_score_possible ? <div> max_score_possible: {contest.max_score_possible}</div> : ''
       const max_score = contest.max_score ? <div> max_score: {contest.max_score}</div> : ''
@@ -42,11 +43,13 @@ class ContestsContainer extends Component {
   }
 
   render() {
+    const {contests} = this.props
+    if(!contests) return <div>Loading...</div>
     return (
       <div className='row'>
         <h2 className='col-12'>Contests</h2>
         <ul className='list-group col-12 col-md-6'>
-          {this.renderContest()}
+          {this.renderContest(contests)}
         </ul>
         <div className='col-12 col-md-6'>
           <div className='row'>

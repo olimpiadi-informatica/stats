@@ -4,8 +4,8 @@ import { ContestsContainer, ContestContainer } from 'containers'
 import { ContestantsContainer, ContestantContainer } from 'containers'
 import { TasksContainer, TaskContainer } from 'containers'
 import { RegionsContainer, RegionContainer } from 'containers'
-import { HomeContainer } from 'containers'
-import { Header } from 'components'
+import { HomeContainer, SearchContainer, ContributeContainer } from 'containers'
+import { Header, Footer, About } from 'components'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -26,8 +26,12 @@ function Routes() {
             <Route path="/task/:year/:name" component={TaskContainer} />
             <Route path="/regions" component={RegionsContainer} />
             <Route path="/region/:id" component={RegionContainer} />
+            <Route path="/search/:q" component={SearchContainer} />
+            <Route path="/contribute" component={ContributeContainer} />
+            <Route path="/about" component={About} />
             <Route path="/" component={HomeContainer} />
           </Switch>
+          <Footer></Footer>
         </div>
       </BrowserRouter>
     </div>
