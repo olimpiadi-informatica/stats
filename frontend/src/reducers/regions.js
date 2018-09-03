@@ -10,10 +10,9 @@ export default function (state = initialState, action) {
     case FETCH_REGION:
     return { ...state, [action.payload.data.navigation.current] : action.payload.data }
     case FETCH_REGION_RESULTS:
-    console.log(action.payload.data);
-    state[action.payload.data.navigation.current]['region_results'] = action.payload.data
-    var copy = Object.assign({}, state);
-    return { ...state }
+    const newRegions = JSON.parse(JSON.stringify(state))
+    newRegions[action.payload.data.navigation.current]['region_results'] = action.payload.data
+    return newRegions
     default:
     return state
   }

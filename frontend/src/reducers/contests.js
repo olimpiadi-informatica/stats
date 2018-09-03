@@ -10,8 +10,9 @@ export default function (state = initialState, action) {
     case FETCH_CONTEST:
     return { ...state, [action.payload.data.navigation.current] : action.payload.data }
     case FETCH_CONTEST_RESULTS:
-    state[action.payload.data.navigation.current]['results'] = action.payload.data
-    return { ...state }
+    const newContests = JSON.parse(JSON.stringify(state))
+    newContests[action.payload.data.navigation.current]['results'] = action.payload.data
+    return newContests
     default:
     return state
   }
