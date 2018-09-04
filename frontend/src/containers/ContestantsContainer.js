@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import _ from 'lodash'
 
 import { fetchContestats } from '../actions/contestants'
+import { ContestantListItem } from 'components'
 
 class ContestantsContainer extends Component {
 
@@ -13,26 +14,26 @@ class ContestantsContainer extends Component {
 
   renderContestants(contestants) {
     if (!contestants) { return <div>Loading...</div>}
-
       return _.map(contestants, (contestant) => {
-        const partecipations = _.map(contestant.participations, (partecipation,i) => {
-          return (<span key={contestant + i}>{partecipation.year} </span>)
-        })
-        return(
-          <div key={contestant.contestant.id}>
-            <Link to={`/contestant/${contestant.contestant.id}`}>{contestant.contestant.first_name} {contestant.contestant.last_name}</Link>
-            <div>{partecipations}</div>
-          </div>
-        )
+        return <ContestantListItem key={contestant.contestant.id} contestant={contestant} />
       })
     }
 
     render() {
       const {contestants} = this.props
+      if(!contestants) return <div className='Loading'>Loading ...</div>
 
       return (
-        <div>
-          {this.renderContestants(contestants)}
+        <div className='row'>
+          <div className='col-12'>
+            <h3>Contestants</h3>
+          </div>
+          <ul className='col-12 col-md-6 list-group'>
+            {this.renderContestants(contestants)}
+          </ul>
+          <div className='col-12 col-md-6'>
+            Grafici
+          </div>
         </div>
       )
     }

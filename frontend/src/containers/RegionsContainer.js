@@ -4,27 +4,34 @@ import { connect } from 'react-redux'
 import { fetchRegions } from '../actions/regions'
 import { Link } from 'react-router-dom'
 
+import { RegionListItem } from 'components'
+
 class RegionsContainer extends Component {
   componentDidMount() {
     this.props.fetchRegions()
   }
 
   renderRegions(regions) {
+    if(!regions) return <div className='Loading'>Loading ...</div>
     return _.map(regions, (region) => {
       return (
-          <div key={region.id}>
-            <Link  to={`/region/${region.id}`}>{region.id}</Link>
-          </div>
+          <RegionListItem  region={region} key={region.id} />
       )
     })
   }
 
   render() {
     const {regions} = this.props
-    console.log(regions);
-    if(!regions) return <div>Loading ...</div>
+    if(!regions) return <div className='Loading'>Loading ...</div>
     return (
-      <div>{this.renderRegions(regions)}</div>
+      <div className='row'>
+        <div className='col-12'>
+          <h3>Regions</h3>
+        </div>
+        <ul className='list-group'>
+          {this.renderRegions(regions)}
+        </ul>
+      </div>
     )
   }
 }

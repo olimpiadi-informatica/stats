@@ -12,14 +12,15 @@ class ContestsContainer extends Component {
   }
 
   renderContest(contests_r) {
-    return _.map(contests_r, (contest) => {
-      return <ContestListItem key={contest.year} contest={contest}/>
+    if(!contests_r) return <div className='Loading'>Loading ...</div>
+    return _.map(contests_r, (contest, i) => {
+      return <ContestListItem key={contest.year + i} contest={contest}/>
     })
   }
 
   render() {
     const {contests} = this.props
-    if(!contests) return <div>Loading...</div>
+    if(!contests) return <div className='Loading'>Loading ...</div>
     return (
       <div className='row'>
         <h2 className='col-12'>Contests</h2>

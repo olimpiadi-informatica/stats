@@ -12,14 +12,28 @@ class ContestantContainer extends Component {
     this.props.fetchContestat(id)
   }
 
+  renderParticipations(participations) {
+    if(!participations) return <div className='Loading'>Loading ...</div>
+
+    return _.map(participations, (partecipation,i) => {
+      return (<span key={'participations' + i}>{partecipation.year} </span>)
+    })
+  }
+
   render() {
-    if(!this.props.contestant) return <div>Loading...</div>
+    const contestant_main = this.props.contestant
+    if(!contestant_main) return <div className='Loading'>Loading ...</div>
 
     const {contestant} = this.props.contestant
     const {participations} = this.props.contestant
 
     return (
-      <div>{contestant.first_name} {contestant.last_name}</div>
+      <div className='row'>
+        <div className='col-12'>
+          <div>{contestant.first_name} {contestant.last_name}</div>
+          <div> participations : {this.renderParticipations(participations)}</div>
+        </div>
+      </div>
     )
   }
 }

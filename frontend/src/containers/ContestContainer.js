@@ -24,7 +24,7 @@ class ContestContainer extends Component {
           <ContestItem contest={contest} results={contest.results}/>
         </div>
         <div className='col-12 col-md-6'>
-          2
+          Grafici
         </div>
       </div>
     )
