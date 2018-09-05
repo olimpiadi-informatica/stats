@@ -10,8 +10,10 @@ export default function (state = initialState, action) {
     case FETCH_REGION:
     return { ...state, [action.payload.data.navigation.current] : action.payload.data }
     case FETCH_REGION_RESULTS:
+    console.log(state);
     const newRegions = JSON.parse(JSON.stringify(state))
-    newRegions[action.payload.data.navigation.current]['region_results'] = action.payload.data
+    console.log(newRegions[action.payload.data.navigation.current]);
+    if(action.payload.data && action.payload.data.navigation.current) newRegions[action.payload.data.navigation.current]['results'] = action.payload.data
     return newRegions
     default:
     return state

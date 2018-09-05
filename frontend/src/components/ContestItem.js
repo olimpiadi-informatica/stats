@@ -37,11 +37,11 @@ function renderMedalsDetails(medal) {
   )
 }
 
-function renderTasks(tasks) {
+function renderTasks(tasks, year) {
   return _.map(tasks, (task) => {
     return (
       <div key={task.name}>
-        <TaskListItem task={task} />
+        <TaskListItem task={task} year={year}/>
       </div>
     )
   })
@@ -79,7 +79,7 @@ const ContestItem = ({contest, results}) => {
           <div>
             <h3>Tasks</h3>
             <ul className='list-group'>
-              {renderTasks(contest.tasks)}
+              {renderTasks(contest.tasks, contest.navigation.current)}
             </ul>
 
           </div>
