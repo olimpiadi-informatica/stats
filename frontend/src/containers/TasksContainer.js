@@ -34,22 +34,25 @@ class TasksContainer extends Component {
   }
 
   render() {
-    if(!this.props.tasks) return <div>Loading...</div>
-    const {tasks} = this.props
-    return (
-      <div className='TasksContainer row'>
-        <div className='col-12 col-md-6'>
-          {this.renderTasksPerYear(tasks)}
-        </div>
-        <div className='col-12 col-md-6'>
-          Grafo
-        </div>
+    if(!this.props.tasks) <div className='Loading'>Loading ...</div>
+  const {error} = this.props
+  if(error) return <div>{error}</div>
+  const {tasks} = this.props
+  return (
+    <div className='TasksContainer row'>
+      <div className='col-12 col-md-6'>
+        {this.renderTasksPerYear(tasks)}
       </div>
-    )
-  }
+      <div className='col-12 col-md-6'>
+        Grafo
+      </div>
+    </div>
+  )
+}
 }
 
-function mapStateToProps({tasks}) {
+function mapStateToProps({ tasks }) {
+  if(tasks && tasks.error) return {error : 'Connection Error'}
   let task_per_year = {}
   _.map(tasks, (value,key) => {
     if(! task_per_year[key.split('-')[0]]) task_per_year[key.split('-')[0]] = []

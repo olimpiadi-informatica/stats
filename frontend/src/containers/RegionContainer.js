@@ -108,6 +108,8 @@ class RegionContainer extends Component {
 
   render() {
     const { region } = this.props
+    const {error} = this.props
+    if(error) return <div>{error}</div>
     if(!region || !region.navigation) return <div className='Loading'>Loading ...</div>
     return (
       <div className='row'>
@@ -126,6 +128,7 @@ class RegionContainer extends Component {
 }
 
 function mapStateToProps({regions}, ownProps) {
+  if(regions && regions.error) return {error : 'Connection Error'}
   const id = ownProps.match.params.id
   return { region: regions[id], activeTab : 'medals'}
 }

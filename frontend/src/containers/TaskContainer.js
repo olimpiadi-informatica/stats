@@ -28,9 +28,10 @@ class TaskContainer extends Component {
   }
 
   render() {
+    const {error} = this.props
+    if(error) return <div>{error}</div>
     const {task} = this.props
     if(!task)  return <div className='Loading'>Loading ...</div>
-    console.log(task);
     const max_score_possible = task.max_score_possible ? <div>max_score_possible : {task.max_score_possible}</div> : ''
     const link = task.link ? <h5><Link to={task.link}> Test this problem </Link></h5> : ''
 
@@ -53,6 +54,7 @@ class TaskContainer extends Component {
 }
 
 function mapStateToProps({ tasks }, ownProps) {
+  if(tasks && tasks.error) return {error : 'Connection Error'}
   const year = ownProps.match.params.year
   const name = ownProps.match.params.name
   return { task: tasks[year + '-' + name]}

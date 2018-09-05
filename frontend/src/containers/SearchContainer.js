@@ -25,9 +25,11 @@ class SearchContainer extends Component {
 
   render() {
     const {search} = this.props
+    const {error} = this.props
+    if(error) return <div>{error}</div>
     console.log(search);
     const q = this.props.match.params.q
-    if(!search) return <div>Loading ...</div>
+    if(!search) return <div className='Loading'>Loading ...</div>
     const no_results =  search.length === 0 ? <div>No results</div> : <div></div>
     return (
       <div>
@@ -42,7 +44,7 @@ class SearchContainer extends Component {
 
 
 function mapStateToProps(state) {
-  console.log(state.search);
+  if(state.search && state.search.error) return {error : 'Connection Error'}  
   return { search: state.search }
 }
 

@@ -16,6 +16,8 @@ class ContestContainer extends Component {
 
   render() {
     const { contest } = this.props
+    const {error} = this.props
+    if(error) return <div>{error}</div>
 
     if (!contest || !contest.navigation ) return <div className='Loading'>Loading ...</div>
     return (
@@ -31,7 +33,9 @@ class ContestContainer extends Component {
   }
 }
 
+
 function mapStateToProps({ contests }, ownProps) {
+  if(contests && contests.error) return {error : 'Connection Error'}
   const year = ownProps.match.params.year
   return { contest: contests[year] }
 }

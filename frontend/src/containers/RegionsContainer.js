@@ -15,13 +15,15 @@ class RegionsContainer extends Component {
     if(!regions) return <div className='Loading'>Loading ...</div>
     return _.map(regions, (region, i) => {
       return (
-          <RegionListItem  region={region} key={region.id, i} />
+        <RegionListItem  region={region} key={region.id, i} />
       )
     })
   }
 
   render() {
     const {regions} = this.props
+    const {error} = this.props
+    if(error) return <div>{error}</div>
     if(!regions) return <div className='Loading'>Loading ...</div>
     return (
       <div className='row'>
@@ -38,6 +40,7 @@ class RegionsContainer extends Component {
 }
 
 function mapStateToProps(state) {
+  if(state.regions && state.regions.error) return {error : 'Connection Error'}
   return { regions: state.regions }
 }
 

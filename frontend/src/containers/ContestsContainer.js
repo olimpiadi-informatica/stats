@@ -21,6 +21,8 @@ class ContestsContainer extends Component {
 
   render() {
     const {contests} = this.props
+    const {error} = this.props
+    if(error) return <div>{error}</div>
     if(!contests) return <div className='Loading'>Loading ...</div>
     return (
       <div className='row'>
@@ -41,6 +43,7 @@ class ContestsContainer extends Component {
 }
 
 function mapStateToProps(state) {
+  if(state.contests && state.contests.error) return {error : 'Connection Error'}
   return { contests: state.contests }
 }
 

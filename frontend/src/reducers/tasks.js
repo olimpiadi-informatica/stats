@@ -4,7 +4,7 @@ import _ from 'lodash'
 const initialState = {}
 
 export default function (state = initialState, action) {
-
+  if (action.error) action.type = 'ERROR'
   switch (action.type) {
     case FETCH_TASKS:
     let newState = {}
@@ -17,6 +17,8 @@ export default function (state = initialState, action) {
     case FETCH_TASK:
     const {current} = action.payload.data.navigation
     return { ...state, [current.year + '-' + current.name] : action.payload.data }
+    case 'ERROR':
+    return { error : 'Connection Error' }
     default:
     return state
   }

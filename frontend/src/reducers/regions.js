@@ -4,6 +4,7 @@ import _ from 'lodash'
 const initialState = {}
 
 export default function (state = initialState, action) {
+  if (action.error) action.type = 'ERROR'
   switch (action.type) {
     case FETCH_REGIONS:
     return   _.mapKeys(action.payload.data.regions, 'id')
@@ -15,6 +16,8 @@ export default function (state = initialState, action) {
     console.log(newRegions[action.payload.data.navigation.current]);
     if(action.payload.data && action.payload.data.navigation.current) newRegions[action.payload.data.navigation.current]['results'] = action.payload.data
     return newRegions
+    case 'ERROR':
+    return { error : 'Connection Error' }
     default:
     return state
   }

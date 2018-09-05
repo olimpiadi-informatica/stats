@@ -21,9 +21,12 @@ class ContestantContainer extends Component {
   }
 
   render() {
+    const {error} = this.props
+    if(error) return <div>{error}</div>
+
     const contestant_main = this.props.contestant
     if(!contestant_main) return <div className='Loading'>Loading ...</div>
-
+    
     const {contestant} = this.props.contestant
     const {participations} = this.props.contestant
 
@@ -39,6 +42,7 @@ class ContestantContainer extends Component {
 }
 
 function mapStateToProps({ contestants }, ownProps) {
+  if(contestants && contestants.error) return {error : 'Connection Error'}
   const id = ownProps.match.params.id
   return { contestant : contestants[id]}
 }
