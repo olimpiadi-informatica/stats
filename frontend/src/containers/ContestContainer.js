@@ -11,7 +11,11 @@ class ContestContainer extends Component {
   componentDidMount() {
     const year = this.props.match.params.year
     this.props.fetchContest(year)
-    this.props.fetchResults(year)
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.contest && !props.contest.results) props.fetchResults(props.match.params.year)
+    return null
   }
 
   render() {

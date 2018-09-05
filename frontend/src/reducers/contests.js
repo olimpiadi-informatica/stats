@@ -5,6 +5,7 @@ const initialState = {}
 
 export default function (state = initialState, action) {
   if (action.error) action.type = 'ERROR'
+
   switch (action.type) {
     case FETCH_CONTESTS:
     return   _.mapKeys(action.payload.data.contests, 'year')
@@ -19,4 +20,5 @@ export default function (state = initialState, action) {
     default:
     return state
   }
+
 }

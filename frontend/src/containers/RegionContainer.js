@@ -8,7 +8,11 @@ class RegionContainer extends Component {
   componentDidMount() {
     const id = this.props.match.params.id
     this.props.fetchRegion(id)
-    // this.props.fetchRegionResults(id)
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.region && !props.region.results) props.fetchRegionResults(props.match.params.id)
+    return null
   }
 
   renderMedalsPerYear(medals_per_year) {
@@ -128,8 +132,8 @@ class RegionContainer extends Component {
 }
 
 function mapStateToProps({regions}, ownProps) {
-  if(regions && regions.error) return {error : 'Connection Error'}
   const id = ownProps.match.params.id
+  if(regions && regions.error) return {error : 'Connection Error'}
   return { region: regions[id], activeTab : 'medals'}
 }
 export default connect(mapStateToProps, { fetchRegion, fetchRegionResults })(RegionContainer)
