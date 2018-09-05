@@ -1,4 +1,4 @@
-import { FETCH_CONTESTANTS, FETCH_CONTESTANT } from 'constants/ActionTypes'
+import { FETCH_CONTESTANTS, FETCH_CONTESTANT } from '../constants/ActionTypes'
 import _ from 'lodash'
 
 const initialState = {}

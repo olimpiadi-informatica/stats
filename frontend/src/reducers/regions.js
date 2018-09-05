@@ -1,4 +1,4 @@
-import { FETCH_REGIONS, FETCH_REGION, FETCH_REGION_RESULTS } from 'constants/ActionTypes'
+import { FETCH_REGIONS, FETCH_REGION, FETCH_REGION_RESULTS } from '../constants/ActionTypes'
 import _ from 'lodash'
 
 const initialState = {}

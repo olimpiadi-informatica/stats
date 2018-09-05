@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { FETCH_TASKS, FETCH_TASK } from 'constants/ActionTypes'
+import { FETCH_TASKS, FETCH_TASK } from '../constants/ActionTypes'
 
 const ROOT_URL = 'https://stats.olinfo.it/api'
 

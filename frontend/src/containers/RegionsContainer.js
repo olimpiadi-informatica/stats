@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { fetchRegions } from '../actions/regions'
 import { Link } from 'react-router-dom'
 
-import { RegionListItem } from 'components'
+import { RegionListItem } from '../components'
 
 class RegionsContainer extends Component {
   componentDidMount() {

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import _ from 'lodash'
 
 import { fetchContest, fetchResults } from '../actions/contests'
-import { ContestItem } from 'components'
+import { ContestItem } from '../components'
 
 class ContestContainer extends Component {
 

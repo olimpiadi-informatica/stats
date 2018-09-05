@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { connect } from 'react-redux'
 import { fetchContests } from '../actions/contests'
 import { Link } from 'react-router-dom'
-import { ContestListItem } from 'components'
+import { ContestListItem } from '../components'
 
 class ContestsContainer extends Component {
 

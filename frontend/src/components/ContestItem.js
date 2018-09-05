@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import _ from 'lodash'
-import { TaskListItem } from 'components'
+import { TaskListItem } from '../components'
 
 
 function renderResults(results) {

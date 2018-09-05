@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import logo from 'assets/logo.svg'
 import styled, { keyframes } from 'styled-components'
 import { Link } from 'react-router-dom'
 

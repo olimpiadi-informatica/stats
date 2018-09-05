@@ -1,4 +1,4 @@
-import { FETCH_CONTESTS, FETCH_CONTEST, FETCH_CONTEST_RESULTS } from 'constants/ActionTypes'
+import { FETCH_CONTESTS, FETCH_CONTEST, FETCH_CONTEST_RESULTS } from '../constants/ActionTypes'
 import _ from 'lodash'
 
 const initialState = {}

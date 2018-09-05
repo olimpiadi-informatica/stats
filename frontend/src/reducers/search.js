@@ -1,4 +1,4 @@
-import { FETCH_SEARCH_RESULTS } from 'constants/ActionTypes'
+import { FETCH_SEARCH_RESULTS } from '../constants/ActionTypes'
 import _ from 'lodash'
 
 const initialState = {}

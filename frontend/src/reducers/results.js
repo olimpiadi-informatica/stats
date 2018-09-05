@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { FETCH_CONTEST_RESULTS } from 'constants/ActionTypes'
+import { FETCH_CONTEST_RESULTS } from '../constants/ActionTypes'
 
 const initialState = {}
 

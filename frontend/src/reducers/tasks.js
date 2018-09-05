@@ -1,4 +1,4 @@
-import { FETCH_TASKS, FETCH_TASK } from 'constants/ActionTypes'
+import { FETCH_TASKS, FETCH_TASK } from '../constants/ActionTypes'
 import _ from 'lodash'
 
 const initialState = {}
