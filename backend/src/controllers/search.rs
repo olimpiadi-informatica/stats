@@ -18,7 +18,7 @@ pub enum SearchResult {
         year: Year,
         name: String,
         title: String,
-        link: String,
+        link: Option<String>,
     },
     Contest {
         year: Year,
@@ -61,13 +61,14 @@ fn search_user(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
 }
 
 fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let tasks: Vec<(String, Year, String, String)> = sql::<(Text, Integer, Text, Text)>(
-        "SELECT contest_year, name, title, link
-        FROM tasks_fts4
-        WHERE tasks_fts4 MATCH ",
-    ).bind::<Text, _>(q)
-        .sql(" LIMIT 10")
-        .load(&**conn)?;
+    let tasks: Vec<(String, Year, String, Option<String>)> =
+        sql::<(Text, Integer, Text, Nullable<Text>)>(
+            "SELECT contest_year, name, title, link
+             FROM tasks_fts4
+             WHERE tasks_fts4 MATCH ",
+        ).bind::<Text, _>(q)
+            .sql(" LIMIT 10")
+            .load(&**conn)?;
     Ok(tasks
         .iter()
         .map(|t| SearchResult::Task {
@@ -97,14 +98,14 @@ fn search_contest(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error>
 }
 
 fn search_region(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let contests: Vec<(String, String)> = sql::<(Text, Text)>(
+    let regions: Vec<(String, String)> = sql::<(Text, Text)>(
         "SELECT id, name
         FROM regions_fts4
         WHERE regions_fts4 MATCH ",
     ).bind::<Text, _>(q)
         .sql(" LIMIT 10")
         .load(&**conn)?;
-    Ok(contests
+    Ok(regions
         .iter()
         .map(|t| SearchResult::Region {
             id: t.0.clone(),
