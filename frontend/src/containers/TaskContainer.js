@@ -1,64 +1,74 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import _ from 'lodash'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import _ from "lodash";
 
-import { fetchTask } from '../actions/tasks'
+import { fetchTask } from "../actions/tasks";
 
 class TaskContainer extends Component {
   componentDidMount() {
-    const year = this.props.match.params.year
-    const name = this.props.match.params.name
-    this.props.fetchTask(year,name)
+    const year = this.props.match.params.year;
+    const name = this.props.match.params.name;
+    this.props.fetchTask(year, name);
   }
 
   renderScores(scores) {
-    if(!scores) return <div className='Loading'></div>
+    if (!scores) return <div className="Loading" />;
     return _.map(scores, (score, i) => {
-      const score_point = score.score ? <div>Score {score.score}</div> : ''
-      const rank = score.rank ? <div>Rank {score.rank}</div> : ''
+      const score_point = score.score ? <div>Score {score.score}</div> : "";
+      const rank = score.rank ? <div>Rank {score.rank}</div> : "";
       return (
-        <li key={i} className='list-group-item'>
-          <Link to={`/contestant/${score.contestant.id}`}>{score.contestant.first_name} {score.contestant.last_name}</Link>
+        <li key={i} className="list-group-item">
+          <Link to={`/contestant/${score.contestant.id}`}>
+            {score.contestant.first_name} {score.contestant.last_name}
+          </Link>
           {score_point}
           {rank}
         </li>
-      )
-    })
+      );
+    });
   }
 
   render() {
-    const {error} = this.props
-    if(error) return <div>{error}</div>
-    const {task} = this.props
-    if(!task)  return <div className='Loading'>Loading ...</div>
-    const max_score_possible = task.max_score_possible ? <div>max_score_possible : {task.max_score_possible}</div> : ''
-    const link = task.link ? <h5><Link to={task.link}> Test this problem </Link></h5> : ''
+    const { error } = this.props;
+    if (error) return <div>{error}</div>;
+    const { task } = this.props;
+    if (!task) return <div className="Loading">Loading ...</div>;
+    const max_score_possible = task.max_score_possible ? (
+      <div>max_score_possible : {task.max_score_possible}</div>
+    ) : (
+      ""
+    );
+    const link = task.link ? (
+      <h5>
+        <Link to={task.link}> Test this problem </Link>
+      </h5>
+    ) : (
+      ""
+    );
 
     return (
-      <div className='TaskContainer row'>
-        <div className='col-12 col-md-6'>
+      <div className="TaskContainer row">
+        <div className="col-12 col-md-6">
           <h3>{task.title}</h3>
           {link}
           {max_score_possible}
-          <ul className='list-group'>
-            {this.renderScores(task.scores)}
-          </ul>
+          <ul className="list-group">{this.renderScores(task.scores)}</ul>
         </div>
-        <div className='col-12 col-md-6'>
-          Grafi
-        </div>
+        <div className="col-12 col-md-6">Grafi</div>
       </div>
-    )
+    );
   }
 }
 
 function mapStateToProps({ tasks }, ownProps) {
-  if(tasks && tasks.error) return {error : 'Connection Error'}
-  const year = ownProps.match.params.year
-  const name = ownProps.match.params.name
-  return { task: tasks[year + '-' + name]}
+  if (tasks && tasks.error) return { error: "Connection Error" };
+  const year = ownProps.match.params.year;
+  const name = ownProps.match.params.name;
+  return { task: tasks[year + "-" + name] };
 }
 
-
-export default connect(mapStateToProps, { fetchTask })(TaskContainer)
+export default connect(
+  mapStateToProps,
+  { fetchTask }
+)(TaskContainer);

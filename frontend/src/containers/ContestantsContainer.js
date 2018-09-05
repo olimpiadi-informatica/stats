@@ -1,48 +1,56 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import _ from 'lodash'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import _ from "lodash";
 
-import { fetchContestats } from '../actions/contestants'
-import { ContestantListItem } from '../components'
+import { fetchContestats } from "../actions/contestants";
+import { ContestantListItem } from "../components";
 
 class ContestantsContainer extends Component {
-
   componentDidMount() {
-    this.props.fetchContestats()
+    this.props.fetchContestats();
   }
 
   renderContestants(contestants) {
-    if (!contestants) { return <div>Loading...</div>}
-      return _.map(contestants, (contestant) => {
-        return <ContestantListItem key={contestant.contestant.id} contestant={contestant} />
-      })
+    if (!contestants) {
+      return <div>Loading...</div>;
     }
-
-    render() {
-      const {contestants} = this.props
-      const {error} = this.props
-      if(error) return <div>{error}</div>
-      if(!contestants) return <div className='Loading'>Loading ...</div>
-
+    return _.map(contestants, contestant => {
       return (
-        <div className='row'>
-          <div className='col-12'>
-            <h3>Contestants</h3>
-          </div>
-          <ul className='col-12 col-md-6 list-group'>
-            {this.renderContestants(contestants)}
-          </ul>
-          <div className='col-12 col-md-6'>
-            Grafici
-          </div>
-        </div>
-      )
-    }
-  }
-  function mapStateToProps(state) {
-    if(state.contestants && state.contestants.error) return {error : 'Connection Error'}
-    return { contestants: state.contestants }
+        <ContestantListItem
+          key={contestant.contestant.id}
+          contestant={contestant}
+        />
+      );
+    });
   }
 
-  export default connect(mapStateToProps, { fetchContestats })(ContestantsContainer)
+  render() {
+    const { contestants } = this.props;
+    const { error } = this.props;
+    if (error) return <div>{error}</div>;
+    if (!contestants) return <div className="Loading">Loading ...</div>;
+
+    return (
+      <div className="row">
+        <div className="col-12">
+          <h3>Contestants</h3>
+        </div>
+        <ul className="col-12 col-md-6 list-group">
+          {this.renderContestants(contestants)}
+        </ul>
+        <div className="col-12 col-md-6">Grafici</div>
+      </div>
+    );
+  }
+}
+function mapStateToProps(state) {
+  if (state.contestants && state.contestants.error)
+    return { error: "Connection Error" };
+  return { contestants: state.contestants };
+}
+
+export default connect(
+  mapStateToProps,
+  { fetchContestats }
+)(ContestantsContainer);

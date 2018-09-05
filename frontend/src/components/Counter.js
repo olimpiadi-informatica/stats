@@ -1,9 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import pure from 'recompose/pure'
-import styled from 'styled-components'
+import React from "react";
+import PropTypes from "prop-types";
+import pure from "recompose/pure";
+import styled from "styled-components";
 
-const Intro = styled.p`font-size: large;`
+const Intro = styled.p`
+  font-size: large;
+`;
 
 function Counter({ increment, incrementIfOdd, decrement, counter }) {
   return (
@@ -13,18 +15,19 @@ function Counter({ increment, incrementIfOdd, decrement, counter }) {
         and save to reload.
       </Intro>
       <p>
-        Clicked: {counter} times <button onClick={increment}>+</button> <button onClick={decrement}>-</button>{' '}
+        Clicked: {counter} times <button onClick={increment}>+</button>{" "}
+        <button onClick={decrement}>-</button>{" "}
         <button onClick={incrementIfOdd}>Increment if odd</button>
       </p>
     </section>
-  )
+  );
 }
 
 Counter.propTypes = {
   increment: PropTypes.func.isRequired,
   incrementIfOdd: PropTypes.func.isRequired,
   decrement: PropTypes.func.isRequired,
-  counter: PropTypes.number.isRequired,
-}
+  counter: PropTypes.number.isRequired
+};
 
-export default pure(Counter)
+export default pure(Counter);

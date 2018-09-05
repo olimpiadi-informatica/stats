@@ -1,64 +1,61 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import _ from 'lodash'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import _ from "lodash";
 
-import { fetchTasks } from '../actions/tasks'
-import { TaskListItem } from '../components'
+import { fetchTasks } from "../actions/tasks";
+import { TaskListItem } from "../components";
 
 class TasksContainer extends Component {
   componentDidMount() {
-    this.props.fetchTasks()
+    this.props.fetchTasks();
   }
 
-  renderTask(tasks,year) {
-    return _.map(tasks, (task,i) => {
+  renderTask(tasks, year) {
+    return _.map(tasks, (task, i) => {
       return (
-        <TaskListItem key={`${task.name}${year}`} task={task} year={year}/>
-      )
-    })
+        <TaskListItem key={`${task.name}${year}`} task={task} year={year} />
+      );
+    });
   }
 
   renderTasksPerYear(tasks_per_year) {
-    return _.map(tasks_per_year, (value,key) => {
+    return _.map(tasks_per_year, (value, key) => {
       return (
         <div key={key}>
-          <h4 >{key}</h4>
-          <ul className='list-group'>
-            {this.renderTask(value,key)}
-          </ul>
-
+          <h4>{key}</h4>
+          <ul className="list-group">{this.renderTask(value, key)}</ul>
         </div>
-      )
-    })
+      );
+    });
   }
 
   render() {
-    if(!this.props.tasks) <div className='Loading'>Loading ...</div>
-  const {error} = this.props
-  if(error) return <div>{error}</div>
-  const {tasks} = this.props
-  return (
-    <div className='TasksContainer row'>
-      <div className='col-12 col-md-6'>
-        {this.renderTasksPerYear(tasks)}
+    if (!this.props.tasks) <div className="Loading">Loading ...</div>;
+    const { error } = this.props;
+    if (error) return <div>{error}</div>;
+    const { tasks } = this.props;
+    return (
+      <div className="TasksContainer row">
+        <div className="col-12 col-md-6">{this.renderTasksPerYear(tasks)}</div>
+        <div className="col-12 col-md-6">Grafo</div>
       </div>
-      <div className='col-12 col-md-6'>
-        Grafo
-      </div>
-    </div>
-  )
-}
+    );
+  }
 }
 
 function mapStateToProps({ tasks }) {
-  if(tasks && tasks.error) return {error : 'Connection Error'}
-  let task_per_year = {}
-  _.map(tasks, (value,key) => {
-    if(! task_per_year[key.split('-')[0]]) task_per_year[key.split('-')[0]] = []
-    task_per_year[key.split('-')[0]].push(value)
-  })
-  return { tasks: task_per_year }
+  if (tasks && tasks.error) return { error: "Connection Error" };
+  let task_per_year = {};
+  _.map(tasks, (value, key) => {
+    if (!task_per_year[key.split("-")[0]])
+      task_per_year[key.split("-")[0]] = [];
+    task_per_year[key.split("-")[0]].push(value);
+  });
+  return { tasks: task_per_year };
 }
 
-export default connect(mapStateToProps, { fetchTasks })(TasksContainer)
+export default connect(
+  mapStateToProps,
+  { fetchTasks }
+)(TasksContainer);

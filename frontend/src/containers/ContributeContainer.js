@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import _ from 'lodash'
-import { Link } from 'react-router-dom'
+import React, { Component } from "react";
+import _ from "lodash";
+import { Link } from "react-router-dom";
 
 class ContributeContainer extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class ContributeContainer extends Component {
 
   handleInputChange(event) {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
@@ -38,7 +38,8 @@ class ContributeContainer extends Component {
             name="isGoing"
             type="checkbox"
             checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
+            onChange={this.handleInputChange}
+          />
         </label>
         <br />
         <label>
@@ -47,14 +48,14 @@ class ContributeContainer extends Component {
             name="numberOfGuests"
             type="number"
             value={this.state.numberOfGuests}
-            onChange={this.handleInputChange} />
+            onChange={this.handleInputChange}
+          />
         </label>
         <br />
         <input type="submit" value="Submit" />
-
       </form>
-    )
+    );
   }
 }
 
-export default ContributeContainer
+export default ContributeContainer;

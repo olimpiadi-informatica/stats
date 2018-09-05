@@ -1,12 +1,16 @@
-import React from 'react'
-import { ContestsContainer, ContestContainer } from '../containers'
-import { ContestantsContainer, ContestantContainer } from '../containers'
-import { TasksContainer, TaskContainer } from '../containers'
-import { RegionsContainer, RegionContainer } from '../containers'
-import { HomeContainer, SearchContainer, ContributeContainer } from '../containers'
-import { Header, Footer, About } from '../components/'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import styled from 'styled-components'
+import React from "react";
+import { ContestsContainer, ContestContainer } from "../containers";
+import { ContestantsContainer, ContestantContainer } from "../containers";
+import { TasksContainer, TaskContainer } from "../containers";
+import { RegionsContainer, RegionContainer } from "../containers";
+import {
+  HomeContainer,
+  SearchContainer,
+  ContributeContainer
+} from "../containers";
+import { Header, Footer, About } from "../components/";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import styled from "styled-components";
 
 // const Container = styled.div`text-align: center;`
 
@@ -15,7 +19,7 @@ function Routes() {
     <div>
       <BrowserRouter>
         <div>
-          <Header></Header>
+          <Header />
           <Switch>
             <Route path="/contests" component={ContestsContainer} />
             <Route path="/contest/:year" component={ContestContainer} />
@@ -30,12 +34,11 @@ function Routes() {
             <Route path="/about" component={About} />
             <Route path="/" component={HomeContainer} />
           </Switch>
-          <Footer></Footer>
+          <Footer />
         </div>
       </BrowserRouter>
     </div>
-
-  )
+  );
 }
 
-export default Routes
+export default Routes;

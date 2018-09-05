@@ -1,11 +1,8 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
 function About() {
-  return (
-    <div>About us</div>
-
-  )
+  return <div>About us</div>;
 }
 
-export default About
+export default About;
