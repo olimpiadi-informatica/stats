@@ -25,16 +25,8 @@ class ContestsContainer extends Component {
     if (!contests) return <div className="Loading">Loading ...</div>;
     return (
       <div className="row">
-        <h2 className="col-12">Contests</h2>
-        <ul className="list-group col-12 col-md-6">
-          {this.renderContest(contests)}
-        </ul>
-        <div className="col-12 col-md-6">
-          <div className="row">
-            <div className="col-12">Mappa</div>
-            <div className="col-12">Altre stats</div>
-          </div>
-        </div>
+        <h2 className="col-12 title">Contests</h2>
+        <ul className="list-group col-12">{this.renderContest(contests)}</ul>
       </div>
     );
   }
