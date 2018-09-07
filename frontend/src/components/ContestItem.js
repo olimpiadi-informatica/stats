@@ -42,7 +42,7 @@ function renderResults(results) {
           </Link>
         </td>
         <td>{contestant.score}</td>
-        <td>{medal}</td>
+        <td className="text-center">{medal}</td>
         <td>{contestant.region}</td>
       </tr>
     );
@@ -50,13 +50,15 @@ function renderResults(results) {
   return (
     <div>
       <h3> Results </h3>
-      <table className="table table-striped table-responsive-xs text-center">
+      <table className="table table-striped table-responsive-xs">
         <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">Contestant</th>
             <th scope="col">Score</th>
-            <th scope="col">Medal</th>
+            <th className="text-center" scope="col">
+              Medal
+            </th>
             <th scope="col">Region</th>
           </tr>
         </thead>
