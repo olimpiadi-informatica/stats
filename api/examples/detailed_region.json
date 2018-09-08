@@ -5,15 +5,16 @@
     "next": "LAZ"
   },
   "name": "Friuli-Venezia Giulia",
-  "contestants_per_year": [
+  "years": [
     {
       "year": 2017,
-      "num_contestants": 49
-    }
-  ],
-  "medals_per_year": [
-    {
-      "year": 2017,
+      "location": {
+        "location": "Università degli Studi - Polo Ferrari - Trento",
+        "gmaps": "https://goo.gl/maps/xyxXeaQ7Cjr",
+        "latitude": 46.0673201,
+        "longitude": 11.1466664
+      },
+      "num_contestants": 49,
       "num_medals": {
         "gold": 1,
         "silver": 2,
