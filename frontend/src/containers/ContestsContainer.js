@@ -19,9 +19,9 @@ class ContestsContainer extends Component {
   }
 
   render() {
-    const { contests } = this.props;
     const { error } = this.props;
     if (error) return <div>{error}</div>;
+    const { contests } = this.props;
     if (!contests) return <div className="Loading">Loading ...</div>;
     return (
       <div className="row">

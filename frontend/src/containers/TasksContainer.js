@@ -11,34 +11,35 @@ class TasksContainer extends Component {
     this.props.fetchTasks();
   }
 
-  renderTask(tasks, year) {
-    return _.map(tasks, (task, i) => {
+  renderTaskOfYear(tasks, year) {
+    return _.map(tasks, task => {
+      const max_score_possible = task.max_score_possible
+        ? task.max_score_possible
+        : "N/a";
+      const max_score = task.max_score ? task.max_score : "N/a";
       return (
         <TaskListItem key={`${task.name}${year}`} task={task} year={year} />
       );
     });
   }
 
-  renderTasksPerYear(tasks_per_year) {
-    return _.map(tasks_per_year, (value, key) => {
-      return (
-        <div key={key}>
-          <h4>{key}</h4>
-          <ul className="list-group">{this.renderTask(value, key)}</ul>
-        </div>
-      );
+  renderTasks(tasks) {
+    if (!tasks) <div className="Loading">Loading ...</div>;
+    const tasks_list = _.map(tasks, (value, key) => {
+      return <div key={key}>{this.renderTaskOfYear(value, key)}</div>;
     });
+    return <ul className="list-group">{tasks_list}</ul>;
   }
 
   render() {
-    if (!this.props.tasks) <div className="Loading">Loading ...</div>;
     const { error } = this.props;
     if (error) return <div>{error}</div>;
     const { tasks } = this.props;
+    if (!this.props.tasks) <div className="Loading">Loading ...</div>;
     return (
-      <div className="TasksContainer row">
-        <div className="col-12 col-md-6">{this.renderTasksPerYear(tasks)}</div>
-        <div className="col-12 col-md-6">Grafo</div>
+      <div className="row">
+        <h2 className="col-12 title">Tasks</h2>
+        <ul className="list-group col-12">{this.renderTasks(tasks)}</ul>
       </div>
     );
   }

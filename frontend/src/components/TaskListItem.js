@@ -10,13 +10,15 @@ const TaskListItem = ({ task, year }) => {
   return (
     <li className="TaskListItemContainer list-group-item">
       <Link to={`/task/${year}/${task.name}`}>
-        <h5>{task.name}</h5>
+        <h5>{task.title}</h5>
       </Link>
       <dl className="row">
-        <dt className="col-sm-7">Max possible score</dt>
-        <dd className="col-sm-5">{max_score_possible}</dd>
-        <dt className="col-sm-7">Max score</dt>
-        <dd className="col-sm-5">{max_score}</dd>
+        <dt className="col-sm-5">Year</dt>
+        <dd className="col-sm-7">{year}</dd>
+        <dt className="col-sm-5">Max possible score</dt>
+        <dd className="col-sm-7">{max_score_possible}</dd>
+        <dt className="col-sm-5">Max score</dt>
+        <dd className="col-sm-7">{max_score}</dd>
       </dl>
     </li>
   );
