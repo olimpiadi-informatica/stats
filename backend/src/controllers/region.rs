@@ -12,7 +12,10 @@ use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 
 use cache::Cache;
-use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
+use controllers::{
+    contestant_from_user, get_contest_location, get_num_medals, ContestLocation, Contestant,
+    NumMedals,
+};
 use db::DbConn;
 use error_status;
 use schema;
@@ -42,14 +45,10 @@ pub struct RegionsInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ContestantsPerYear {
+pub struct DetailedRegionYear {
     pub year: Year,
+    pub location: ContestLocation,
     pub num_contestants: usize,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct MedalsPerYear {
-    pub year: Year,
     pub num_medals: NumMedals,
 }
 
@@ -57,8 +56,7 @@ pub struct MedalsPerYear {
 pub struct DetailedRegion {
     pub name: String,
     pub navigation: RegionNavigation,
-    pub contestants_per_year: Vec<ContestantsPerYear>,
-    pub medals_per_year: Vec<MedalsPerYear>,
+    pub years: Vec<DetailedRegionYear>,
     pub hosted: Vec<Year>,
 }
 
@@ -194,22 +192,14 @@ fn get_region_details(region: String, conn: DbConn) -> Result<DetailedRegion, Er
         .map(|p| (p.0, p.1.collect()))
         .into_iter()
         .collect();
-    let contestants_per_year = (&participations)
-        .iter()
-        .filter(|(year, _parts)| !invalid_contests.contains(year))
-        .map(|(year, parts)| ContestantsPerYear {
-            year: *year,
-            num_contestants: parts.len(),
-        })
+    let contests: HashMap<Year, Contest> = schema::contests::table
+        .load::<Contest>(&*conn)?
+        .into_iter()
+        .group_by(|c| c.year)
+        .into_iter()
+        .map(|(year, contests)| (year, contests.collect::<Vec<Contest>>().swap_remove(0)))
         .collect();
-    let medals_per_year = (&participations)
-        .iter()
-        .filter(|(year, _parts)| !invalid_contests.contains(year))
-        .map(|(year, parts)| MedalsPerYear {
-            year: *year,
-            num_medals: get_num_medals(&parts),
-        })
-        .collect();
+
     let hosted = schema::contests::table
         .filter(schema::contests::columns::region.eq(Some(&region.id)))
         .order(schema::contests::columns::year)
@@ -219,8 +209,16 @@ fn get_region_details(region: String, conn: DbConn) -> Result<DetailedRegion, Er
     Ok(DetailedRegion {
         name: region.name.clone(),
         navigation: get_region_navigation(region.id.as_str(), conn)?,
-        contestants_per_year: contestants_per_year,
-        medals_per_year: medals_per_year,
+        years: participations
+            .iter()
+            .filter(|(year, _parts)| !invalid_contests.contains(year))
+            .map(|(year, parts)| DetailedRegionYear {
+                year: *year,
+                location: get_contest_location(contests.get(year).expect("Missing contest")),
+                num_contestants: parts.len(),
+                num_medals: get_num_medals(&parts),
+            })
+            .collect(),
         hosted: hosted,
     })
 }

@@ -11,7 +11,10 @@ use rocket_contrib::Json;
 use std::collections::HashMap;
 
 use cache::Cache;
-use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
+use controllers::{
+    contestant_from_user, get_contest_location, get_num_medals, ContestLocation, Contestant,
+    NumMedals,
+};
 use db::DbConn;
 use error_status;
 use schema;
@@ -37,14 +40,6 @@ pub struct ContestNavigation {
     pub current: Year,
     pub previous: Option<Year>,
     pub next: Option<Year>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ContestLocation {
-    pub location: Option<String>,
-    pub gmaps: Option<String>,
-    pub latitude: Option<f32>,
-    pub longitude: Option<f32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -153,15 +148,6 @@ fn get_medal_info(participations: &Vec<Participation>, medal: &str) -> ContestIn
         cutoff: fold_with_none(Some(INFINITY), medalist.iter(), |min, part| {
             min_option(min, part.score)
         }),
-    }
-}
-
-fn get_contest_location(contest: &Contest) -> ContestLocation {
-    ContestLocation {
-        location: contest.location.clone(),
-        gmaps: contest.gmaps.clone(),
-        latitude: contest.latitude,
-        longitude: contest.longitude,
     }
 }
 

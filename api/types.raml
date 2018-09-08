@@ -238,20 +238,14 @@ detailed_region:
         current: string
         previous: string?
         next: string?
-    # TODO: add position and border informations
-    contestants_per_year:
+    years:
       type: array
       items:
         type: object
         properties:
           year: integer
+          location: location
           num_contestants: integer
-    medals_per_year:
-      type: array
-      items:
-        type: object
-        properties:
-          year: integer
           num_medals: num_medals
     hosted:
       type: array
