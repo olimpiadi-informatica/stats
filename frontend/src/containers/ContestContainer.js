@@ -27,10 +27,14 @@ class ContestContainer extends Component {
       return <div className="Loading">Loading ...</div>;
     return (
       <div className="row">
-        <div className="col-12 col-md-6">
+        <div className="col-12">
+          <h2 className="title">
+            {contest.location.location} {contest.navigation.current.year}
+          </h2>
+        </div>
+        <div className="col-12">
           <ContestItem contest={contest} results={contest.results} />
         </div>
-        <div className="col-12 col-md-6">Grafici</div>
       </div>
     );
   }

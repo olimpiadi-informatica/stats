@@ -15,7 +15,8 @@ class ContestantsContainer extends Component {
     if (!contestants) {
       return <div>Loading...</div>;
     }
-    return _.map(contestants, contestant => {
+
+    const contestant_list = _.map(contestants, contestant => {
       return (
         <ContestantListItem
           key={contestant.contestant.id}
@@ -23,27 +24,29 @@ class ContestantsContainer extends Component {
         />
       );
     });
+    return (
+      <div>
+        <ul className="list-group">{contestant_list}</ul>
+      </div>
+    );
   }
 
   render() {
-    const { contestants } = this.props;
     const { error } = this.props;
     if (error) return <div>{error}</div>;
+    const { contestants } = this.props;
     if (!contestants) return <div className="Loading">Loading ...</div>;
-
     return (
       <div className="row">
         <div className="col-12">
-          <h3>Contestants</h3>
-        </div>
-        <ul className="col-12 col-md-6 list-group">
+          <h2>Contestants</h2>
           {this.renderContestants(contestants)}
-        </ul>
-        <div className="col-12 col-md-6">Grafici</div>
+        </div>
       </div>
     );
   }
 }
+
 function mapStateToProps(state) {
   if (state.contestants && state.contestants.error)
     return { error: "Connection Error" };
