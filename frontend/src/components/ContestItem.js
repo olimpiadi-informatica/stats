@@ -73,7 +73,7 @@ function renderMedal(medal, type, expanded) {
     <div className={`${type} d-inline-block p-4 text-center`}>
       <ion-icon name="medal" size="large" />
       <div>{medal[type].number}</div>
-      <div className="border-top">{medal[type].cutoff} point</div>
+      <div className="border-top">{medal[type].cutoff} points</div>
     </div>
   ) : (
     <div className={`${type} `}>
@@ -91,17 +91,17 @@ function renderMedals(medals) {
       <div className="gold d-inline-block p-4 text-center">
         <ion-icon name="medal" size="large" />
         <div>{medals.gold.number}</div>
-        <div className="border-top">{medals.gold.cutoff} point</div>
+        <div className="border-top">{medals.gold.cutoff} points</div>
       </div>
       <div className="silver d-inline-block p-4 text-center">
         <ion-icon name="medal" size="large" />
         <div>{medals.silver.number}</div>
-        <div className="border-top">{medals.silver.cutoff} point</div>
+        <div className="border-top">{medals.silver.cutoff} points</div>
       </div>
       <div className="bronze d-inline-block p-4 text-center">
         <ion-icon name="medal" size="large" />
         <div>{medals.bronze.number}</div>
-        <div className="border-top">{medals.bronze.cutoff} point</div>
+        <div className="border-top">{medals.bronze.cutoff} points</div>
       </div>
     </div>
   );

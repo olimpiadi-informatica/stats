@@ -15,12 +15,39 @@ body {
 }
 
 .gold > ion-icon {
-    color: #FFD700;
+  color: #FFD700;
 }
 .silver > ion-icon {
-    color: #C0C0C0;
+  color: #C0C0C0;
 }
 .bronze > ion-icon {
-    color: #CD7F32;
+  color: #CD7F32;
 }
+
+@media (min-width: 576px) {
+    .card-columns {
+        column-count: 1;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-columns {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 992px) {
+    .card-columns {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-columns {
+        column-count: 3;
+    }
+}
+
+}
+
 `;
