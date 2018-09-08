@@ -11,11 +11,6 @@ class ContestantContainer extends Component {
     this.props.fetchContestat(id);
   }
 
-  renderScore(score) {
-    console.log(score);
-    return <td>Ciao</td>;
-  }
-
   renderParticipations(participations) {
     if (!participations) return <div className="Loading">Loading ...</div>;
     const participations_list = _.map(participations, (participation, i) => {

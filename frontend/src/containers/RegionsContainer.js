@@ -13,25 +13,24 @@ class RegionsContainer extends Component {
 
   renderRegions(regions) {
     if (!regions) return <div className="Loading">Loading ...</div>;
-    return _.map(regions, (region, i) => {
-      return <RegionListItem region={region} key={(region.id, i)} />;
+    const regions_list = _.map(regions, (region, i) => {
+      return <RegionListItem region={region} key={i} />;
     });
+    return <ul className="list-group">{regions_list}</ul>;
   }
 
   render() {
-    const { regions } = this.props;
     const { error } = this.props;
     if (error) return <div>{error}</div>;
+    const { regions } = this.props;
     if (!regions) return <div className="Loading">Loading ...</div>;
+    console.log(regions);
     return (
       <div className="row">
         <div className="col-12">
-          <h3>Regions</h3>
+          <h2>Regions</h2>
         </div>
-        <ul className="list-group col-12 col-md-6">
-          {this.renderRegions(regions)}
-        </ul>
-        <div className="col-12 col-md-6"> Grafici </div>
+        <div className="col-12">{this.renderRegions(regions)}</div>
       </div>
     );
   }
