@@ -31,31 +31,31 @@ function About() {
         <div className="col-12">
           <h3>Gallery</h3>
         </div>
-        <div class="col-12 col-md-4 p-2">
+        <div className="col-12 col-md-4 p-2">
           <img src="/giorgio.jpg" className="img-fluid" />
         </div>
-        <div class="col-12 col-md-4 p-2">
+        <div className="col-12 col-md-4 p-2">
           <img src="/edoardo.jpeg" className="img-fluid" />
         </div>
-        <div class="col-12 col-md-4 p-2">
+        <div className="col-12 col-md-4 p-2">
           <img src="/edoardo.jpeg" className="img-fluid" />
         </div>
-        <div class="col-12 col-md-4 p-2">
+        <div className="col-12 col-md-4 p-2">
           <img src="/giorgio.jpg" className="img-fluid" />
         </div>
-        <div class="col-12 col-md-4 p-2">
+        <div className="col-12 col-md-4 p-2">
           <img src="/edoardo.jpeg" className="img-fluid" />
         </div>
-        <div class="col-12 col-md-4 p-2">
+        <div className="col-12 col-md-4 p-2">
           <img src="/giorgio.jpg" className="img-fluid" />
         </div>
-        <div class="col-12 col-md-4 p-2">
+        <div className="col-12 col-md-4 p-2">
           <img src="/edoardo.jpeg" className="img-fluid" />
         </div>
-        <div class="col-12 col-md-4 p-2">
+        <div className="col-12 col-md-4 p-2">
           <img src="/edoardo.jpeg" className="img-fluid" />
         </div>
-        <div class="col-12 col-md-4 p-2">
+        <div className="col-12 col-md-4 p-2">
           <img src="/edoardo.jpeg" className="img-fluid" />
         </div>
       </div>

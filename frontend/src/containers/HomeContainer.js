@@ -8,46 +8,31 @@ import { BarChart } from "../graphs";
 class HomeContainer extends Component {
   renderContestantCard() {
     const flip_coin = _.random(0, 100);
-    if (flip_coin < 50) {
-      return (
-        <div className="card">
-          <img
-            className="card-img-top"
-            src="/edoardo.jpeg"
-            alt="Card image cap"
-          />
-          <div className="card-body">
-            <p className="card-text">
-              Lo sapevi che Edoardo è stato l'atleta ad essere più volte riserva
-              per le Olimpiadi senza mai ricevere una convocazione
-            </p>
-          </div>
-        </div>
-      );
-    }
     return (
       <div className="card">
-        <img className="card-img-top" src="/giorgio.jpg" alt="Card image cap" />
+        <img
+          className="card-img-top"
+          src="/ciprietti.jpg"
+          alt="Card image cap"
+        />
         <div className="card-body">
-          <p className="card-text">
-            Lo sapevi che Giorgio è stato l'atleta più vincente di tutti i tempi
+          <div className="card-text">
+            Lo sapevi che <strong>Andrea Ciprietti</strong> è l'atleta più
+            vincente della storia delle olimpiadi italiane. In quattro
+            competizioni ha conquistato 3 ori e 1 argenti
             <div className="row text-center">
               <div className="col-12 align-items-center">
                 <div className="gold d-inline-block p-2">
                   <ion-icon name="medal" size="large" />
-                  <div className="text-center">99</div>
+                  <div className="text-center">3</div>
                 </div>
                 <div className="silver d-inline-block p-2">
                   <ion-icon name="medal" size="large" />
-                  <div className="text-center">99</div>
-                </div>
-                <div className="bronze d-inline-block p-2">
-                  <ion-icon name="medal" size="large" />
-                  <div className="text-center">99</div>
+                  <div className="text-center">1</div>
                 </div>
               </div>
             </div>
-          </p>
+          </div>
         </div>
       </div>
     );
@@ -56,15 +41,12 @@ class HomeContainer extends Component {
   renderRegionCard() {
     return (
       <div className="card">
-        <img
-          className="card-img-top"
-          src="/campobasso.jpg"
-          alt="Card image cap"
-        />
+        <img className="card-img-top" src="/veneto.jpg" alt="Card image cap" />
         <div className="card-body">
           <p className="card-text">
-            Le olimpiadi quest'anno si svolgono a Campobasso Molise, paese
-            probabilmente non esitente
+            Il <strong>Veneto</strong> è la regione che ha portato il maggior
+            numeri di atleti alla competizione, 179 per l'esatezza, 8 in più
+            della Lombardia
           </p>
         </div>
       </div>
@@ -98,22 +80,23 @@ class HomeContainer extends Component {
         <div className="card">
           <div className="card-body">
             <div className="card-text">
-              Lo sapevi che Pordenone è la regione straniere ad aver vinto il
-              numero maggiore di medaglie
+              Lo sapevi che la <strong>Lombardia</strong> è la regione ad aver
+              vinto il maggior numero di medaglie, 89, ed è anche la regione ad
+              aver visto il maggior numero di medaglie di oro, 19.
             </div>
             <div className="row text-center">
               <div className="col-12 align-items-center">
                 <div className="gold d-inline-block p-2">
                   <ion-icon name="medal" size="large" />
-                  <div className="text-center">5</div>
+                  <div className="text-center">19</div>
                 </div>
                 <div className="silver d-inline-block p-2">
                   <ion-icon name="medal" size="large" />
-                  <div className="text-center">5</div>
+                  <div className="text-center">29</div>
                 </div>
                 <div className="bronze d-inline-block p-2">
                   <ion-icon name="medal" size="large" />
-                  <div className="text-center">6</div>
+                  <div className="text-center">41</div>
                 </div>
               </div>
             </div>
@@ -125,17 +108,52 @@ class HomeContainer extends Component {
       <div className="card">
         <div className="card-body">
           <div className="card-text">
-            Lo sapevi che Colleferro è l'impero ad aver vinto il numero minore
-            di medaglie
+            Michele Russo nel 2016 ha portato la prima medaglia nella storia per
+            la <strong>Basilicata</strong>, portando a casa un bronzo
+            totalizzando 118 punti
           </div>
           <div className="row text-center">
             <div className="col-12 align-items-center">
               <div className="bronze d-inline-block p-2">
                 <ion-icon name="medal" size="large" />
-                <div className="text-center">4</div>
+                <div className="text-center">1</div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderTasksCard() {
+    return (
+      <div className="card">
+        <img className="card-img-top" src="/mirror.jpg" alt="Card image cap" />
+        <div className="card-body">
+          <p className="card-text">
+            <strong>Stanza degli specchi</strong> è uno dei task più difficile
+            che è mai apparso ad una olimpiade. Nessun atleta è riuscito ad
+            ottenere il punteggio massimo di 100 punti. Solo quattro atleti sono
+            riusciti ad ottenere 80 punti.
+          </p>
+        </div>
+      </div>
+    );
+  }
+  renderNewsCard() {
+    return (
+      <div className="card">
+        <img
+          className="card-img-top"
+          src="/oii_campobasso.jpg"
+          alt="Card image cap"
+        />
+        <div className="card-body">
+          <p className="card-text">
+            La XVIII edizione delle Olimpiadi Italiane di Informatica si terrà
+            presso ITI G. Marconi di <strong>Campobasso</strong> dal 13 al
+            15/09/2018.
+          </p>
         </div>
       </div>
     );
@@ -160,6 +178,7 @@ class HomeContainer extends Component {
           come le Olimpiadi di Informatica si creano le precondizioni per
           preparare gli studenti al lavoro ed agli ulteriori livelli di studio e
           ricerca.
+          <a href="https://www.olimpiadi-informatica.it">Visita il sito</a>
         </div>
       </div>
     );
@@ -167,16 +186,18 @@ class HomeContainer extends Component {
 
   render() {
     return (
-      <div className="HomeContainer">
-        <div className="row p-2">
+      <div className="HomeContainer p-2">
+        <div className="row">
           <div className="col-12">
             <div className="card-columns">
               {this.renderInfoCard()}
               {this.renderContestantCard()}
               {this.renderRegionCard()}
+              {this.renderNewsCard()}
               {this.renderStatsFirstCard()}
               {this.renderStatsSecondCard()}
               {this.renderMedalCard()}
+              {this.renderTasksCard()}
             </div>
           </div>
         </div>

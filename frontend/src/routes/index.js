@@ -34,7 +34,6 @@ function Routes() {
             <Route path="/about" component={About} />
             <Route path="/" component={HomeContainer} />
           </Switch>
-          <Footer />
         </div>
       </BrowserRouter>
     </div>

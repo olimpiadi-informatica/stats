@@ -41,9 +41,11 @@ class Header extends Component {
 
   render() {
     return (
-      <div>
+      <div className="p-2">
         <Navbar color="light" light expand="md">
-          <NavbarBrand href="/">OIISTATS</NavbarBrand>
+          <NavbarBrand href="/">
+            <img src="/logo.png" height="40" />
+          </NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>

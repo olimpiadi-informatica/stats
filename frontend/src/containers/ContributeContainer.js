@@ -6,8 +6,9 @@ class ContributeContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isGoing: true,
-      numberOfGuests: 2
+      name: "",
+      email: "",
+      contribute: ""
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -26,34 +27,75 @@ class ContributeContainer extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    console.log(this.state);
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Is going:
-          <input
-            name="isGoing"
-            type="checkbox"
-            checked={this.state.isGoing}
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <br />
-        <label>
-          Number of guests:
-          <input
-            name="numberOfGuests"
-            type="number"
-            value={this.state.numberOfGuests}
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <br />
-        <input type="submit" value="Submit" />
-      </form>
+      <div className="row p-2">
+        <h2 className="col-12">Contribute</h2>
+        <div className="col-12">
+          <p>
+            Devi contribuire perchè ci mancano i dannati dati. Lorem ipsum dolor
+            sit amet, consectetur adipiscing elit. Etiam lacinia dignissim diam
+            sit amet fringilla. Phasellus cursus rhoncus suscipit. Ut varius
+            tincidunt facilisis. Fusce ac congue purus, ut interdum orci. Cras
+            feugiat porttitor elit, vel venenatis odio malesuada sit amet.
+            Curabitur dolor neque, porttitor vitae finibus sed, porttitor nec
+            turpis. Quisque non vulputate leo, ut dignissim sem. Nullam porta,
+            leo non viverra rhoncus, magna massa dapibus neque, nec rhoncus ex
+            libero ut tortor. Lorem ipsum dolor sit amet, consectetur adipiscing
+            elit.
+          </p>
+        </div>
+        <div className="col-12">
+          <form onSubmit={this.handleSubmit}>
+            <div className="input-group mb-3">
+              <input
+                type="text"
+                name="name"
+                value={this.state.name}
+                onChange={this.handleInputChange}
+                className="form-control"
+                placeholder="Name"
+                aria-label="Name"
+                aria-describedby="basic-addon1"
+                required
+              />
+            </div>
+
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text">@</span>
+              </div>
+              <input
+                type="email"
+                name="email"
+                value={this.state.email}
+                onChange={this.handleInputChange}
+                className="form-control"
+                placeholder="Email"
+                aria-label="Email"
+                aria-describedby="basic-addon1"
+                required
+              />
+            </div>
+
+            <div className="input-group mb-3">
+              <textarea
+                name="contribute"
+                value={this.state.contribute}
+                onChange={this.handleInputChange}
+                className="form-control"
+                required
+                placeholder="Your Contribute"
+              />
+            </div>
+
+            <br />
+            <input type="submit" value="Send" className="btn btn-primary" />
+          </form>
+        </div>
+      </div>
     );
   }
 }
