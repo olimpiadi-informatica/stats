@@ -30,6 +30,7 @@ use rocket::Catcher;
 mod cache;
 mod controllers;
 mod db;
+mod models;
 mod schema;
 mod types;
 mod utility;

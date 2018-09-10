@@ -12,12 +12,11 @@ use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 
 use cache::Cache;
-use controllers::{
-    contestant_from_user, get_contest_location, get_num_medals, ContestLocation, Contestant,
-    NumMedals,
-};
+use controllers::{get_num_medals, NumMedals};
 use db::DbConn;
 use error_status;
+use models::contest::{get_contest_location, ContestLocation};
+use models::user::{contestant_from_user, Contestant};
 use schema;
 use types::{Contest, Participation, Region, TaskScore, User, Year};
 use utility::*;

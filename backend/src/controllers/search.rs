@@ -5,9 +5,9 @@ use diesel::sql_types::{Integer, Nullable, Text};
 use rocket::response::Failure;
 use rocket_contrib::Json;
 
-use controllers::Contestant;
 use db::DbConn;
 use error_status;
+use models::user::Contestant;
 use types::Year;
 
 #[derive(Serialize, Deserialize, Debug)]

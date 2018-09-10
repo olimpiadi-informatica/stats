@@ -9,9 +9,9 @@ use std::collections::HashMap;
 use std::iter::FromIterator;
 
 use cache::Cache;
-use controllers::{contestant_from_user, Contestant};
 use db::DbConn;
 use error_status;
+use models::user::{contestant_from_user, Contestant};
 use schema;
 use types::{Participation, Task, TaskScore, User, Year};
 use utility::*;

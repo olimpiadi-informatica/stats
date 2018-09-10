@@ -7,9 +7,10 @@ use rocket_contrib::Json;
 use std::usize;
 
 use cache::Cache;
-use controllers::{contestant_from_user, get_num_medals, Contestant, NumMedals};
+use controllers::{get_num_medals, NumMedals};
 use db::DbConn;
 use error_status;
+use models::user::{contestant_from_user, Contestant};
 use schema;
 use types::{Participation, TaskScore, User, Year};
 use utility::*;
