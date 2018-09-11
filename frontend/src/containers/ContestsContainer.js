@@ -23,6 +23,7 @@ class ContestsContainer extends Component {
     if (error) return <div>{error}</div>;
     const { contests } = this.props;
     if (!contests) return <div className="Loading">Loading ...</div>;
+
     return (
       <div className="row">
         <h2 className="col-12 title">Contests</h2>

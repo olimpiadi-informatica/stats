@@ -57,7 +57,7 @@ class Header extends Component {
                   to="/contestants"
                   className="navbar-light navbar-nav nav-link"
                 >
-                  Contestants
+                  Hall of Fame
                 </Link>
               </NavItem>
               <NavItem>

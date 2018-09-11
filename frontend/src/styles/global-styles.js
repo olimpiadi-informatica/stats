@@ -44,7 +44,7 @@ body {
 
 @media (min-width: 1200px) {
     .card-columns {
-        column-count: 3;
+        column-count: 2;
     }
 }
 

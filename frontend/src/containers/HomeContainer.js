@@ -4,10 +4,14 @@ import _ from "lodash";
 import { connect } from "react-redux";
 import { fetchRegions } from "../actions/regions";
 
-import { WindRose } from "../graphs";
 import { BarChart } from "../graphs";
+import { RowChart } from "../graphs";
 
 class HomeContainer extends Component {
+  componentDidMount() {
+    this.props.fetchRegions();
+  }
+
   renderContestantCard() {
     // const flip_coin = _.random(0, 100);
     return (
@@ -55,7 +59,7 @@ class HomeContainer extends Component {
     return (
       <div className="card">
         <div className="card-body">
-          <WindRose />
+          <RowChart />
         </div>
       </div>
     );
@@ -183,6 +187,11 @@ class HomeContainer extends Component {
   }
 
   render() {
+    const { error } = this.props;
+    if (error) return <div>{error}</div>;
+    const { regionsMA } = this.props;
+    if (!regionsMA) return <div className="Loading">Loading ...</div>;
+    console.log(regionsMA);
     return (
       <div className="HomeContainer p-2">
         <div className="row">
@@ -193,7 +202,6 @@ class HomeContainer extends Component {
               {this.renderRegionCard()}
               {this.renderNewsCard()}
               {this.renderStatsFirstCard()}
-              {this.renderStatsSecondCard()}
               {this.renderMedalCard()}
               {this.renderTasksCard()}
             </div>
@@ -207,7 +215,21 @@ class HomeContainer extends Component {
 function mapStateToProps(state) {
   if (state.regions && state.regions.error)
     return { error: "Connection Error" };
-  return { regions: state.regions };
+  return { regionsMA: medalsContestants(state.regions) };
+}
+
+function medalsContestants(regions) {
+  if (!regions) return [];
+  let regionMA = [];
+  _.map(regions, region => {
+    const { medals } = region;
+    const total_medals = medals.gold + medals.silver + medals.bronze;
+    regionMA.push({
+      region: region.id,
+      ma: Math.round(total_medals / region.num_contestants)
+    });
+  });
+  return regionMA;
 }
 
 export default connect(
