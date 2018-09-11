@@ -34,3 +34,14 @@ pub fn get_task_scores(conn: &DbConn, year: Year, name: &str) -> Result<Vec<Task
         )
         .load(&**conn)
 }
+
+pub fn get_users_task_scores(
+    conn: &DbConn,
+    user_ids: &Vec<String>,
+) -> Result<Vec<TaskScore>, Error> {
+    schema::task_scores::table
+        .filter(schema::task_scores::columns::user_id.eq_any(user_ids))
+        .order(schema::task_scores::columns::contest_year)
+        .then_order_by(schema::task_scores::columns::user_id)
+        .load::<TaskScore>(&**conn)
+}

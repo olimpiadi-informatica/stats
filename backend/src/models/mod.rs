@@ -4,6 +4,7 @@
 
 pub mod contest;
 pub mod participation;
+pub mod region;
 pub mod task;
 pub mod task_score;
 pub mod user;

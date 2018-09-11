@@ -8,7 +8,7 @@ use schema::{contests, participations, regions, task_scores, tasks, users};
 // with sqlite
 pub type Year = i32;
 
-#[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Debug, Clone)]
 #[primary_key(id)]
 pub struct Region {
     pub id: String,
@@ -21,7 +21,7 @@ impl PartialEq for Region {
     }
 }
 
-#[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Debug, Clone)]
 #[primary_key(year)]
 pub struct Contest {
     pub year: Year,
@@ -32,7 +32,7 @@ pub struct Contest {
     pub region: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Queryable, Identifiable, Debug)]
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Debug, Clone)]
 pub struct User {
     pub id: String,
     pub name: String,
@@ -57,7 +57,7 @@ pub struct Participation {
     pub score: Option<f32>,
 }
 
-#[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug)]
+#[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug, Clone)]
 #[belongs_to(Contest, foreign_key = "contest_year")]
 #[primary_key(name, contest_year)]
 pub struct Task {
@@ -69,7 +69,7 @@ pub struct Task {
     pub link: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug)]
+#[derive(Serialize, Deserialize, Queryable, Associations, Identifiable, Debug, Clone)]
 #[belongs_to(Task, foreign_key = "task_name")]
 #[belongs_to(Contest, foreign_key = "contest_year")]
 #[belongs_to(User, foreign_key = "user_id")]

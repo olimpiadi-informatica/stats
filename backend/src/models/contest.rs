@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+use diesel::dsl::count;
 use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::RunQueryDsl;
@@ -11,7 +12,7 @@ use std::f32::INFINITY;
 use controllers::{get_num_medals, NumMedals};
 use db::DbConn;
 use models::participation::{
-    get_contests_participations, get_participations, get_participations_per_regions,
+    get_contests_participations, get_participations, get_participations_per_regions_per_year,
     get_participations_with_user, get_past_contest_participations, PastParticipation,
 };
 use models::task::{get_scores_of_year, get_tasks};
@@ -142,6 +143,14 @@ pub fn get_contests(conn: &DbConn) -> Result<Vec<Contest>, Error> {
     schema::contests::table
         .order(schema::contests::columns::year.desc())
         .load::<Contest>(&**conn)
+}
+
+#[allow(dead_code)]
+pub fn get_num_contests(conn: &DbConn) -> Result<u64, Error> {
+    schema::contests::table
+        .select(count(schema::contests::columns::year))
+        .first::<i64>(&**conn)
+        .map(|c| c as u64)
 }
 
 pub fn get_contest_info_medal(
@@ -361,7 +370,7 @@ pub fn get_contest_regions(year: Year, conn: DbConn) -> Result<ContestRegions, E
 
     let mut result: Vec<ContestRegion> = Vec::new();
 
-    for (region, participations) in get_participations_per_regions(&conn, year)? {
+    for (region, participations) in get_participations_per_regions_per_year(&conn, year)? {
         let sum_score = fold_with_none(Some(0.0), participations.iter(), |m, p| {
             add_option(m, p.score)
         });

@@ -11,7 +11,7 @@ use std::collections::HashMap;
 use db::DbConn;
 use schema;
 
-use types::{Contest, Participation, User, Year};
+use types::{Contest, Participation, Region, User, Year};
 use utility::Medal;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -66,7 +66,7 @@ pub fn get_past_contest_participations(
         .collect())
 }
 
-pub fn get_participations_per_regions(
+pub fn get_participations_per_regions_per_year(
     conn: &DbConn,
     year: Year,
 ) -> Result<Vec<(String, Vec<Participation>)>, Error> {
@@ -87,5 +87,25 @@ pub fn get_participations_per_regions(
                 p.collect::<Vec<Participation>>(),
             )
         })
+        .collect())
+}
+
+pub fn get_participations_per_regions(
+    conn: &DbConn,
+) -> Result<Vec<(Region, Vec<Participation>)>, Error> {
+    Ok(schema::participations::table
+        .filter(schema::participations::region.is_not_null())
+        .left_join(schema::regions::table)
+        .order(schema::participations::region)
+        .load::<(Participation, Option<Region>)>(&**conn)?
+        .iter()
+        .group_by(|(_p, r)| r)
+        .into_iter()
+        // FIXME the .clone() here may be removed somehow
+        .map(|(r, p)| (
+            (*r).clone().expect("Join didn't worked"),
+            p.map(|p| p.0.clone()).collect::<Vec<Participation>>()
+        ))
+        .into_iter()
         .collect())
 }
