@@ -3,30 +3,6 @@ import { Link } from "react-router-dom";
 import _ from "lodash";
 import { TaskListItem } from "../components";
 
-function renderResults_old(results) {
-  if (!results) return <div className="Loading">Loading ...</div>;
-  return _.map(results.results, result => {
-    let score = _.map(result.scores, (score, i) => {
-      return <span key={result.contestant.id + i}>{score} </span>;
-    });
-
-    let medal = result.medal ? <div>{result.medal}</div> : "";
-
-    return (
-      <li className="list-group-item" key={result.contestant.id}>
-        <div>Rank : {result.rank}</div>
-        <Link to={`/contestant/${result.contestant.id}`}>
-          {result.contestant.first_name} {result.contestant.last_name}
-        </Link>
-        <div>{result.region}</div>
-        <div>
-          {score} {result.score} {medal}
-        </div>
-      </li>
-    );
-  });
-}
-
 function renderResults(results) {
   if (!results) return <div className="Loading">Loading ...</div>;
   const contestants = _.map(results.results, contestant => {

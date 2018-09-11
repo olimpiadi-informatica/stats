@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import styled, { keyframes } from "styled-components";
+// import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import {
   Collapse,
@@ -7,12 +7,7 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
+  NavItem
 } from "reactstrap";
 
 class Header extends Component {
@@ -44,7 +39,7 @@ class Header extends Component {
       <div className="p-2">
         <Navbar color="light" light expand="md">
           <NavbarBrand href="/">
-            <img src="/logo.png" height="40" />
+            <img src="/logo.png" height="40" alt="Card cap" />
           </NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>

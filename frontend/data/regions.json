@@ -1,0 +1,244 @@
+{
+  "regions": [
+    {
+      "id": "ABR",
+      "name": "Abruzzo",
+      "num_contestants": 22,
+      "medals": {
+        "gold": 3,
+        "silver": 1,
+        "bronze": 4
+      },
+      "avg_contestants_per_year": 1.7777778,
+      "hosted": []
+    },
+    {
+      "id": "BAS",
+      "name": "Basilicata",
+      "num_contestants": 13,
+      "medals": {
+        "gold": 0,
+        "silver": 0,
+        "bronze": 1
+      },
+      "avg_contestants_per_year": 1.0,
+      "hosted": []
+    },
+    {
+      "id": "CAL",
+      "name": "Calabria",
+      "num_contestants": 19,
+      "medals": {
+        "gold": 0,
+        "silver": 0,
+        "bronze": 5
+      },
+      "avg_contestants_per_year": 1.6666666,
+      "hosted": []
+    },
+    {
+      "id": "CAM",
+      "name": "Campania",
+      "num_contestants": 27,
+      "medals": {
+        "gold": 2,
+        "silver": 2,
+        "bronze": 3
+      },
+      "avg_contestants_per_year": 2.3333333,
+      "hosted": [2013, 2014]
+    },
+    {
+      "id": "EMI",
+      "name": "Emilia-Romagna",
+      "num_contestants": 132,
+      "medals": {
+        "gold": 6,
+        "silver": 15,
+        "bronze": 35
+      },
+      "avg_contestants_per_year": 10.444445,
+      "hosted": [2015]
+    },
+    {
+      "id": "FRI",
+      "name": "Friuli-Venezia Giulia",
+      "num_contestants": 49,
+      "medals": {
+        "gold": 5,
+        "silver": 8,
+        "bronze": 16
+      },
+      "avg_contestants_per_year": 4.111111,
+      "hosted": []
+    },
+    {
+      "id": "LAZ",
+      "name": "Lazio",
+      "num_contestants": 49,
+      "medals": {
+        "gold": 5,
+        "silver": 5,
+        "bronze": 16
+      },
+      "avg_contestants_per_year": 3.7777777,
+      "hosted": []
+    },
+    {
+      "id": "LIG",
+      "name": "Liguria",
+      "num_contestants": 23,
+      "medals": {
+        "gold": 3,
+        "silver": 5,
+        "bronze": 4
+      },
+      "avg_contestants_per_year": 1.8888888,
+      "hosted": []
+    },
+    {
+      "id": "LOM",
+      "name": "Lombardia",
+      "num_contestants": 171,
+      "medals": {
+        "gold": 19,
+        "silver": 29,
+        "bronze": 41
+      },
+      "avg_contestants_per_year": 14.888889,
+      "hosted": [2006, 2010, 2011, 2012]
+    },
+    {
+      "id": "MAR",
+      "name": "Marche",
+      "num_contestants": 20,
+      "medals": {
+        "gold": 0,
+        "silver": 1,
+        "bronze": 4
+      },
+      "avg_contestants_per_year": 1.6666666,
+      "hosted": [2008]
+    },
+    {
+      "id": "MOL",
+      "name": "Molise",
+      "num_contestants": 9,
+      "medals": {
+        "gold": 1,
+        "silver": 1,
+        "bronze": 0
+      },
+      "avg_contestants_per_year": 0.6666667,
+      "hosted": []
+    },
+    {
+      "id": "PIE",
+      "name": "Piemonte",
+      "num_contestants": 54,
+      "medals": {
+        "gold": 2,
+        "silver": 7,
+        "bronze": 18
+      },
+      "avg_contestants_per_year": 4.6666665,
+      "hosted": []
+    },
+    {
+      "id": "PUG",
+      "name": "Puglia",
+      "num_contestants": 68,
+      "medals": {
+        "gold": 3,
+        "silver": 6,
+        "bronze": 15
+      },
+      "avg_contestants_per_year": 5.7777777,
+      "hosted": [2007]
+    },
+    {
+      "id": "SAR",
+      "name": "Sardegna",
+      "num_contestants": 13,
+      "medals": {
+        "gold": 0,
+        "silver": 1,
+        "bronze": 3
+      },
+      "avg_contestants_per_year": 1.1111112,
+      "hosted": []
+    },
+    {
+      "id": "SIC",
+      "name": "Sicilia",
+      "num_contestants": 41,
+      "medals": {
+        "gold": 3,
+        "silver": 5,
+        "bronze": 8
+      },
+      "avg_contestants_per_year": 3.4444444,
+      "hosted": [2005, 2016]
+    },
+    {
+      "id": "TOS",
+      "name": "Toscana",
+      "num_contestants": 45,
+      "medals": {
+        "gold": 3,
+        "silver": 3,
+        "bronze": 9
+      },
+      "avg_contestants_per_year": 3.3333333,
+      "hosted": []
+    },
+    {
+      "id": "TRE",
+      "name": "Trentino-Alto Adige",
+      "num_contestants": 50,
+      "medals": {
+        "gold": 5,
+        "silver": 6,
+        "bronze": 15
+      },
+      "avg_contestants_per_year": 4.4444447,
+      "hosted": [2004, 2017]
+    },
+    {
+      "id": "UMB",
+      "name": "Umbria",
+      "num_contestants": 13,
+      "medals": {
+        "gold": 0,
+        "silver": 1,
+        "bronze": 3
+      },
+      "avg_contestants_per_year": 1.1111112,
+      "hosted": []
+    },
+    {
+      "id": "VAL",
+      "name": "Valle d'Aosta",
+      "num_contestants": 2,
+      "medals": {
+        "gold": 0,
+        "silver": 0,
+        "bronze": 0
+      },
+      "avg_contestants_per_year": 0.22222222,
+      "hosted": []
+    },
+    {
+      "id": "VEN",
+      "name": "Veneto",
+      "num_contestants": 179,
+      "medals": {
+        "gold": 4,
+        "silver": 26,
+        "bronze": 49
+      },
+      "avg_contestants_per_year": 15.444445,
+      "hosted": [2009]
+    }
+  ]
+}

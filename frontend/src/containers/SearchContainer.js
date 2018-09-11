@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { fetchSearchResults } from "../actions/search";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import { RegionListItem } from "../components";
 import { ContestantListItem } from "../components";

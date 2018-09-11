@@ -8,9 +8,9 @@ import {
   SearchContainer,
   ContributeContainer
 } from "../containers";
-import { Header, Footer, About } from "../components/";
+import { Header, About } from "../components/";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import styled from "styled-components";
+// import styled from "styled-components";
 
 // const Container = styled.div`text-align: center;`
 

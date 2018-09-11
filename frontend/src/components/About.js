@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 function About() {
   return (
@@ -9,7 +9,7 @@ function About() {
           <h2>About Us</h2>
         </div>
         <div className="col-12 mt-2">
-          <img className="float-right" src="/logo.png" alt="Card image cap" />
+          <img className="float-right" src="/logo.png" alt="Card cap" />
           Come accordo tra MIUR - Ministero dell'Istruzione, dell'Università e
           della Ricerca ed AICA - Associazione Italiana per l'Informatica ed il
           Calcolo Automatico, viene promossa la partecipazione degli studenti
@@ -32,31 +32,31 @@ function About() {
           <h3>Gallery</h3>
         </div>
         <div className="col-12 col-md-4 p-2">
-          <img src="/giorgio.jpg" className="img-fluid" />
+          <img src="/giorgio.jpg" className="img-fluid" alt="Card cap" />
         </div>
         <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" />
+          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
         </div>
         <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" />
+          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
         </div>
         <div className="col-12 col-md-4 p-2">
-          <img src="/giorgio.jpg" className="img-fluid" />
+          <img src="/giorgio.jpg" className="img-fluid" alt="Card cap" />
         </div>
         <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" />
+          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
         </div>
         <div className="col-12 col-md-4 p-2">
-          <img src="/giorgio.jpg" className="img-fluid" />
+          <img src="/giorgio.jpg" className="img-fluid" alt="Card cap" />
         </div>
         <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" />
+          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
         </div>
         <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" />
+          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
         </div>
         <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" />
+          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
         </div>
       </div>
     </div>

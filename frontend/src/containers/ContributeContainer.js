@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import _ from "lodash";
-import { Link } from "react-router-dom";
+// import _ from "lodash";
+// import { Link } from "react-router-dom";
 
 class ContributeContainer extends Component {
   constructor(props) {

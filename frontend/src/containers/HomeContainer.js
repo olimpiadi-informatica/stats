@@ -1,20 +1,18 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import _ from "lodash";
+import { connect } from "react-redux";
+import { fetchRegions } from "../actions/regions";
 
 import { WindRose } from "../graphs";
 import { BarChart } from "../graphs";
 
 class HomeContainer extends Component {
   renderContestantCard() {
-    const flip_coin = _.random(0, 100);
+    // const flip_coin = _.random(0, 100);
     return (
       <div className="card">
-        <img
-          className="card-img-top"
-          src="/ciprietti.jpg"
-          alt="Card image cap"
-        />
+        <img className="card-img-top" src="/ciprietti.jpg" alt="Card cap" />
         <div className="card-body">
           <div className="card-text">
             Lo sapevi che <strong>Andrea Ciprietti</strong> è l'atleta più
@@ -41,7 +39,7 @@ class HomeContainer extends Component {
   renderRegionCard() {
     return (
       <div className="card">
-        <img className="card-img-top" src="/veneto.jpg" alt="Card image cap" />
+        <img className="card-img-top" src="/veneto.jpg" alt="Card cap" />
         <div className="card-body">
           <p className="card-text">
             Il <strong>Veneto</strong> è la regione che ha portato il maggior
@@ -128,7 +126,7 @@ class HomeContainer extends Component {
   renderTasksCard() {
     return (
       <div className="card">
-        <img className="card-img-top" src="/mirror.jpg" alt="Card image cap" />
+        <img className="card-img-top" src="/mirror.jpg" alt="Card cap" />
         <div className="card-body">
           <p className="card-text">
             <strong>Stanza degli specchi</strong> è uno dei task più difficile
@@ -146,7 +144,7 @@ class HomeContainer extends Component {
         <img
           className="card-img-top"
           src="/oii_campobasso.jpg"
-          alt="Card image cap"
+          alt="Card cap"
         />
         <div className="card-body">
           <p className="card-text">
@@ -162,13 +160,13 @@ class HomeContainer extends Component {
   renderInfoCard() {
     return (
       <div className="card">
-        <img className="card-img-top" src="/logo.png" alt="Card image cap" />
+        <img className="card-img-top" src="/logo.png" alt="Card cap" />
         <div className="card-body">
           Come accordo tra MIUR - Ministero dell'Istruzione, dell'Università e
           della Ricerca ed AICA - Associazione Italiana per l'Informatica ed il
           Calcolo Automatico, viene promossa la partecipazione degli studenti
           della scuola secondaria superiore alle Olimpiadi Italiane di
-          Informatica. L'evento assume particolare significato in quanto
+          Informatica. Lo evento assume particolare significato in quanto
           costituisce occasione per far emergere e valorizzare le "eccellenze"
           esistenti nella scuola italiana, con positiva ricaduta sull'intero
           sistema educativo. A maggior ragione, se si considera che le
@@ -206,4 +204,13 @@ class HomeContainer extends Component {
   }
 }
 
-export default HomeContainer;
+function mapStateToProps(state) {
+  if (state.regions && state.regions.error)
+    return { error: "Connection Error" };
+  return { regions: state.regions };
+}
+
+export default connect(
+  mapStateToProps,
+  { fetchRegions }
+)(HomeContainer);

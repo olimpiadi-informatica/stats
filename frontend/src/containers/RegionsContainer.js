@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { fetchRegions } from "../actions/regions";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import { RegionListItem } from "../components";
 
@@ -13,6 +13,7 @@ class RegionsContainer extends Component {
 
   renderRegions(regions) {
     if (!regions) return <div className="Loading">Loading ...</div>;
+    console.log(regions);
     const regions_list = _.map(regions, (region, i) => {
       return <RegionListItem region={region} key={i} />;
     });

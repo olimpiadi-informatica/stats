@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import _ from "lodash";
+// import _ from "lodash";
 
 const RegionListItem = ({ region }) => {
   if (!region) return <div className="Loading">Loading ...</div>;

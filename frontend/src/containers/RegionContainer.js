@@ -1,19 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  TabContent,
-  TabPane,
-  Nav,
-  NavItem,
-  NavLink,
-  Card,
-  Button,
-  CardTitle,
-  CardText,
-  Row,
-  Col
-} from "reactstrap";
+import { TabContent, TabPane, Nav, NavItem, NavLink } from "reactstrap";
 import _ from "lodash";
 import { fetchRegion, fetchRegionResults } from "../actions/regions";
 
@@ -106,11 +94,11 @@ class RegionContainer extends Component {
 
   renderRegion(region) {
     if (!region) return <div className="Loading">Loading ...</div>;
-    const avg_contestants_per_year = region.avg_contestants_per_year ? (
-      <div>avg_contestants_per_year {region.avg_contestants_per_year}</div>
-    ) : (
-      ""
-    );
+    // const avg_contestants_per_year = region.avg_contestants_per_year ? (
+    //   <div>avg_contestants_per_year {region.avg_contestants_per_year}</div>
+    // ) : (
+    //   ""
+    // );
     const results_per_year = region.results ? (
       <div>{this.renderResultsPerYear(region.results.results)}</div>
     ) : (
@@ -213,10 +201,10 @@ class RegionContainer extends Component {
   renderResults(results) {
     const results_list = _.map(results, result => {
       const year = result.year;
-      {
-        return this.renderContestatsPerYear(result.contestants, year);
-      }
+
+      return this.renderContestatsPerYear(result.contestants, year);
     });
+
     return (
       <div className="row">
         <table className="table table-striped table-responsive-xs">

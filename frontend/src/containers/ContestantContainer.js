@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import _ from "lodash";
 
 import { fetchContestat } from "../actions/contestants";
@@ -90,7 +90,7 @@ class ContestantContainer extends Component {
       );
     });
 
-    const max_scores = _.each(participations, participation => {});
+    // const max_scores = _.each(participations, participation => {});
 
     return (
       <div>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import _ from "lodash";
 
 import { fetchTasks } from "../actions/tasks";
@@ -13,10 +13,10 @@ class TasksContainer extends Component {
 
   renderTaskOfYear(tasks, year) {
     return _.map(tasks, task => {
-      const max_score_possible = task.max_score_possible
-        ? task.max_score_possible
-        : "N/a";
-      const max_score = task.max_score ? task.max_score : "N/a";
+      // const max_score_possible = task.max_score_possible
+      //   ? task.max_score_possible
+      //   : "N/a";
+      // const max_score = task.max_score ? task.max_score : "N/a";
       return (
         <TaskListItem key={`${task.name}${year}`} task={task} year={year} />
       );
@@ -24,7 +24,7 @@ class TasksContainer extends Component {
   }
 
   renderTasks(tasks) {
-    if (!tasks) <div className="Loading">Loading ...</div>;
+    if (!tasks) return <div className="Loading">Loading ...</div>;
     const tasks_list = _.map(tasks, (value, key) => {
       return <div key={key}>{this.renderTaskOfYear(value, key)}</div>;
     });
@@ -35,7 +35,7 @@ class TasksContainer extends Component {
     const { error } = this.props;
     if (error) return <div>{error}</div>;
     const { tasks } = this.props;
-    if (!this.props.tasks) <div className="Loading">Loading ...</div>;
+    if (!this.props.tasks) return <div className="Loading">Loading ...</div>;
     return (
       <div className="row">
         <h2 className="col-12 title">Tasks</h2>
