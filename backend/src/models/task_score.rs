@@ -8,7 +8,7 @@ use itertools::Itertools;
 
 use db::DbConn;
 use schema;
-use types::{TaskScore, Year};
+use types::{TaskScore, User, Year};
 
 pub fn get_contest_task_scores(
     conn: &DbConn,
@@ -25,7 +25,7 @@ pub fn get_contest_task_scores(
         .collect())
 }
 
-pub fn get_task_scores(conn: &DbConn, year: Year, name: &str) -> Result<Vec<TaskScore>, Error> {
+pub fn get_scores_of_task(conn: &DbConn, year: Year, name: &str) -> Result<Vec<TaskScore>, Error> {
     schema::task_scores::table
         .filter(
             schema::task_scores::columns::contest_year
@@ -33,6 +33,25 @@ pub fn get_task_scores(conn: &DbConn, year: Year, name: &str) -> Result<Vec<Task
                 .and(schema::task_scores::columns::task_name.eq(name)),
         )
         .load(&**conn)
+}
+
+pub fn get_scores_of_task_with_user(
+    conn: &DbConn,
+    year: Year,
+    task_name: &String,
+) -> Result<Vec<(TaskScore, User)>, Error> {
+    Ok(schema::task_scores::table
+        .filter(
+            schema::task_scores::columns::contest_year
+                .eq(year)
+                .and(schema::task_scores::columns::task_name.eq(task_name)),
+        )
+        .order(schema::task_scores::columns::user_id)
+        .left_join(schema::users::table)
+        .load::<(TaskScore, Option<User>)>(&**conn)?
+        .into_iter()
+        .map(|(ts, u)| (ts, u.expect("User not found")))
+        .collect())
 }
 
 pub fn get_users_task_scores(
@@ -43,5 +62,12 @@ pub fn get_users_task_scores(
         .filter(schema::task_scores::columns::user_id.eq_any(user_ids))
         .order(schema::task_scores::columns::contest_year)
         .then_order_by(schema::task_scores::columns::user_id)
+        .load::<TaskScore>(&**conn)
+}
+
+pub fn get_task_scores(conn: &DbConn) -> Result<Vec<TaskScore>, Error> {
+    schema::task_scores::table
+        .order(schema::task_scores::columns::contest_year)
+        .then_order_by(schema::task_scores::columns::task_name)
         .load::<TaskScore>(&**conn)
 }

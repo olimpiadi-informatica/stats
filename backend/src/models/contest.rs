@@ -15,8 +15,8 @@ use models::participation::{
     get_contests_participations, get_participations, get_participations_per_regions_per_year,
     get_participations_with_user, get_past_contest_participations, PastParticipation,
 };
-use models::task::{get_scores_of_year, get_tasks};
-use models::task_score::{get_contest_task_scores, get_task_scores};
+use models::task::{get_scores_of_year, get_tasks_of_year};
+use models::task_score::{get_contest_task_scores, get_scores_of_task};
 use models::user::{contestant_from_user, Contestant};
 use schema;
 use types::{Contest, Participation, Task, TaskScore, User, Year};
@@ -219,7 +219,7 @@ pub fn get_contest_task(task: &Task, task_scores: &Vec<TaskScore>) -> ContestTas
 pub fn get_contest_detail(conn: DbConn, year: Year) -> Result<ContestDetail, Error> {
     let contest = get_contest(&conn, year)?;
     let participations = get_participations(&conn, year)?;
-    let tasks = get_tasks(&conn, year)?;
+    let tasks = get_tasks_of_year(&conn, year)?;
     let task_scores: HashMap<String, Vec<TaskScore>> = get_scores_of_year(&conn, year)?;
 
     let score_sum = participations
@@ -308,7 +308,7 @@ pub fn get_contest_short_detail_list(conn: DbConn) -> Result<Vec<ContestShortDet
 
 pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, Error> {
     schema::contests::table.find(year).first::<Contest>(&*conn)?; // check if the contest exists
-    let tasks = get_tasks(&conn, year)?;
+    let tasks = get_tasks_of_year(&conn, year)?;
     let participations: Vec<(Participation, Option<User>)> =
         get_participations_with_user(&conn, year)?;
     let old_participations: HashMap<String, Vec<Participation>> = get_past_contest_participations(
@@ -398,8 +398,8 @@ pub fn get_contest_tasks(year: Year, conn: DbConn) -> Result<ContestTasks, Error
     schema::contests::table.find(year).first::<Contest>(&*conn)?; // check if the contest exists
 
     let mut result: Vec<ContestTask> = Vec::new();
-    for task in get_tasks(&conn, year)? {
-        let scores: Vec<TaskScore> = get_task_scores(&conn, year, task.name.as_str())?;
+    for task in get_tasks_of_year(&conn, year)? {
+        let scores: Vec<TaskScore> = get_scores_of_task(&conn, year, task.name.as_str())?;
         result.push(get_contest_task(&task, &scores));
     }
 

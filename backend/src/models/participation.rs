@@ -23,6 +23,7 @@ pub struct PastParticipation {
 pub fn get_participations(conn: &DbConn, year: Year) -> Result<Vec<Participation>, Error> {
     return schema::participations::table
         .filter(schema::participations::columns::contest_year.eq(year))
+        .order(schema::participations::columns::user_id)
         .load::<Participation>(&**conn);
 }
 
