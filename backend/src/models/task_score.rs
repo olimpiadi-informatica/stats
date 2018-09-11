@@ -65,6 +65,21 @@ pub fn get_users_task_scores(
         .load::<TaskScore>(&**conn)
 }
 
+pub fn get_user_task_scores(
+    conn: &DbConn,
+    user_id: &String,
+) -> Result<Vec<(Year, Vec<TaskScore>)>, Error> {
+    Ok(schema::task_scores::table
+        .filter(schema::task_scores::columns::user_id.eq(&user_id))
+        .order(schema::task_scores::columns::contest_year)
+        .load::<TaskScore>(&**conn)?
+        .into_iter()
+        .group_by(|ts| ts.contest_year)
+        .into_iter()
+        .map(|(year, scores)| (year, scores.collect::<Vec<TaskScore>>()))
+        .collect())
+}
+
 pub fn get_task_scores(conn: &DbConn) -> Result<Vec<TaskScore>, Error> {
     schema::task_scores::table
         .order(schema::task_scores::columns::contest_year)

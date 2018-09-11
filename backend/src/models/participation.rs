@@ -36,6 +36,26 @@ pub fn get_contests_participations(
         .grouped_by(&contests))
 }
 
+pub fn get_users_participations(
+    conn: &DbConn,
+    users: &Vec<User>,
+) -> Result<Vec<Vec<Participation>>, Error> {
+    Ok(Participation::belonging_to(users)
+        .order(schema::participations::columns::contest_year.desc())
+        .load::<Participation>(&**conn)?
+        .grouped_by(&users))
+}
+
+pub fn get_user_participations(
+    conn: &DbConn,
+    user_id: &String,
+) -> Result<Vec<Participation>, Error> {
+    schema::participations::table
+        .filter(schema::participations::columns::user_id.eq(user_id))
+        .order(schema::participations::columns::contest_year)
+        .load::<Participation>(&**conn)
+}
+
 pub fn get_participations_with_user(
     conn: &DbConn,
     year: Year,
