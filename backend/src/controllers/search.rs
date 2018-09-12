@@ -1,13 +1,14 @@
 use diesel::expression::sql_literal::sql;
 use diesel::prelude::*;
 use diesel::result::Error;
-use diesel::sql_types::{Integer, Nullable, Text};
+use diesel::sql_types::{Integer, Text};
 use rocket::response::Failure;
 use rocket_contrib::Json;
 use std::collections::HashSet;
 
 use db::DbConn;
 use error_status;
+use models::contest::{get_contest_short_detail_list, ContestShortDetail};
 use models::task::{get_task_list, TaskInfo, TaskInfoList};
 use models::user::{get_users_from_id, get_users_list, UserInfo};
 use types::Year;
@@ -16,18 +17,9 @@ use types::Year;
 #[serde(rename_all = "camelCase")]
 pub enum SearchResult {
     User(UserInfo),
-    Task {
-        year: Year,
-        task: TaskInfo,
-    },
-    Contest {
-        year: Year,
-        location: Option<String>,
-    },
-    Region {
-        id: String,
-        name: String,
-    },
+    Task { year: Year, task: TaskInfo },
+    Contest(ContestShortDetail),
+    Region { id: String, name: String },
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -84,19 +76,22 @@ fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
 }
 
 fn search_contest(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let contests: Vec<(Year, Option<String>)> = sql::<(Integer, Nullable<Text>)>(
-        "SELECT year, location
+    let contests: HashSet<Year> = sql::<Integer>(
+        "SELECT year
         FROM contests_fts4
         WHERE contests_fts4 MATCH ",
     ).bind::<Text, _>(q)
     .sql(" LIMIT 10")
-    .load(&**conn)?;
-    Ok(contests
-        .iter()
-        .map(|t| SearchResult::Contest {
-            year: t.0,
-            location: t.1.clone(),
-        }).collect())
+    .load(&**conn)?
+    .into_iter()
+    .collect();
+
+    Ok(get_contest_short_detail_list(conn)?
+        .contests
+        .into_iter()
+        .filter(|c| contests.contains(&c.year))
+        .map(|c| SearchResult::Contest(c))
+        .collect())
 }
 
 fn search_region(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {

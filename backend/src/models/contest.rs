@@ -97,6 +97,11 @@ pub struct ContestShortDetail {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct ContestsInfo {
+    pub contests: Vec<ContestShortDetail>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ContestResult {
     pub rank: Option<usize>,
     pub contestant: Contestant,
@@ -247,8 +252,7 @@ pub fn get_contest_detail(conn: DbConn, year: Year) -> Result<ContestDetail, Err
             .map(|t| {
                 let scores = task_scores.get(&t.name);
                 get_contest_task(t, scores.unwrap_or(&vec![]))
-            })
-            .collect(),
+            }).collect(),
         medals: ContestInfoMedals {
             gold: get_contest_info_medal(&participations, "G"),
             silver: get_contest_info_medal(&participations, "S"),
@@ -257,11 +261,11 @@ pub fn get_contest_detail(conn: DbConn, year: Year) -> Result<ContestDetail, Err
     })
 }
 
-pub fn get_contest_short_detail_list(conn: DbConn) -> Result<Vec<ContestShortDetail>, Error> {
-    let contests = get_contests(&conn)?;
-    let participations = get_contests_participations(&conn, &contests)?;
+pub fn get_contest_short_detail_list(conn: &DbConn) -> Result<ContestsInfo, Error> {
+    let contests = get_contests(conn)?;
+    let participations = get_contests_participations(conn, &contests)?;
     let tasks = Task::belonging_to(&contests)
-        .load::<Task>(&*conn)?
+        .load::<Task>(&**conn)?
         .grouped_by(&contests);
 
     let mut result: Vec<ContestShortDetail> = Vec::new();
@@ -294,8 +298,7 @@ pub fn get_contest_short_detail_list(conn: DbConn) -> Result<Vec<ContestShortDet
                     link: t.link.clone(),
                     index: t.index as usize,
                     max_score_possible: t.max_score,
-                })
-                .collect(),
+                }).collect(),
             medals: ContestInfoMedals {
                 gold: get_contest_info_medal(&participations, "G"),
                 silver: get_contest_info_medal(&participations, "S"),
@@ -303,11 +306,13 @@ pub fn get_contest_short_detail_list(conn: DbConn) -> Result<Vec<ContestShortDet
             },
         });
     }
-    Ok(result)
+    Ok(ContestsInfo { contests: result })
 }
 
 pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, Error> {
-    schema::contests::table.find(year).first::<Contest>(&*conn)?; // check if the contest exists
+    schema::contests::table
+        .find(year)
+        .first::<Contest>(&*conn)?; // check if the contest exists
     let tasks = get_tasks_of_year(&conn, year)?;
     let participations: Vec<(Participation, Option<User>)> =
         get_participations_with_user(&conn, year)?;
@@ -339,11 +344,10 @@ pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, E
             Some(v) => v,
             None => &empty_vec,
         }.iter()
-            .map(|p| PastParticipation {
-                year: p.contest_year,
-                medal: medal_from_string(&p.medal),
-            })
-            .collect();
+        .map(|p| PastParticipation {
+            year: p.contest_year,
+            medal: medal_from_string(&p.medal),
+        }).collect();
 
         results.push(ContestResult {
             rank: participation.position.map(|p| p as usize),
@@ -366,7 +370,9 @@ pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, E
 }
 
 pub fn get_contest_regions(year: Year, conn: DbConn) -> Result<ContestRegions, Error> {
-    schema::contests::table.find(year).first::<Contest>(&*conn)?; // check if the contest exists
+    schema::contests::table
+        .find(year)
+        .first::<Contest>(&*conn)?; // check if the contest exists
 
     let mut result: Vec<ContestRegion> = Vec::new();
 
@@ -395,7 +401,9 @@ pub fn get_contest_regions(year: Year, conn: DbConn) -> Result<ContestRegions, E
 }
 
 pub fn get_contest_tasks(year: Year, conn: DbConn) -> Result<ContestTasks, Error> {
-    schema::contests::table.find(year).first::<Contest>(&*conn)?; // check if the contest exists
+    schema::contests::table
+        .find(year)
+        .first::<Contest>(&*conn)?; // check if the contest exists
 
     let mut result: Vec<ContestTask> = Vec::new();
     for task in get_tasks_of_year(&conn, year)? {

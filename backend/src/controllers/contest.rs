@@ -11,20 +11,14 @@ use db::DbConn;
 use error_status;
 use models::contest::{
     get_contest_detail, get_contest_regions, get_contest_results, get_contest_short_detail_list,
-    get_contest_tasks, ContestDetail, ContestRegions, ContestResults, ContestShortDetail,
-    ContestTasks,
+    get_contest_tasks, ContestDetail, ContestRegions, ContestResults, ContestTasks, ContestsInfo,
 };
 use types::Year;
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ContestsInfo {
-    pub contests: Vec<ContestShortDetail>,
-}
-
 #[get("/contests")]
 pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<ContestsInfo>, Failure> {
-    match get_contest_short_detail_list(conn) {
-        Ok(contests) => Ok(Json(cache.set(ContestsInfo { contests: contests }))),
+    match get_contest_short_detail_list(&conn) {
+        Ok(contests) => Ok(Json(cache.set(contests))),
         Err(err) => Err(error_status(err)),
     }
 }
