@@ -103,7 +103,15 @@
     {
       "region": {
         "id": "FRI",
-        "name": "Friuli-Venezia Giulia"
+        "name": "Friuli-Venezia Giulia",
+        "num_contestants": 49,
+        "medals": {
+          "gold": 5,
+          "silver": 8,
+          "bronze": 16
+        },
+        "avg_contestants_per_year": 42,
+        "hosted": []
       }
     }
   ]

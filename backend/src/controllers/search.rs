@@ -9,6 +9,7 @@ use std::collections::HashSet;
 use db::DbConn;
 use error_status;
 use models::contest::{get_contest_short_detail_list, ContestShortDetail};
+use models::region::{get_regions_list, RegionShortDetail};
 use models::task::{get_task_list, TaskInfo, TaskInfoList};
 use models::user::{get_users_from_id, get_users_list, UserInfo};
 use types::Year;
@@ -19,7 +20,7 @@ pub enum SearchResult {
     User(UserInfo),
     Task { year: Year, task: TaskInfo },
     Contest(ContestShortDetail),
-    Region { id: String, name: String },
+    Region(RegionShortDetail),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -95,19 +96,21 @@ fn search_contest(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error>
 }
 
 fn search_region(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let regions: Vec<(String, String)> = sql::<(Text, Text)>(
-        "SELECT id, name
+    let regions: HashSet<String> = sql::<Text>(
+        "SELECT id
         FROM regions_fts4
         WHERE regions_fts4 MATCH ",
     ).bind::<Text, _>(q)
     .sql(" LIMIT 10")
-    .load(&**conn)?;
-    Ok(regions
-        .iter()
-        .map(|t| SearchResult::Region {
-            id: t.0.clone(),
-            name: t.1.clone(),
-        }).collect())
+    .load(&**conn)?
+    .into_iter()
+    .collect();
+    Ok(get_regions_list(conn)?
+        .regions
+        .into_iter()
+        .filter(|r| regions.contains(&r.id))
+        .map(|r| SearchResult::Region(r))
+        .collect())
 }
 
 fn do_search(q: String, conn: DbConn) -> Result<SearchResults, Error> {

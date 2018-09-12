@@ -156,7 +156,7 @@ pub fn get_participations_of_region(
         .collect())
 }
 
-pub fn get_regions_list(conn: DbConn) -> Result<RegionsShortDetail, Error> {
+pub fn get_regions_list(conn: &DbConn) -> Result<RegionsShortDetail, Error> {
     let mut result: Vec<RegionShortDetail> = Vec::new();
     // the avarage number of participations is computed using only the participations
     // from the contests that have all the regions known
@@ -214,7 +214,9 @@ pub fn get_region_navigation(current: &str, conn: DbConn) -> Result<RegionNaviga
 }
 
 pub fn get_region_details(region: String, conn: DbConn) -> Result<RegionDetail, Error> {
-    let region = schema::regions::table.find(region).first::<Region>(&*conn)?;
+    let region = schema::regions::table
+        .find(region)
+        .first::<Region>(&*conn)?;
     let invalid_contests = get_contests_without_full_regions(&conn)?;
 
     let participations = get_participations_per_year_of_region(&conn, &region)?;
@@ -237,8 +239,7 @@ pub fn get_region_details(region: String, conn: DbConn) -> Result<RegionDetail, 
                 location: get_contest_location(contests.get(year).expect("Missing contest")),
                 num_contestants: parts.len(),
                 num_medals: get_num_medals(&parts),
-            })
-            .collect(),
+            }).collect(),
         hosted: hosted,
     })
 }
@@ -283,8 +284,7 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
                         .map(|(user_id, tss)| (user_id, tss.collect::<Vec<TaskScore>>())),
                 ),
             )
-        })
-        .collect();
+        }).collect();
 
     let mut result = Vec::new();
     for year in contest_years {
@@ -303,8 +303,7 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
                     .map(|s| RegionContestantTaskScore {
                         name: s.task_name.clone(),
                         score: s.score,
-                    })
-                    .collect(),
+                    }).collect(),
             });
         }
 

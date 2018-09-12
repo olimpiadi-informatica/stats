@@ -15,7 +15,7 @@ use models::region::{
 
 #[get("/regions")]
 pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<RegionsShortDetail>, Failure> {
-    match get_regions_list(conn) {
+    match get_regions_list(&conn) {
         Ok(regions) => Ok(Json(cache.set(regions))),
         Err(err) => Err(error_status(err)),
     }
