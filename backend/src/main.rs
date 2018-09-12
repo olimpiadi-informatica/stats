@@ -74,8 +74,7 @@ fn main() {
                 user::search,
                 search::search
             ],
-        )
-        .catch(vec![Catcher::new(200, cache::handle_cache)])
-        .catch(errors![not_found])
+        ).catch(vec![Catcher::new(200, cache::handle_cache)])
+        .catch(catchers![not_found])
         .launch();
 }
