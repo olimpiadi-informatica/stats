@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-// import { Link } from "react-router-dom";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
 import { fetchContestat } from "../actions/contestants";
 
@@ -9,6 +9,10 @@ class ContestantContainer extends Component {
   componentDidMount() {
     const id = this.props.match.params.id;
     this.props.fetchContestat(id);
+  }
+  renderBadge(score) {
+    if (!score) return <span />;
+    return <span className="badge badge-pill badge-primary"> {score}</span>;
   }
 
   renderParticipations(participations) {
@@ -28,11 +32,12 @@ class ContestantContainer extends Component {
       const problem_1 =
         scores && scores[0] ? (
           <td>
-            <span className="badge badge-pill badge-primary">
-              {" "}
-              {scores[0].score}
-            </span>{" "}
-            {scores[0].task}
+            <Link
+              to={`/task/${year}/${scores[0].task}`}
+              className="text-success"
+            >
+              {this.renderBadge(scores[0].score)} {scores[0].task}
+            </Link>
           </td>
         ) : (
           <td />
@@ -40,10 +45,12 @@ class ContestantContainer extends Component {
       const problem_2 =
         scores && scores[1] ? (
           <td>
-            <span className="badge badge-pill badge-primary">
-              {scores[2].score}
-            </span>{" "}
-            {scores[1].task}{" "}
+            <Link
+              to={`/task/${year}/${scores[1].task}`}
+              className="text-success"
+            >
+              {this.renderBadge(scores[1].score)} {scores[1].task}
+            </Link>
           </td>
         ) : (
           <td />
@@ -51,10 +58,12 @@ class ContestantContainer extends Component {
       const problem_3 =
         scores && scores[2] ? (
           <td>
-            <span className="badge badge-pill badge-primary">
-              {scores[2].score}
-            </span>{" "}
-            {scores[2].task}{" "}
+            <Link
+              to={`/task/${year}/${scores[2].task}`}
+              className="text-success"
+            >
+              {this.renderBadge(scores[2].score)} {scores[2].task}
+            </Link>
           </td>
         ) : (
           <td />
@@ -62,10 +71,12 @@ class ContestantContainer extends Component {
       const problem_4 =
         scores && scores[3] ? (
           <td>
-            <span className="badge badge-pill badge-primary">
-              {scores[3].score}
-            </span>{" "}
-            {scores[3].task}{" "}
+            <Link
+              to={`/task/${year}/${scores[3].task}`}
+              className="text-success"
+            >
+              {this.renderBadge(scores[3].score)} {scores[3].task}
+            </Link>
           </td>
         ) : (
           <td />
@@ -78,7 +89,11 @@ class ContestantContainer extends Component {
 
       return (
         <tr key={year}>
-          <th scope="row">{year}</th>
+          <th scope="row">
+            <Link to={`/contests/${year}`} className="text-success">
+              {year}
+            </Link>
+          </th>
           <td>{rank}</td>
           <td>{medal}</td>
           <td>{final_score}</td>
@@ -92,7 +107,7 @@ class ContestantContainer extends Component {
 
     return (
       <div>
-        <h3>Participations</h3>
+        <h3 className="text-center m-3">Participations</h3>
         <table className="table table-striped table-responsive-xs">
           <thead>
             <tr>
@@ -133,39 +148,56 @@ class ContestantContainer extends Component {
     const num_silvers = medals.silver ? medals.silver : 0;
     const num_bronzes = medals.bronze ? medals.bronze : 0;
     const total_medals = num_golds + num_silvers + num_bronzes;
+    const picture = contestant.picture
+      ? contestant.picture
+      : "/user_placehoder.png";
     return (
-      <div className="row p-2">
-        <div className="col-12">
-          <h2>
-            {contestant.first_name} {contestant.last_name}
-          </h2>
-        </div>
-        <div className="col-12 col-md-7">
-          <dl className="row">
-            <dt className="col-sm-5">Best Rank</dt>
-            <dd className="col-sm-7">{best_rank}</dd>
-            <dt className="col-sm-5">Total Medals</dt>
-            <dd className="col-sm-7">{total_medals}</dd>
-            <dt className="col-sm-5">Participations</dt>
-            <dd className="col-sm-7">{number_participations}</dd>
-          </dl>
-        </div>
-        <div className="col-12 col-md-5 align-items-center">
-          <div className="gold d-inline-block p-2">
-            <ion-icon name="medal" size="large" />
-            <div className="text-center">{num_golds}</div>
-          </div>
-          <div className="silver d-inline-block p-2">
-            <ion-icon name="medal" size="large" />
-            <div className="text-center">{num_silvers}</div>
-          </div>
-          <div className="bronze d-inline-block p-2">
-            <ion-icon name="medal" size="large" />
-            <div className="text-center">{num_bronzes}</div>
+      <div>
+        <div className="row p-2">
+          <div className="col-12">
+            <h2 className="text-center">
+              {contestant.first_name} {contestant.last_name}
+            </h2>
           </div>
         </div>
-        <div className="col-12">
-          {this.renderParticipations(participations)}
+        <div className="row align-items-center">
+          <div className="col-12 col-md-7">
+            <div className="media">
+              <img
+                className="mr-3 align-self-start"
+                height="150"
+                src={picture}
+                alt="Profile Picture"
+              />
+              <div className="media-body">
+                <dl className=" ">
+                  <dt className="col-sm-5">Best Rank</dt>
+                  <dd className="col-sm-7">{best_rank}</dd>
+                  <dt className="col-sm-5">Total Medals</dt>
+                  <dd className="col-sm-7">{total_medals}</dd>
+                  <dt className="col-sm-5">Participations</dt>
+                  <dd className="col-sm-7">{number_participations}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div className="col-12 col-md-5 ">
+            <div className="gold d-inline-block p-2">
+              <ion-icon name="medal" size="large" />
+              <div className="text-center">{num_golds}</div>
+            </div>
+            <div className="silver d-inline-block p-2">
+              <ion-icon name="medal" size="large" />
+              <div className="text-center">{num_silvers}</div>
+            </div>
+            <div className="bronze d-inline-block p-2">
+              <ion-icon name="medal" size="large" />
+              <div className="text-center">{num_bronzes}</div>
+            </div>
+          </div>
+          <div className="col-12">
+            {this.renderParticipations(participations)}
+          </div>
         </div>
       </div>
     );

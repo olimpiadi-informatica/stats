@@ -42,47 +42,35 @@ class Header extends Component {
             <img src="/logo.png" height="40" alt="Logo" />
           </NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
-          <Collapse isOpen={this.state.isOpen} navbar>
+          <Collapse isOpen={this.state.isOpen} navbar className="">
             <Nav className="ml-auto" navbar>
               <NavItem>
-                <Link
-                  to="/contests"
-                  className="navbar-light navbar-nav nav-link"
-                >
+                <Link to="/contests" className="navbar-nav nav-link ">
                   Contests
                 </Link>
               </NavItem>
               <NavItem>
-                <Link
-                  to="/contestants"
-                  className="navbar-light navbar-nav nav-link"
-                >
+                <Link to="/contestants" className=" navbar-nav nav-link ">
                   Hall of Fame
                 </Link>
               </NavItem>
               <NavItem>
-                <Link
-                  to="/regions"
-                  className="navbar-light navbar-nav nav-link"
-                >
+                <Link to="/regions" className="navbar-nav nav-link ">
                   Regions
                 </Link>
               </NavItem>
               <NavItem>
-                <Link to="/tasks" className="navbar-light navbar-nav nav-link">
+                <Link to="/tasks" className="navbar-nav nav-link ">
                   Tasks
                 </Link>
               </NavItem>
               <NavItem>
-                <Link
-                  to="/contribute"
-                  className="navbar-light navbar-nav nav-link"
-                >
+                <Link to="/contribute" className="navbar-nav nav-link ">
                   Contribute
                 </Link>
               </NavItem>
               <NavItem>
-                <Link to="/about" className="navbar-light navbar-nav nav-link">
+                <Link to="/about" className="navbar-nav nav-link ">
                   About
                 </Link>
               </NavItem>
@@ -101,7 +89,7 @@ class Header extends Component {
                     required
                   />
                   <button
-                    className="btn btn-outline-success my-2 my-sm-0"
+                    className="btn btn-outline-primary my-2 my-sm-0"
                     type="submit"
                   >
                     Search

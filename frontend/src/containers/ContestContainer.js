@@ -27,8 +27,8 @@ class ContestContainer extends Component {
       return <div className="Loading">Loading ...</div>;
     return (
       <div className="row p-2">
-        <div className="col-12">
-          <h2 className="title">
+        <div className="col-12 ">
+          <h2 className="title text-center">
             {contest.location.location} {contest.navigation.current.year}
           </h2>
         </div>

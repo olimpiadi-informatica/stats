@@ -7,6 +7,7 @@ import { fetchSearchResults } from "../actions/search";
 import { RegionListItem } from "../components";
 import { ContestantListItem } from "../components";
 import { ContestListItem } from "../components";
+import { TaskListItem } from "../components";
 
 class SearchContainer extends Component {
   componentDidMount() {
@@ -14,21 +15,25 @@ class SearchContainer extends Component {
     this.props.fetchSearchResults(q);
   }
 
-  renderResult(result, type) {
-    if (type === "region") return <RegionListItem region={result} />;
-    else if (type === "-contestants")
+  renderResult(result, type, key) {
+    if (type === "region") {
+      return <RegionListItem region={result} />;
+    } else if (type === "user") {
       return <ContestantListItem contestant={result} />;
-    else if (type === "-contest") return <ContestListItem contest={result} />;
+    } else if (type === "contest") {
+      return <ContestListItem contest={result} />;
+    } else if (type === "task") {
+      return <TaskListItem task={result.task} year={result.year} />;
+    }
   }
 
   renderSearch(results) {
     const results_list = _.map(results, (value, key) => {
       const chiave = Object.keys(value);
-      return (
-        <div key={key}>
-          <span>{this.renderResult(value[chiave], chiave[0])}</span>
-        </div>
-      );
+      const result = value[chiave];
+      const type = chiave[0];
+      let item = this.renderResult(result, type, key);
+      return item;
     });
     return <ul className="list-group">{results_list}</ul>;
   }

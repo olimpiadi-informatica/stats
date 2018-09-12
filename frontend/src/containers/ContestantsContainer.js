@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-// import { Link } from "react-router-dom";
 import _ from "lodash";
 
 import { fetchContestats } from "../actions/contestants";
@@ -31,7 +30,7 @@ class ContestantsContainer extends Component {
     });
     return (
       <div>
-        <ul className="list-group">{contestant_list}</ul>
+        <ul className="list-group list-group-flush">{contestant_list}</ul>
       </div>
     );
   }
@@ -50,9 +49,9 @@ class ContestantsContainer extends Component {
       this.state.cutoff < contestants.length ? (
         <button
           onClick={this.moreContestants.bind(this)}
-          className="btn btn-primary mt-2"
+          className="btn btn-outline-primary mt-2 "
         >
-          More
+          More contestants
         </button>
       ) : (
         <div />
@@ -60,9 +59,9 @@ class ContestantsContainer extends Component {
     return (
       <div className="row p-2">
         <div className="col-12">
-          <h2>Hall of Fame</h2>
+          <h2 className="p-2 text-center">Hall of Fame</h2>
           {this.renderContestants(contestants_list)}
-          {show_more_contestants}
+          <div className="text-center">{show_more_contestants}</div>
         </div>
       </div>
     );

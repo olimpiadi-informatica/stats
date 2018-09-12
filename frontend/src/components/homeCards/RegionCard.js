@@ -1,5 +1,8 @@
-import React from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import _ from "lodash";
+import { connect } from "react-redux";
+import { fetchRegions } from "../../actions/regions";
 
 function flipCoin(number_of_cards) {
   return Math.floor(Math.random() * number_of_cards);
@@ -68,15 +71,43 @@ function generateImageCard(coin) {
     return <span />;
   }
 }
-
-function RegionCard() {
-  const coin = flipCoin(2);
-  return (
-    <div className="card">
-      {generateImageCard(coin)}
-      <div className="card-body">{generateBodyCard(coin)}</div>
-    </div>
-  );
+class RegionCard extends Component {
+  componentDidMount() {
+    this.props.fetchRegions();
+  }
+  render() {
+    const coin = flipCoin(2);
+    return (
+      <div className="card">
+        {generateImageCard(coin)}
+        <div className="card-body">{generateBodyCard(coin)}</div>
+      </div>
+    );
+  }
 }
 
-export default RegionCard;
+function medalsContestants(regions) {
+  if (!regions) return [];
+  let regionMA = [];
+  _.map(regions, region => {
+    const { medals } = region;
+    const total_medals = medals.gold + medals.silver + medals.bronze;
+    regionMA.push({
+      region: region.id,
+      ma: Math.round(total_medals / region.num_contestants)
+    });
+  });
+  return regionMA;
+}
+
+function mapStateToProps(state) {
+  if (state.regions && state.regions.error) {
+    return { error: "Connection Error" };
+  }
+  return { ma: medalsContestants(state.regions) };
+}
+
+export default connect(
+  mapStateToProps,
+  { fetchRegions }
+)(RegionCard);

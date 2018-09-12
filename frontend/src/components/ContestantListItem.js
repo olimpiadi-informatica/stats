@@ -16,6 +16,9 @@ const ContestantListItem = ({ contestant }) => {
   ) : (
     "N/a"
   );
+  const picture = contestant.picture
+    ? contestant.picture
+    : "/user_placehoder.png";
   const medals = contestant.num_medals ? (
     <div className="col-12 col-md-5 align-items-center">
       <div className="gold d-inline-block p-2">
@@ -36,25 +39,37 @@ const ContestantListItem = ({ contestant }) => {
   );
 
   return (
-    <li className="ContestantListItemContainer list-group-item">
+    <li className="ContestantListItemContainer list-group-item ">
       <div className=" row align-items-center">
-        <div className="col-12">
-          <Link to={`/contestant/${contestant.contestant.id}`}>
-            <h5>
-              {contestant.contestant.first_name}{" "}
-              {contestant.contestant.last_name}
-            </h5>
-          </Link>
+        <div className="col-1">
+          <img src={picture} alt="Picture" className="img img-fluid" />
         </div>
-        <div className="col-12 col-md-7">
-          <dl className="row">
-            <dt className="col-sm-5">Best Rank</dt>
-            <dd className="col-sm-7">{best_rank}</dd>
-            <dt className="col-sm-5">Participations</dt>
-            <dd className="col-sm-7">{participations}</dd>
-          </dl>
+        <div className="col-11">
+          <div className="row">
+            <div className="col-12">
+              <div className="d-flex w-100 justify-content-between">
+                <h5 className="mb-2">
+                  <Link
+                    className="text-success p-1"
+                    to={`/contestant/${contestant.contestant.id}`}
+                  >
+                    {contestant.contestant.first_name}{" "}
+                    {contestant.contestant.last_name}
+                  </Link>
+                </h5>
+              </div>
+            </div>
+            <div className="col-12 col-md-7">
+              <dl className="row">
+                <dt className="col-sm-3">Best Rank</dt>
+                <dd className="col-sm-7">{best_rank}</dd>
+                <dt className="col-sm-3">Participations</dt>
+                <dd className="col-sm-7">{participations}</dd>
+              </dl>
+            </div>
+            {medals}
+          </div>
         </div>
-        {medals}
       </div>
     </li>
   );
