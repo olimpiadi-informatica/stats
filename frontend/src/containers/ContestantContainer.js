@@ -90,8 +90,6 @@ class ContestantContainer extends Component {
       );
     });
 
-    // const max_scores = _.each(participations, participation => {});
-
     return (
       <div>
         <h3>Participations</h3>
@@ -136,7 +134,7 @@ class ContestantContainer extends Component {
     const num_bronzes = medals.bronze ? medals.bronze : 0;
     const total_medals = num_golds + num_silvers + num_bronzes;
     return (
-      <div className="row">
+      <div className="row p-2">
         <div className="col-12">
           <h2>
             {contestant.first_name} {contestant.last_name}

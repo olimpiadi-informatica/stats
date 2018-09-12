@@ -13,10 +13,6 @@ class TasksContainer extends Component {
 
   renderTaskOfYear(tasks, year) {
     return _.map(tasks, task => {
-      // const max_score_possible = task.max_score_possible
-      //   ? task.max_score_possible
-      //   : "N/a";
-      // const max_score = task.max_score ? task.max_score : "N/a";
       return (
         <TaskListItem key={`${task.name}${year}`} task={task} year={year} />
       );
@@ -37,9 +33,9 @@ class TasksContainer extends Component {
     const { tasks } = this.props;
     if (!this.props.tasks) return <div className="Loading">Loading ...</div>;
     return (
-      <div className="row">
+      <div className="row p-2">
         <h2 className="col-12 title">Tasks</h2>
-        <ul className="list-group col-12">{this.renderTasks(tasks)}</ul>
+        <div className="col-12">{this.renderTasks(tasks)}</div>
       </div>
     );
   }

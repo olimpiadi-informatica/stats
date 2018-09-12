@@ -43,12 +43,12 @@ class SearchContainer extends Component {
     const no_results = number_results === 0 ? <div>No results</div> : <div />;
 
     return (
-      <div>
-        <h2>
+      <div className="row p-2">
+        <h2 className="col-12">
           {number_results} Results for <span className="text-success">{q}</span>
         </h2>
-        {no_results}
-        {this.renderSearch(search)}
+        <div className="col-12">{no_results}</div>
+        <div className="col-12">{this.renderSearch(search)}</div>
       </div>
     );
   }

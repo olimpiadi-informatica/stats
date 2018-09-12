@@ -26,7 +26,7 @@ class ContestContainer extends Component {
     if (!contest || !contest.navigation)
       return <div className="Loading">Loading ...</div>;
     return (
-      <div className="row">
+      <div className="row p-2">
         <div className="col-12">
           <h2 className="title">
             {contest.location.location} {contest.navigation.current.year}

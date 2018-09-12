@@ -13,7 +13,6 @@ class RegionsContainer extends Component {
 
   renderRegions(regions) {
     if (!regions) return <div className="Loading">Loading ...</div>;
-    console.log(regions);
     const regions_list = _.map(regions, (region, i) => {
       return <RegionListItem region={region} key={i} />;
     });
@@ -25,9 +24,8 @@ class RegionsContainer extends Component {
     if (error) return <div>{error}</div>;
     const { regions } = this.props;
     if (!regions) return <div className="Loading">Loading ...</div>;
-    console.log(regions);
     return (
-      <div className="row">
+      <div className="row p-2">
         <div className="col-12">
           <h2>Regions</h2>
         </div>

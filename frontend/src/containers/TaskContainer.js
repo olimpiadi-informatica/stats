@@ -78,7 +78,7 @@ class TaskContainer extends Component {
     const link = task.link ? <Link to={task.link}> {task.link} </Link> : "";
     const num_contestants = task.scores ? task.scores.length : "N/a";
     return (
-      <div className="row">
+      <div className="row p-2">
         <div className="col-12 title">
           <h2>{task.title}</h2>
         </div>

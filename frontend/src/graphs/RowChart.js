@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import _ from "lodash";
+import { connect } from "react-redux";
+import { fetchRegions } from "../actions/regions";
 
 import { OrdinalFrame } from "semiotic";
 import "../styles/axis-style";
@@ -29,6 +32,10 @@ const ma = [
 class RowChart extends Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    this.props.fetchRegions();
   }
 
   colorThresholds(value) {
@@ -107,4 +114,26 @@ class RowChart extends Component {
   }
 }
 
-export default RowChart;
+function medalsContestants(regions) {
+  if (!regions) return [];
+  let regionMA = [];
+  _.map(regions, region => {
+    const { medals } = region;
+    const total_medals = medals.gold + medals.silver + medals.bronze;
+    regionMA.push({
+      region: region.id,
+      ma: Math.round(total_medals / region.num_contestants)
+    });
+  });
+  return regionMA;
+}
+
+function mapStateToProps(state) {
+  if (state.regions && state.regions.error)
+    return { error: "Connection Error" };
+}
+
+export default connect(
+  mapStateToProps,
+  { fetchRegions }
+)(RowChart);

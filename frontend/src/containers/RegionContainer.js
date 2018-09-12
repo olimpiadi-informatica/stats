@@ -297,7 +297,7 @@ class RegionContainer extends Component {
     if (!region || !region.navigation || !region.results)
       return <div className="Loading">Loading ...</div>;
     return (
-      <div className="row">
+      <div className="row p-2">
         <div className="col-12">
           <h3>{region.name}</h3>
           {this.hasHosted(region.hosted)}

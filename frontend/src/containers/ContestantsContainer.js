@@ -58,7 +58,7 @@ class ContestantsContainer extends Component {
         <div />
       );
     return (
-      <div className="row">
+      <div className="row p-2">
         <div className="col-12">
           <h2>Hall of Fame</h2>
           {this.renderContestants(contestants_list)}

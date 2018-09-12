@@ -37,9 +37,9 @@ class Header extends Component {
   render() {
     return (
       <div className="p-2">
-        <Navbar color="light" light expand="md">
+        <Navbar color="light" light expand="lg">
           <NavbarBrand href="/">
-            <img src="/logo.png" height="40" alt="Card cap" />
+            <img src="/logo.png" height="40" alt="Logo" />
           </NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
