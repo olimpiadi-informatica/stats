@@ -36,9 +36,15 @@
     {
       "task": {
         "year": 2017,
-        "name": "caduta",
-        "title": "Pazza gioia",
-        "link": "https://training.olinfo.it/#/task/oii_caduta/statement"
+        "task": {
+          "name": "caduta",
+          "title": "Pazza gioia",
+          "link": "https://training.olinfo.it/#/task/oii_caduta/statement",
+          "index": 0,
+          "max_score_possible": 100,
+          "max_score": 100,
+          "avg_score": 29.32
+        }
       }
     },
     {

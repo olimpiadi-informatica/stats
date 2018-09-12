@@ -4,9 +4,11 @@ use diesel::result::Error;
 use diesel::sql_types::{Integer, Nullable, Text};
 use rocket::response::Failure;
 use rocket_contrib::Json;
+use std::collections::HashSet;
 
 use db::DbConn;
 use error_status;
+use models::task::{get_task_list, TaskInfo, TaskInfoList};
 use models::user::{get_users_from_id, get_users_list, UserInfo};
 use types::Year;
 
@@ -16,9 +18,7 @@ pub enum SearchResult {
     User(UserInfo),
     Task {
         year: Year,
-        name: String,
-        title: String,
-        link: Option<String>,
+        task: TaskInfo,
     },
     Contest {
         year: Year,
@@ -41,14 +41,14 @@ pub struct QueryString {
 }
 
 fn search_user(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let fts_users: Vec<(String, String, String)> = sql::<(Text, Text, Text)>(
-        "SELECT id, name, surname
+    let fts_users: Vec<(String)> = sql::<(Text)>(
+        "SELECT id
         FROM users_fts4
         WHERE users_fts4 MATCH ",
     ).bind::<Text, _>(q)
     .sql(" LIMIT 10")
     .load(&**conn)?;
-    let users = get_users_from_id(&conn, &fts_users.iter().map(|u| u.0.clone()).collect())?;
+    let users = get_users_from_id(&conn, &fts_users.iter().map(|u| u.clone()).collect())?;
     Ok(get_users_list(conn, &users)?
         .users
         .into_iter()
@@ -57,21 +57,29 @@ fn search_user(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
 }
 
 fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let tasks: Vec<(String, Year, String, Option<String>)> =
-        sql::<(Text, Integer, Text, Nullable<Text>)>(
-            "SELECT contest_year, name, title, link
+    let fts_tasks: HashSet<(String, Year)> = sql::<(Text, Integer)>(
+        "SELECT contest_year, name
              FROM tasks_fts4
              WHERE tasks_fts4 MATCH ",
-        ).bind::<Text, _>(q)
-        .sql(" LIMIT 10")
-        .load(&**conn)?;
-    Ok(tasks
-        .iter()
-        .map(|t| SearchResult::Task {
-            year: t.1,
-            name: t.0.clone(),
-            title: t.2.clone(),
-            link: t.3.clone(),
+    ).bind::<Text, _>(q)
+    .sql(" LIMIT 10")
+    .load(&**conn)?
+    .into_iter()
+    .collect();
+
+    Ok(get_task_list(conn)?
+        .tasks
+        .into_iter()
+        .map(|TaskInfoList { year, tasks }| {
+            tasks.into_iter().map(move |t| SearchResult::Task {
+                year: year,
+                task: t,
+            })
+        }).into_iter()
+        .flatten()
+        .filter(|t| match t {
+            SearchResult::Task { year, task } => fts_tasks.contains(&(task.name.clone(), *year)),
+            _ => false,
         }).collect())
 }
 

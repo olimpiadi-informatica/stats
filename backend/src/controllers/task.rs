@@ -9,7 +9,7 @@ use types::Year;
 
 #[get("/tasks")]
 pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<TaskList>, Failure> {
-    match get_task_list(conn) {
+    match get_task_list(&conn) {
         Ok(tasks) => Ok(Json(cache.set(tasks))),
         Err(err) => Err(error_status(err)),
     }
