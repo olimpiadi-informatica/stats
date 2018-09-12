@@ -1,10 +1,36 @@
 {
   "results": [
     {
-      "contestant": {
-        "id": "8406cc432799527748f821a8d3b61be8",
-        "first_name": "Andrea",
-        "last_name": "Ciprietti"
+      "user": {
+        "contestant": {
+          "id": "8406cc432799527748f821a8d3b61be8",
+          "first_name": "Andrea",
+          "last_name": "Ciprietti"
+        },
+        "num_medals": {
+          "gold": 3,
+          "silver": 1,
+          "bronze": 0
+        },
+        "best_rank": 1,
+        "participations": [
+          {
+            "year": 2017,
+            "medal": "gold"
+          },
+          {
+            "year": 2016,
+            "medal": "gold"
+          },
+          {
+            "year": 2015,
+            "medal": "gold"
+          },
+          {
+            "year": 2014,
+            "medal": "silver"
+          }
+        ]
       }
     },
     {
@@ -12,7 +38,7 @@
         "year": 2017,
         "name": "caduta",
         "title": "Pazza gioia",
-        "link": "https://training.olinfo.it/#/task/oii_caduta/statement",
+        "link": "https://training.olinfo.it/#/task/oii_caduta/statement"
       }
     },
     {

@@ -72,9 +72,14 @@ pub fn get_users(conn: &DbConn) -> Result<Vec<User>, Error> {
     schema::users::table.load::<User>(&**conn)
 }
 
-pub fn get_users_list(conn: DbConn) -> Result<UserList, Error> {
-    let users = get_users(&conn)?;
-    let participations = get_users_participations(&conn, &users)?;
+pub fn get_users_from_id(conn: &DbConn, ids: &Vec<String>) -> Result<Vec<User>, Error> {
+    schema::users::table
+        .filter(schema::users::columns::id.eq_any(ids))
+        .load::<User>(&**conn)
+}
+
+pub fn get_users_list(conn: &DbConn, users: &Vec<User>) -> Result<UserList, Error> {
+    let participations = get_users_participations(conn, users)?;
     let mut result: Vec<UserInfo> = Vec::new();
     for (user, participations) in izip!(users, participations) {
         result.push(UserInfo {
@@ -88,11 +93,15 @@ pub fn get_users_list(conn: DbConn) -> Result<UserList, Error> {
                 .map(|p| UserInfoParticipation {
                     year: p.contest_year,
                     medal: medal_from_string(&p.medal),
-                })
-                .collect(),
+                }).collect(),
         });
     }
     Ok(UserList { users: result })
+}
+
+pub fn get_all_users_list(conn: DbConn) -> Result<UserList, Error> {
+    let users = get_users(&conn)?;
+    get_users_list(&conn, &users)
 }
 
 pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Error> {
@@ -113,8 +122,7 @@ pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Erro
                 .map(|s| UserDetailScore {
                     task: s.task_name.clone(),
                     score: s.score,
-                })
-                .collect(),
+                }).collect(),
         });
     }
     Ok(UserDetail {

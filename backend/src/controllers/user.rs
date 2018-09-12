@@ -4,11 +4,11 @@ use rocket_contrib::Json;
 use cache::Cache;
 use db::DbConn;
 use error_status;
-use models::user::{get_user_detail, get_users_list, UserDetail, UserList};
+use models::user::{get_user_detail, get_all_users_list, UserDetail, UserList};
 
 #[get("/users")]
 pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<UserList>, Failure> {
-    match get_users_list(conn) {
+    match get_all_users_list(conn) {
         Ok(users) => Ok(Json(cache.set(users))),
         Err(err) => Err(error_status(err)),
     }
