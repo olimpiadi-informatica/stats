@@ -12,7 +12,9 @@ const ContestListItem = ({ contest }) => {
     : "N/a";
   const max_score = contest.max_score ? contest.max_score : "N/a";
   const avg_score = contest.avg_score ? contest.avg_score.toFixed(2) : "N/a";
-  const picture = contest.picture ? contest.picture : "/placeholder.jpg";
+  const picture = contest.picture
+    ? contest.picture
+    : `/contests/${contest.year}.jpg`;
 
   return (
     <li className="list-group-item ">
@@ -31,6 +33,7 @@ const ContestListItem = ({ contest }) => {
             <img
               className="mr-3 align-self-start"
               height="100"
+              width="100"
               src={picture}
               alt="proPicture"
             />

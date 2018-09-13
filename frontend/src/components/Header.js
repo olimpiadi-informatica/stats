@@ -36,14 +36,26 @@ class Header extends Component {
 
   render() {
     return (
-      <div className="p-2">
-        <Navbar color="light" light expand="lg">
-          <NavbarBrand href="/">
-            <img src="/logo.png" height="40" alt="Logo" />
-          </NavbarBrand>
+      <div className="row">
+        <div className="col-12">
+          <Link to="/" className="logo-header">
+            <h1 className="display-3">
+              <span className="text-primary">O</span>
+              <span className="text-success">I</span>
+              <span className="text-danger">I</span>
+              Stats
+            </h1>
+          </Link>
+        </div>
+        <Navbar color="white" light expand="lg">
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar className="">
-            <Nav className="ml-auto" navbar>
+            <Nav className="" navbar>
+              <NavItem>
+                <Link to="/" className="navbar-nav nav-link ">
+                  Home
+                </Link>
+              </NavItem>
               <NavItem>
                 <Link to="/contests" className="navbar-nav nav-link ">
                   Contests
@@ -74,7 +86,7 @@ class Header extends Component {
                   About
                 </Link>
               </NavItem>
-              <NavItem>
+              <NavItem style={{ marginLeft: "25px" }}>
                 <form
                   className="form-inline my-2 my-lg-0 float-right"
                   onSubmit={this.handleSubmit}

@@ -10,9 +10,9 @@ function generateBodyCard(coin) {
     return (
       <div>
         <div className="card-text">
-          Lo sapevi che <strong>Andrea Ciprietti</strong> è l'atleta più
-          vincente della storia delle olimpiadi italiane. In quattro
-          competizioni ha conquistato 3 ori e 1 argenti
+          Andrea Ciprietti is the most successful athlete in the history of the
+          Italian Olympics. In four competitions it has conquered 3 gold and 1
+          silver
           <div className="row text-center">
             <div className="col-12 align-items-center">
               <div className="gold d-inline-block p-2">
@@ -28,7 +28,7 @@ function generateBodyCard(coin) {
         </div>
         <Link
           to={"/contestant/8406cc432799527748f821a8d3b61be8"}
-          className="card-link"
+          className="card-link btn btn-outline-success btn-block"
         >
           More
         </Link>
@@ -38,9 +38,8 @@ function generateBodyCard(coin) {
     return (
       <div>
         <div className="card-text">
-          Michele Russo nel 2016 ha portato la prima medaglia nella storia per
-          la <strong>Basilicata</strong>, portando a casa un bronzo totalizzando
-          118 punti
+          Michele Russo in 2016 brought the first medal in history for
+          Basilicata, bringing home a bronze totaling 118 points
         </div>
         <div className="row text-center">
           <div className="col-12 align-items-center">
@@ -52,7 +51,7 @@ function generateBodyCard(coin) {
         </div>
         <Link
           to={"/contestant/3f37b03da3550a815b84ea34abb2b97b"}
-          className="card-link"
+          className="card-link btn btn-outline-success btn-block"
         >
           More
         </Link>
@@ -63,9 +62,8 @@ function generateBodyCard(coin) {
     return (
       <div>
         <div className="card-text">
-          Lo sapevi che <strong>Massimo Cairo</strong> ha partecipato a tre
-          diverse edizioni delle olimpiadi portando a casa tutte le volte la
-          medaglia d'oro
+          Massimo Cairo has participated in three different editions of the
+          Olympics bringing home the gold medal every time
           <div className="row text-center">
             <div className="col-12 align-items-center">
               <div className="gold d-inline-block p-2">
@@ -77,7 +75,7 @@ function generateBodyCard(coin) {
         </div>
         <Link
           to={"/contestant/942768149ab1365c96a28e89442d6b51"}
-          className="card-link"
+          className="card-link btn btn-outline-success btn-block"
         >
           More
         </Link>
@@ -114,7 +112,7 @@ function generateImageCard(coin) {
 function ContestantCard() {
   const coin = flipCoin(3);
   return (
-    <div className="card">
+    <div className="card border-success">
       {generateImageCard(coin)}
       <div className="card-body">{generateBodyCard(coin)}</div>
     </div>

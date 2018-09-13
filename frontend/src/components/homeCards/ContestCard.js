@@ -10,12 +10,14 @@ function generateBodyCard(coin) {
     return (
       <div>
         <p className="card-text">
-          Durante l'edizione svoltasi nel 2015 presso Istituto Caduti
-          Direttissima a Castiglione dei Pepoli, furono sei gli atleti che
-          terminarono la gara facendo full score. Il punteggio medio fu uno dei
-          più alti, 131.94 punti.
+          During the edition held in 2015 at the Istituto Caduti Direttissima in
+          Castiglione dei Pepoli, six athletes finished the competition with
+          full scores. The average score was one of the highest, 131.94 points
         </p>
-        <Link to={"/contest/2015"} className="card-link">
+        <Link
+          to={"/contest/2015"}
+          className="card-link btn btn-outline-success btn-block"
+        >
           More
         </Link>
       </div>
@@ -44,7 +46,7 @@ function generateImageCard(coin) {
 function ContestCard() {
   const coin = flipCoin(1);
   return (
-    <div className="card">
+    <div className="card border-success">
       {generateImageCard(coin)}
       <div className="card-body">{generateBodyCard(coin)}</div>
     </div>

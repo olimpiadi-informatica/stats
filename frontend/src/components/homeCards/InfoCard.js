@@ -2,7 +2,7 @@ import React from "react";
 
 function HomeCard() {
   return (
-    <div className="card">
+    <div className="card border-primary">
       <img className="card-img-top" src="/logo.png" alt="Card cap" />
       <div className="card-body">
         <div className="card-text">

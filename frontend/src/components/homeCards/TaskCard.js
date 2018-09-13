@@ -10,12 +10,14 @@ function generateBodyCard(coin) {
     return (
       <div>
         <p className="card-text">
-          <strong>Stanza degli specchi</strong> è uno dei task più difficile che
-          è mai apparso ad una olimpiade. Nessun atleta è riuscito ad ottenere
-          il punteggio massimo di 100 punti. Solo quattro atleti sono riusciti
-          ad ottenere 80 punti.
+          Mirror Room is one of the most difficult tasks that has ever appeared
+          at an Olympics. No athlete was able to get the maximum score of 100
+          points. Only four athletes managed to get 80 points.
         </p>
-        <Link to={"/task/2017/specchi"} className="card-link">
+        <Link
+          to={"/task/2017/specchi"}
+          className="card-link btn btn-outline-primary btn-block"
+        >
           More
         </Link>
       </div>
@@ -46,7 +48,7 @@ function generateImageCard(coin) {
 function TaskCard() {
   const coin = flipCoin(1);
   return (
-    <div className="card">
+    <div className="card border-primary">
       {generateImageCard(coin)}
       <div className="card-body">{generateBodyCard(coin)}</div>
     </div>

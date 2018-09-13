@@ -38,7 +38,10 @@ class TaskContainer extends Component {
         <tr key={score.contestant.id}>
           <th scope="row">{i + 1}</th>
           <td>
-            <Link to={`/contestant/${score.contestant.id}`}>
+            <Link
+              className="text-success"
+              to={`/contestant/${score.contestant.id}`}
+            >
               {score.contestant.first_name} {score.contestant.last_name}
             </Link>
           </td>

@@ -32,19 +32,17 @@ class ContributeContainer extends Component {
   render() {
     return (
       <div className="row p-2">
-        <h2 className="col-12">Contribute</h2>
+        <h2 className="col-12 text-center">Contribute</h2>
         <div className="col-12">
           <p>
-            Devi contribuire perchè ci mancano i dannati dati. Lorem ipsum dolor
-            sit amet, consectetur adipiscing elit. Etiam lacinia dignissim diam
-            sit amet fringilla. Phasellus cursus rhoncus suscipit. Ut varius
-            tincidunt facilisis. Fusce ac congue purus, ut interdum orci. Cras
-            feugiat porttitor elit, vel venenatis odio malesuada sit amet.
-            Curabitur dolor neque, porttitor vitae finibus sed, porttitor nec
-            turpis. Quisque non vulputate leo, ut dignissim sem. Nullam porta,
-            leo non viverra rhoncus, magna massa dapibus neque, nec rhoncus ex
-            libero ut tortor. Lorem ipsum dolor sit amet, consectetur adipiscing
-            elit.
+            You can contribute to OII Stats by sending us bug reports or missing
+            data. Unfortunately not all the data of the previous editions have
+            been found and your contribution would be a great help. Also if you
+            want to see your picture appear among the participants, send it
+            along with an authorization to process the data.
+            <br />
+            <br />
+            Thank you
           </p>
         </div>
         <div className="col-12">
@@ -92,7 +90,11 @@ class ContributeContainer extends Component {
             </div>
 
             <br />
-            <input type="submit" value="Send" className="btn btn-primary" />
+            <input
+              type="submit"
+              value="Send"
+              className="btn btn-primary disabled"
+            />
           </form>
         </div>
       </div>

@@ -23,7 +23,6 @@ class ContestContainer extends Component {
 
     if (!contest || !contest.navigation)
       return <div className="Loading">Loading ...</div>;
-    console.log(contest);
     return (
       <div>
         <div className="row p-2">

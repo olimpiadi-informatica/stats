@@ -14,8 +14,23 @@ body {
   font-family: sans-serif;
 }
 
+a {
+  color : black !important;
+}
+
+.logo-header {
+  color: none;
+  text-decoration: none;
+}
+.logo-header:hover { text-decoration: none;}
+
 html {
   font-size: 1rem;
+}
+
+.card {
+  padding: 20px;
+  border : none;
 }
 
 @include media-breakpoint-up(sm) {
@@ -37,7 +52,7 @@ html {
 }
 
 .gold > ion-icon {
-  color: #FFD700;
+  color: #ffdb19;
 }
 .silver > ion-icon {
   color: #C0C0C0;
@@ -47,27 +62,27 @@ html {
 }
 
 @media (min-width: 576px) {
-    .card-columns {
-        column-count: 1;
-    }
+  .card-columns {
+    column-count: 1;
+  }
 }
 
 @media (min-width: 768px) {
-    .card-columns {
-        column-count: 2;
-    }
+  .card-columns {
+    column-count: 2;
+  }
 }
 
 @media (min-width: 992px) {
-    .card-columns {
-        column-count: 2;
-    }
+  .card-columns {
+    column-count: 2;
+  }
 }
 
 @media (min-width: 1200px) {
-    .card-columns {
-        column-count: 2;
-    }
+  .card-columns {
+    column-count: 3;
+  }
 }
 
 }

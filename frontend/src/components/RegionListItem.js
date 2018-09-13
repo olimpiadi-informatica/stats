@@ -13,7 +13,9 @@ const RegionListItem = ({ region }) => {
   const num_contestants = region.num_contestants
     ? region.num_contestants
     : "N/a";
-  const picture = region.picture ? region.picture : "/placeholder.jpg";
+  const picture = region.name
+    ? `/regions/${region.name}.png`
+    : "/placeholder.jpg";
 
   const medals = region.medals ? (
     <div className="col-12 col-md-5 align-items-center text-center">
@@ -49,6 +51,7 @@ const RegionListItem = ({ region }) => {
             <img
               className="mr-3 align-self-start"
               height="100"
+              width="100"
               src={picture}
               alt="proPicture"
             />

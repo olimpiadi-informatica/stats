@@ -1,64 +1,53 @@
 import React from "react";
 // import { Link } from "react-router-dom";
 
+function renderGallery() {
+  return (
+    <div className="row m-2">
+      <div className="col-12 text-center">
+        <h3>Gallery</h3>
+      </div>
+      <div className="col-12 col-md-4 p-2">
+        <img src="/gallery/gallery4.jpg" className="img-fluid" alt="Card cap" />
+      </div>
+      <div className="col-12 col-md-4 p-2">
+        <img src="/gallery/gallery2.png" className="img-fluid" alt="Card cap" />
+      </div>
+      <div className="col-12 col-md-4 p-2">
+        <img src="/gallery/gallery3.png" className="img-fluid" alt="Card cap" />
+      </div>
+      <div className="col-12 col-md-4 p-2">
+        <img src="/gallery/gallery1.png" className="img-fluid" alt="Card cap" />
+      </div>
+    </div>
+  );
+}
+
 function About() {
   return (
     <div>
       <div className="row">
         <div className="col-12 title">
-          <h2>About Us</h2>
+          <h2 className="text-center">About Us</h2>
         </div>
         <div className="col-12 mt-2">
-          <img className="float-right" src="/logo.png" alt="Card cap" />
-          Come accordo tra MIUR - Ministero dell'Istruzione, dell'Università e
-          della Ricerca ed AICA - Associazione Italiana per l'Informatica ed il
-          Calcolo Automatico, viene promossa la partecipazione degli studenti
-          della scuola secondaria superiore alle Olimpiadi Italiane di
-          Informatica. L'evento assume particolare significato in quanto
-          costituisce occasione per far emergere e valorizzare le "eccellenze"
-          esistenti nella scuola italiana, con positiva ricaduta sull'intero
-          sistema educativo. A maggior ragione, se si considera che le
-          discipline scientifiche hanno un valore strategico sia per lo sviluppo
-          della ricerca scientifica e tecnologica sia per la formazione
-          culturale e professionale dei giovani. Inoltre, attraverso iniziative
-          come le Olimpiadi di Informatica si creano le precondizioni per
-          preparare gli studenti al lavoro ed agli ulteriori livelli di studio e
-          ricerca.
+          <img className="float-right p-3" src="/logo.png" alt="Card cap" />
+          As an agreement between MIUR - Ministry of Education, University and
+          Research and AICA - Italian Association for Informatics and Automatic
+          Calculation, the participation of upper secondary school students is
+          promoted to the Italian Games Olympics. The event takes on particular
+          significance as it is an opportunity to bring out and enhance the
+          excellences existing in the Italian school, with positive effects on
+          the entire educational system. A fortiori, if we consider that the
+          scientific disciplines have a strategic value both for the development
+          of scientific and technological research and for the cultural and
+          professional training of young people. Furthermore, through
+          initiatives such as the Information Olympics, preconditions are
+          created to prepare students for work and for further levels of study
+          and research.
         </div>
       </div>
-
-      <div className="row">
-        <div className="col-12">
-          <h3>Gallery</h3>
-        </div>
-        <div className="col-12 col-md-4 p-2">
-          <img src="/giorgio.jpg" className="img-fluid" alt="Card cap" />
-        </div>
-        <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
-        </div>
-        <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
-        </div>
-        <div className="col-12 col-md-4 p-2">
-          <img src="/giorgio.jpg" className="img-fluid" alt="Card cap" />
-        </div>
-        <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
-        </div>
-        <div className="col-12 col-md-4 p-2">
-          <img src="/giorgio.jpg" className="img-fluid" alt="Card cap" />
-        </div>
-        <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
-        </div>
-        <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
-        </div>
-        <div className="col-12 col-md-4 p-2">
-          <img src="/edoardo.jpeg" className="img-fluid" alt="Card cap" />
-        </div>
-      </div>
+      {renderGallery()}
     </div>
   );
 }

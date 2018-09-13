@@ -13,11 +13,13 @@ function generateBodyCard(coin) {
     return (
       <div>
         <p className="card-text">
-          Il <strong>Veneto</strong> è la regione che ha portato il maggior
-          numeri di atleti alla competizione, 179 per l'esatezza, 8 in più della
-          Lombardia
+          Veneto is the region that has brought the greatest number of athletes
+          to the competition, exactly 179, eight more than Lombardy
         </p>
-        <Link to={"/region/VEN"} className="card-link">
+        <Link
+          to={"/region/VEN"}
+          className="card-link btn btn-outline-danger btn-block"
+        >
           More
         </Link>
       </div>
@@ -25,10 +27,9 @@ function generateBodyCard(coin) {
   } else if (coin === 1) {
     return (
       <div>
-        <div className="card-text">
-          Lo sapevi che la <strong>Lombardia</strong> è la regione ad aver vinto
-          il maggior numero di medaglie, 89, ed è anche la regione ad aver visto
-          il maggior numero di medaglie di oro, 19.
+        <div className="card-text ">
+          Lombardy is the region that has won the most medals, 89, and the
+          highest number of gold medals, 19.
         </div>
         <div className="row text-center">
           <div className="col-12 align-items-center">
@@ -46,7 +47,10 @@ function generateBodyCard(coin) {
             </div>
           </div>
         </div>
-        <Link to={"/region/LOM"} className="card-link">
+        <Link
+          to={"/region/LOM"}
+          className="card-link btn btn-outline-danger btn-block"
+        >
           More
         </Link>
       </div>
@@ -60,10 +64,16 @@ function generateBodyCard(coin) {
 
 function generateImageCard(coin) {
   if (coin === 0) {
-    return <img className="card-img-top" src="/veneto.jpg" alt="Veneto" />;
+    return (
+      <img className="card-img-top" src="/regions/veneto.png" alt="Veneto" />
+    );
   } else if (coin === 1) {
     return (
-      <img className="card-img-top" src="/lombardia.png" alt="Lombardia" />
+      <img
+        className="card-img-top"
+        src="/regions/lombardia.png"
+        alt="Lombardia"
+      />
     );
   } else if (coin === 2) {
     return <span />;
@@ -78,7 +88,7 @@ class RegionCard extends Component {
   render() {
     const coin = flipCoin(2);
     return (
-      <div className="card">
+      <div className="card border-danger">
         {generateImageCard(coin)}
         <div className="card-body">{generateBodyCard(coin)}</div>
       </div>
@@ -104,7 +114,7 @@ function mapStateToProps(state) {
   if (state.regions && state.regions.error) {
     return { error: "Connection Error" };
   }
-  return { ma: medalsContestants(state.regions) };
+  return { ma: state.regions };
 }
 
 export default connect(

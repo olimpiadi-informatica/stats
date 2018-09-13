@@ -2,7 +2,7 @@ import React from "react";
 
 function NewsCard() {
   return (
-    <div className="card">
+    <div className="card border-primary">
       <img
         className="card-img-top"
         src="/oii_campobasso.jpg"
@@ -10,9 +10,8 @@ function NewsCard() {
       />
       <div className="card-body">
         <p className="card-text">
-          La XVIII edizione delle Olimpiadi Italiane di Informatica si terrà
-          presso ITI G. Marconi di <strong>Campobasso</strong> dal 13 al
-          15/09/2018.
+          The eighteenth edition of the Italian Olympics of Informatics will be
+          held at ITI G. Marconi Campobasso from 13 to 15/09/2018.
         </p>
       </div>
     </div>
