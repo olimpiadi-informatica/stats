@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { fetchRegions } from "../actions/regions";
-// import { Link } from "react-router-dom";
 
 import { RegionListItem } from "../components";
 
@@ -16,7 +15,7 @@ class RegionsContainer extends Component {
     const regions_list = _.map(regions, (region, i) => {
       return <RegionListItem region={region} key={i} />;
     });
-    return <ul className="list-group">{regions_list}</ul>;
+    return <ul className="list-group list-group-flush">{regions_list}</ul>;
   }
 
   render() {
@@ -26,7 +25,7 @@ class RegionsContainer extends Component {
     if (!regions) return <div className="Loading">Loading ...</div>;
     return (
       <div className="row p-2">
-        <div className="col-12">
+        <div className="col-12 text-center">
           <h2>Regions</h2>
         </div>
         <div className="col-12">{this.renderRegions(regions)}</div>

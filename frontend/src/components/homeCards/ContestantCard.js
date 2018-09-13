@@ -99,7 +99,13 @@ function generateImageCard(coin) {
   } else if (coin === 1) {
     return <span />;
   } else if (coin === 2) {
-    return <span />;
+    return (
+      <img
+        className="card-img-top"
+        src="/Massimo_Cairo.jpg"
+        alt="Massimo Cairo"
+      />
+    );
   } else {
     return <span />;
   }

@@ -12,33 +12,43 @@ const ContestListItem = ({ contest }) => {
     : "N/a";
   const max_score = contest.max_score ? contest.max_score : "N/a";
   const avg_score = contest.avg_score ? contest.avg_score.toFixed(2) : "N/a";
+  const picture = contest.picture ? contest.picture : "/placeholder.jpg";
 
   return (
     <li className="list-group-item ">
-      <div className="row align-items-center">
+      <div className="row ">
         <div className="col-12">
-          <Link to={`/contest/${contest.year}`}>
-            <h5>
+          <Link className="text-success" to={`/contest/${contest.year}`}>
+            <h6>
               {contest.location.location} {contest.year}
-            </h5>
+            </h6>
           </Link>
         </div>
+      </div>
+      <div className="row align-items-center">
         <div className="col-12 col-md-7">
-          <dl className="row">
-            <dt className="col-sm-7">Contestants</dt>
-            <dd className="col-sm-5">{num_contestants}</dd>
-
-            <dt className="col-sm-7">Max possible score</dt>
-            <dd className="col-sm-5">{max_score_possible}</dd>
-
-            <dt className="col-sm-7">Max score</dt>
-            <dd className="col-sm-5">{max_score}</dd>
-
-            <dt className="col-sm-7">Avg score</dt>
-            <dd className="col-sm-5">{avg_score}</dd>
-          </dl>
+          <div className="media">
+            <img
+              className="mr-3 align-self-start"
+              height="100"
+              src={picture}
+              alt="proPicture"
+            />
+            <div className="media-body">
+              <dl className="row">
+                <dt className="col-sm-6">Contestants</dt>
+                <dd className="col-sm-6">{num_contestants}</dd>
+                <dt className="col-sm-6">Max possible score</dt>
+                <dd className="col-sm-6">{max_score_possible}</dd>
+                <dt className="col-sm-6">Max score</dt>
+                <dd className="col-sm-6">{max_score}</dd>
+                <dt className="col-sm-6">Avg score</dt>
+                <dd className="col-sm-6">{avg_score}</dd>
+              </dl>
+            </div>
+          </div>
         </div>
-        <div className="col-12 col-md-5 align-items-center">
+        <div className="col-12 col-md-5 align-items-center text-center">
           <div className="gold d-inline-block p-2">
             <ion-icon name="medal" size="large" />
             <div className="text-center">{contest.medals.gold.number}</div>

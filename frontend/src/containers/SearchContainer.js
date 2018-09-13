@@ -35,7 +35,7 @@ class SearchContainer extends Component {
       let item = this.renderResult(result, type, key);
       return item;
     });
-    return <ul className="list-group">{results_list}</ul>;
+    return <ul className="list-group list-group-flush">{results_list}</ul>;
   }
 
   render() {
@@ -49,7 +49,7 @@ class SearchContainer extends Component {
 
     return (
       <div className="row p-2">
-        <h2 className="col-12">
+        <h2 className="col-12 text-center">
           {number_results} Results for <span className="text-success">{q}</span>
         </h2>
         <div className="col-12">{no_results}</div>

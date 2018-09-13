@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { connect } from "react-redux";
 import { fetchContests } from "../actions/contests";
-// import { Link } from "react-router-dom";
 
 import { ContestListItem } from "../components";
 
@@ -26,8 +25,12 @@ class ContestsContainer extends Component {
 
     return (
       <div className="row p-2">
-        <h2 className="col-12 title">Contests</h2>
-        <ul className="list-group col-12">{this.renderContest(contests)}</ul>
+        <h2 className="col-12 title text-center">Contests</h2>
+        <div className="col-12">
+          <ul className="list-group list-group-flush">
+            {this.renderContest(contests)}
+          </ul>
+        </div>
       </div>
     );
   }

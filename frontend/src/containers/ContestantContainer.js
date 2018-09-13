@@ -90,7 +90,7 @@ class ContestantContainer extends Component {
       return (
         <tr key={year}>
           <th scope="row">
-            <Link to={`/contests/${year}`} className="text-success">
+            <Link to={`/contest/${year}`} className="text-success">
               {year}
             </Link>
           </th>
@@ -108,7 +108,7 @@ class ContestantContainer extends Component {
     return (
       <div>
         <h3 className="text-center m-3">Participations</h3>
-        <table className="table table-striped table-responsive-xs">
+        <table className="table table-responsive-xs">
           <thead>
             <tr>
               <th scope="col">Year</th>
@@ -150,7 +150,7 @@ class ContestantContainer extends Component {
     const total_medals = num_golds + num_silvers + num_bronzes;
     const picture = contestant.picture
       ? contestant.picture
-      : "/user_placehoder.png";
+      : "/placeholder.jpg";
     return (
       <div>
         <div className="row p-2">
@@ -165,23 +165,23 @@ class ContestantContainer extends Component {
             <div className="media">
               <img
                 className="mr-3 align-self-start"
-                height="150"
+                height="100"
                 src={picture}
-                alt="Profile Picture"
+                alt="proPicture"
               />
               <div className="media-body">
-                <dl className=" ">
-                  <dt className="col-sm-5">Best Rank</dt>
-                  <dd className="col-sm-7">{best_rank}</dd>
-                  <dt className="col-sm-5">Total Medals</dt>
-                  <dd className="col-sm-7">{total_medals}</dd>
-                  <dt className="col-sm-5">Participations</dt>
-                  <dd className="col-sm-7">{number_participations}</dd>
+                <dl className="row">
+                  <dt className="col-sm-6">Best Rank</dt>
+                  <dd className="col-sm-6">{best_rank}</dd>
+                  <dt className="col-sm-6">Total Medals</dt>
+                  <dd className="col-sm-6">{total_medals}</dd>
+                  <dt className="col-sm-6">Participations</dt>
+                  <dd className="col-sm-6">{number_participations}</dd>
                 </dl>
               </div>
             </div>
           </div>
-          <div className="col-12 col-md-5 ">
+          <div className="col-12 col-md-5 text-center">
             <div className="gold d-inline-block p-2">
               <ion-icon name="medal" size="large" />
               <div className="text-center">{num_golds}</div>
@@ -195,7 +195,7 @@ class ContestantContainer extends Component {
               <div className="text-center">{num_bronzes}</div>
             </div>
           </div>
-          <div className="col-12">
+          <div className="col-12 p-2">
             {this.renderParticipations(participations)}
           </div>
         </div>

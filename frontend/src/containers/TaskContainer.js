@@ -32,7 +32,6 @@ class TaskContainer extends Component {
   renderRanking(scores) {
     if (!scores) return <div className="Loading" />;
     const scores_lists = _.map(scores, (score, i) => {
-      console.log(score);
       const rank = score.rank ? score.rank : "N/a";
       const score_point = score.score ? score.score : "N/a";
       return (
@@ -51,8 +50,8 @@ class TaskContainer extends Component {
 
     return (
       <div>
-        <h3> Ranking </h3>
-        <table className="table table-striped table-responsive-xs">
+        <h3 className="text-center p-2"> Ranking </h3>
+        <table className="table table-responsive-xs">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -75,24 +74,48 @@ class TaskContainer extends Component {
     const max_score_possible = task.max_score_possible
       ? task.max_score_possible
       : "N/a";
-    const link = task.link ? <Link to={task.link}> {task.link} </Link> : "";
+    const link = task.link ? (
+      <a target="_blank" href={task.link}>
+        {" "}
+        {task.link}{" "}
+      </a>
+    ) : (
+      ""
+    );
     const num_contestants = task.scores ? task.scores.length : "N/a";
+    const picture = task.picture ? task.picture : "/placeholder.jpg";
     return (
-      <div className="row p-2">
-        <div className="col-12 title">
-          <h2>{task.title}</h2>
+      <div>
+        <div className="row p-2">
+          <div className="col-12 ">
+            <h2 className="title text-center">{task.title}</h2>
+          </div>
         </div>
-        <div className="col-12">
-          <dl className="row">
-            <dt className="col-sm-5">Try this Problem</dt>
-            <dd className="col-sm-7">{link}</dd>
-            <dt className="col-sm-5">Max possible score</dt>
-            <dd className="col-sm-7">{max_score_possible}</dd>
-            <dt className="col-sm-5">Number of Contestants</dt>
-            <dd className="col-sm-7">{num_contestants}</dd>
-          </dl>
+        <div className="row ">
+          <div className="col-12 col-md-5">
+            <div className="media">
+              <img
+                className="mr-3 align-self-start"
+                height="100"
+                src={picture}
+                alt="proPicture"
+              />
+              <div className="media-body">
+                <dl className="row">
+                  <dt className="col-sm-6">Try this Problem</dt>
+                  <dd className="col-sm-6">{link}</dd>
+                  <dt className="col-sm-6">Max possible score</dt>
+                  <dd className="col-sm-6">{max_score_possible}</dd>
+                  <dt className="col-sm-6">Number of Contestants</dt>
+                  <dd className="col-sm-6">{num_contestants}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="col-12">{this.renderRanking(task.scores)}</div>
+        <div className="row">
+          <div className="col-12">{this.renderRanking(task.scores)}</div>
+        </div>
       </div>
     );
   }

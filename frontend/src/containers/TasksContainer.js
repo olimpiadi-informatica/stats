@@ -24,7 +24,7 @@ class TasksContainer extends Component {
     const tasks_list = _.map(tasks, (value, key) => {
       return <div key={key}>{this.renderTaskOfYear(value, key)}</div>;
     });
-    return <ul className="list-group">{tasks_list}</ul>;
+    return <ul className="list-group list-group-flush">{tasks_list}</ul>;
   }
 
   render() {
@@ -34,7 +34,7 @@ class TasksContainer extends Component {
     if (!this.props.tasks) return <div className="Loading">Loading ...</div>;
     return (
       <div className="row p-2">
-        <h2 className="col-12 title">Tasks</h2>
+        <h2 className="col-12 title text-center">Tasks</h2>
         <div className="col-12">{this.renderTasks(tasks)}</div>
       </div>
     );

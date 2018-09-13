@@ -13,9 +13,10 @@ const RegionListItem = ({ region }) => {
   const num_contestants = region.num_contestants
     ? region.num_contestants
     : "N/a";
+  const picture = region.picture ? region.picture : "/placeholder.jpg";
 
   const medals = region.medals ? (
-    <div className="col-12 col-md-5 align-items-center">
+    <div className="col-12 col-md-5 align-items-center text-center">
       <div className="gold d-inline-block p-2">
         <ion-icon name="medal" size="large" />
         <div className="text-center">{region.medals.gold}</div>
@@ -35,17 +36,31 @@ const RegionListItem = ({ region }) => {
 
   return (
     <li className="RegionListItemContainer list-group-item">
-      <div className=" row align-items-center">
+      <div className=" row">
         <div className="col-12">
-          <Link to={`/region/${region.id}`}>{region.name}</Link>
+          <Link className="text-success" to={`/region/${region.id}`}>
+            <h6>{region.name}</h6>
+          </Link>
         </div>
+      </div>
+      <div className="row align-items-center">
         <div className="col-12 col-md-7">
-          <dl className="row">
-            <dt className="col-sm-7">Avg Contestants per Year</dt>
-            <dd className="col-sm-5">{avg_contestants_per_year}</dd>
-            <dt className="col-sm-7">Number of Contestants</dt>
-            <dd className="col-sm-5">{num_contestants}</dd>
-          </dl>
+          <div className="media">
+            <img
+              className="mr-3 align-self-start"
+              height="100"
+              src={picture}
+              alt="proPicture"
+            />
+            <div className="media-body">
+              <dl className="row">
+                <dt className="col-sm-6">Avg Contestants per Year</dt>
+                <dd className="col-sm-6">{avg_contestants_per_year}</dd>
+                <dt className="col-sm-6">Number of Contestants</dt>
+                <dd className="col-sm-6">{num_contestants}</dd>
+              </dl>
+            </div>
+          </div>
         </div>
         {medals}
       </div>

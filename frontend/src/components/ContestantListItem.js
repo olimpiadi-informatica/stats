@@ -16,11 +16,10 @@ const ContestantListItem = ({ contestant }) => {
   ) : (
     "N/a"
   );
-  const picture = contestant.picture
-    ? contestant.picture
-    : "/user_placehoder.png";
+  const picture = contestant.picture ? contestant.picture : "/placeholder.jpg";
+
   const medals = contestant.num_medals ? (
-    <div className="col-12 col-md-5 align-items-center">
+    <div className="col-12 col-md-5 align-self-center text-center">
       <div className="gold d-inline-block p-2">
         <ion-icon name="medal" size="large" />
         <div className="text-center">{contestant.num_medals.gold}</div>
@@ -40,36 +39,39 @@ const ContestantListItem = ({ contestant }) => {
 
   return (
     <li className="ContestantListItemContainer list-group-item ">
-      <div className=" row align-items-center">
-        <div className="col-1">
-          <img src={picture} alt="Picture" className="img img-fluid" />
+      <div className="row ">
+        <div className="col-12">
+          <Link
+            className="text-success"
+            to={`/contestant/${contestant.contestant.id}`}
+          >
+            <h6>
+              {contestant.contestant.first_name}{" "}
+              {contestant.contestant.last_name}
+            </h6>
+          </Link>
         </div>
-        <div className="col-11">
-          <div className="row">
-            <div className="col-12">
-              <div className="d-flex w-100 justify-content-between">
-                <h5 className="mb-2">
-                  <Link
-                    className="text-success p-1"
-                    to={`/contestant/${contestant.contestant.id}`}
-                  >
-                    {contestant.contestant.first_name}{" "}
-                    {contestant.contestant.last_name}
-                  </Link>
-                </h5>
-              </div>
-            </div>
-            <div className="col-12 col-md-7">
+      </div>
+      <div className=" row align-items-center">
+        <div className="col-12 col-md-7">
+          <div className="media">
+            <img
+              className="pr-3 align-self-start"
+              height="100"
+              src={picture}
+              alt="proPicture"
+            />
+            <div className="media-body">
               <dl className="row">
-                <dt className="col-sm-3">Best Rank</dt>
-                <dd className="col-sm-7">{best_rank}</dd>
-                <dt className="col-sm-3">Participations</dt>
-                <dd className="col-sm-7">{participations}</dd>
+                <dt className="col-sm-6">Best Rank</dt>
+                <dd className="col-sm-6">{best_rank}</dd>
+                <dt className="col-sm-6">Participations</dt>
+                <dd className="col-sm-6">{participations}</dd>
               </dl>
             </div>
-            {medals}
           </div>
         </div>
+        {medals}
       </div>
     </li>
   );

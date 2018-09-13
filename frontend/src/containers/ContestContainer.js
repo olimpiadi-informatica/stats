@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-// import { Link } from "react-router-dom";
-// import _ from "lodash";
 
 import { fetchContest, fetchResults } from "../actions/contests";
 import { ContestItem } from "../components";
@@ -25,16 +23,17 @@ class ContestContainer extends Component {
 
     if (!contest || !contest.navigation)
       return <div className="Loading">Loading ...</div>;
+    console.log(contest);
     return (
-      <div className="row p-2">
-        <div className="col-12 ">
-          <h2 className="title text-center">
-            {contest.location.location} {contest.navigation.current.year}
-          </h2>
+      <div>
+        <div className="row p-2">
+          <div className="col-12 ">
+            <h2 className="title text-center">
+              {contest.location.location} {contest.navigation.current}
+            </h2>
+          </div>
         </div>
-        <div className="col-12">
-          <ContestItem contest={contest} results={contest.results} />
-        </div>
+        <ContestItem contest={contest} results={contest.results} />
       </div>
     );
   }
