@@ -16,7 +16,7 @@ function generateBodyCard(coin) {
         </p>
         <Link
           to={"/task/2017/specchi"}
-          className="card-link btn btn-outline-primary btn-block"
+          className="card-link btn btn-outline-success text-success btn-block"
         >
           More
         </Link>
@@ -48,7 +48,7 @@ function generateImageCard(coin) {
 function TaskCard() {
   const coin = flipCoin(1);
   return (
-    <div className="card border-primary">
+    <div className="card border-success">
       {generateImageCard(coin)}
       <div className="card-body">{generateBodyCard(coin)}</div>
     </div>

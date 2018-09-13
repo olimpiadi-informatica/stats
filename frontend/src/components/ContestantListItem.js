@@ -2,6 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 
+function imageError(event) {
+  event.target.src = "/placeholder.jpg";
+}
+
 const ContestantListItem = ({ contestant }) => {
   if (!contestant) return <div className="Loading">Loading ...</div>;
 
@@ -56,10 +60,11 @@ const ContestantListItem = ({ contestant }) => {
         <div className="col-12 col-md-7">
           <div className="media">
             <img
-              className="pr-3 align-self-start"
-              height="100"
-              src={picture}
-              alt="proPicture"
+              className="mr-3 align-self-start img-fluid"
+              src={`/contestants/${contestant.contestant.id}.jpg`}
+              alt="Contestant"
+              onError={imageError}
+              width="125"
             />
             <div className="media-body">
               <dl className="row">

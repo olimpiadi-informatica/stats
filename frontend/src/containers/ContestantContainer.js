@@ -126,6 +126,10 @@ class ContestantContainer extends Component {
     );
   }
 
+  imageError(event) {
+    event.target.src = "/placeholder.jpg";
+  }
+
   render() {
     const { error } = this.props;
     if (error) return <div>{error}</div>;
@@ -151,6 +155,7 @@ class ContestantContainer extends Component {
     const picture = contestant.picture
       ? contestant.picture
       : "/placeholder.jpg";
+
     return (
       <div>
         <div className="row p-2">
@@ -164,10 +169,11 @@ class ContestantContainer extends Component {
           <div className="col-12 col-md-7">
             <div className="media">
               <img
-                className="mr-3 align-self-start"
-                height="100"
-                src={picture}
-                alt="proPicture"
+                className="mr-3 align-self-start img-fluid"
+                src={`/contestants/${contestant.id}.jpg`}
+                alt="Contestant"
+                onError={this.imageError.bind(this)}
+                width="125"
               />
               <div className="media-body">
                 <dl className="row">

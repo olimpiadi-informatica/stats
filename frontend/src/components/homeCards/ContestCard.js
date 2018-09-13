@@ -16,7 +16,7 @@ function generateBodyCard(coin) {
         </p>
         <Link
           to={"/contest/2015"}
-          className="card-link btn btn-outline-success btn-block"
+          className="card-link btn btn-outline-danger text-danger btn-block"
         >
           More
         </Link>

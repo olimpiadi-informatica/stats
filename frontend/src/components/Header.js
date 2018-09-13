@@ -36,15 +36,10 @@ class Header extends Component {
 
   render() {
     return (
-      <div className="row">
+      <div className="row" style={{ marginTop: "15px" }}>
         <div className="col-12">
           <Link to="/" className="logo-header">
-            <h1 className="display-3">
-              <span className="text-primary">O</span>
-              <span className="text-success">I</span>
-              <span className="text-danger">I</span>
-              Stats
-            </h1>
+            <img src="/oiistats.png" height="50" />
           </Link>
         </div>
         <Navbar color="white" light expand="lg">

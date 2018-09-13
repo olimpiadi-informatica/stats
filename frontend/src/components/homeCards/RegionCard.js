@@ -18,7 +18,7 @@ function generateBodyCard(coin) {
         </p>
         <Link
           to={"/region/VEN"}
-          className="card-link btn btn-outline-danger btn-block"
+          className="card-link btn btn-outline-danger text-danger btn-block"
         >
           More
         </Link>
@@ -49,7 +49,7 @@ function generateBodyCard(coin) {
         </div>
         <Link
           to={"/region/LOM"}
-          className="card-link btn btn-outline-danger btn-block"
+          className="card-link btn btn-outline-danger text-danger btn-block"
         >
           More
         </Link>

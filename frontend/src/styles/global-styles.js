@@ -11,7 +11,7 @@ body {
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 a {
@@ -52,7 +52,7 @@ html {
 }
 
 .gold > ion-icon {
-  color: #ffdb19;
+  color: #ffdb19 !important;
 }
 .silver > ion-icon {
   color: #C0C0C0;

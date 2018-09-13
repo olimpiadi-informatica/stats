@@ -28,7 +28,7 @@ function generateBodyCard(coin) {
         </div>
         <Link
           to={"/contestant/8406cc432799527748f821a8d3b61be8"}
-          className="card-link btn btn-outline-success btn-block"
+          className="card-link btn btn-outline-success text-success btn-block"
         >
           More
         </Link>
@@ -51,7 +51,7 @@ function generateBodyCard(coin) {
         </div>
         <Link
           to={"/contestant/3f37b03da3550a815b84ea34abb2b97b"}
-          className="card-link btn btn-outline-success btn-block"
+          className="card-link btn btn-outline-success  text-success btn-block"
         >
           More
         </Link>
@@ -75,7 +75,7 @@ function generateBodyCard(coin) {
         </div>
         <Link
           to={"/contestant/942768149ab1365c96a28e89442d6b51"}
-          className="card-link btn btn-outline-success btn-block"
+          className="card-link btn btn-outline-success text-success btn-block"
         >
           More
         </Link>
@@ -100,7 +100,7 @@ function generateImageCard(coin) {
     return (
       <img
         className="card-img-top"
-        src="/Massimo_Cairo.jpg"
+        src="/contestants/942768149ab1365c96a28e89442d6b51.jpg"
         alt="Massimo Cairo"
       />
     );
