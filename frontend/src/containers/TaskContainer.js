@@ -19,17 +19,16 @@ class TaskContainer extends Component {
     });
     const scores_lists = _.map(ordered_contests, (score, i) => {
       const rank = score.rank ? score.rank : "N/a";
-      const score_point = score.score ? score.score : "N/a";
+      const score_point = score.score !== null ? score.score : "N/a";
       return (
         <tr key={score.contestant.id}>
-          <th scope="row">{i + 1}</th>
+          <th scope="row">{rank}</th>
           <td>
             <Link className="" to={`/contestant/${score.contestant.id}`}>
               {score.contestant.first_name} {score.contestant.last_name}
             </Link>
           </td>
           <td>{score_point}</td>
-          <td>{rank}</td>
         </tr>
       );
     });
@@ -43,7 +42,6 @@ class TaskContainer extends Component {
               <th scope="col">#</th>
               <th scope="col">Contestant</th>
               <th scope="col">Score</th>
-              <th scope="col">Rank in Contest</th>
             </tr>
           </thead>
           <tbody>{scores_lists}</tbody>

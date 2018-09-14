@@ -16,7 +16,7 @@ class ContestsContainer extends Component {
       return -o.year;
     });
     return _.map(ordered_contests, (contest, i) => {
-      return <ContestListItem key={contest.year} contest={contest} />;
+      return <ContestListItem key={contest.year + "-" + i} contest={contest} />;
     });
   }
 

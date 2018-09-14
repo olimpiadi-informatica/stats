@@ -18,9 +18,7 @@ export default function(state = initialState, action) {
         [action.payload.data.navigation.current]: action.payload.data
       };
     case FETCH_REGION_RESULTS:
-      console.log(state);
       const newRegions = JSON.parse(JSON.stringify(state));
-      console.log(newRegions[action.payload.data.navigation.current]);
       if (action.payload.data && action.payload.data.navigation.current)
         newRegions[action.payload.data.navigation.current]["results"] =
           action.payload.data;

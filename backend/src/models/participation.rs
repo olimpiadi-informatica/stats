@@ -52,7 +52,7 @@ pub fn get_user_participations(
 ) -> Result<Vec<Participation>, Error> {
     schema::participations::table
         .filter(schema::participations::columns::user_id.eq(user_id))
-        .order(schema::participations::columns::contest_year)
+        .order(schema::participations::columns::contest_year.desc())
         .load::<Participation>(&**conn)
 }
 
@@ -76,8 +76,7 @@ pub fn get_past_contest_participations(
             schema::participations::columns::user_id
                 .eq_any(user_ids)
                 .and(schema::participations::columns::contest_year.lt(year)),
-        )
-        .order(schema::participations::columns::user_id)
+        ).order(schema::participations::columns::user_id)
         .then_order_by(schema::participations::columns::contest_year.desc())
         .load::<Participation>(&**conn)?
         .into_iter()
@@ -96,8 +95,7 @@ pub fn get_participations_per_regions_per_year(
             schema::participations::contest_year
                 .eq(year)
                 .and(schema::participations::region.is_not_null()),
-        )
-        .order(schema::participations::region)
+        ).order(schema::participations::region)
         .load::<Participation>(&**conn)?
         .into_iter()
         .group_by(|p| p.region.clone())
@@ -107,8 +105,7 @@ pub fn get_participations_per_regions_per_year(
                 r.expect("The filter hasn't worked well"),
                 p.collect::<Vec<Participation>>(),
             )
-        })
-        .collect())
+        }).collect())
 }
 
 pub fn get_participations_per_regions(
@@ -123,10 +120,11 @@ pub fn get_participations_per_regions(
         .group_by(|(_p, r)| r)
         .into_iter()
         // FIXME the .clone() here may be removed somehow
-        .map(|(r, p)| (
-            (*r).clone().expect("Join didn't worked"),
-            p.map(|p| p.0.clone()).collect::<Vec<Participation>>()
-        ))
-        .into_iter()
+        .map(|(r, p)| {
+            (
+                (*r).clone().expect("Join didn't worked"),
+                p.map(|p| p.0.clone()).collect::<Vec<Participation>>(),
+            )
+        }).into_iter()
         .collect())
 }

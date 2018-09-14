@@ -15,7 +15,7 @@ const ContestantListItem = ({ contestant }) => {
       return (
         <span key={contestant + i}>
           <Link to={`/contest/${partecipation.year}`}>
-            {partecipation.year}{" "}
+            [{partecipation.year}]{" "}
           </Link>
         </span>
       );

@@ -28,6 +28,15 @@ a:hover {
   border: none;
 }
 
+.badge {
+  width: 42px;
+  font-style: normal;
+}
+
+.nav-link {
+  cursor: pointer;
+}
+
 /* Responsive Typography */
 @include media-breakpoint-up(sm) {
   html {

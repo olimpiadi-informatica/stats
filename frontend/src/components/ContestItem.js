@@ -9,13 +9,21 @@ function imageError(event) {
 
 function renderResults(results) {
   if (!results) return <div className="Loading">Loading ...</div>;
-  const contestants = _.map(results.results, contestant => {
+  const array_contestants = _.values(results.results);
+  const sorted_results = _(array_contestants)
+    .chain()
+    .flatten()
+    .sortBy(function(contestant) {
+      return contestant.rank;
+    })
+    .value();
+  const contestants = _.map(sorted_results, contestant => {
     const medal = contestant.medal
       ? renderMedal(contestant.medal, contestant.medal, false)
       : "";
     return (
       <tr key={contestant.contestant.id}>
-        <th scope="row">{contestant.rank}</th>
+        <th scope="row">{contestant.rank ? contestant.rank : "N/a"}</th>
         <td>
           <Link className="" to={`/contestant/${contestant.contestant.id}`}>
             {contestant.contestant.first_name} {contestant.contestant.last_name}
