@@ -12,26 +12,12 @@ class TaskContainer extends Component {
     this.props.fetchTask(year, name);
   }
 
-  renderScores(scores) {
-    if (!scores) return <div className="Loading" />;
-    return _.map(scores, (score, i) => {
-      const score_point = score.score ? <div>Score {score.score}</div> : "";
-      const rank = score.rank ? <div>Rank {score.rank}</div> : "";
-      return (
-        <li key={i} className="list-group-item">
-          <Link to={`/contestant/${score.contestant.id}`}>
-            {score.contestant.first_name} {score.contestant.last_name}
-          </Link>
-          {score_point}
-          {rank}
-        </li>
-      );
-    });
-  }
-
   renderRanking(scores) {
     if (!scores) return <div className="Loading" />;
-    const scores_lists = _.map(scores, (score, i) => {
+    const ordered_contests = _.sortBy(_.values(scores), function(o) {
+      return o.rank;
+    });
+    const scores_lists = _.map(ordered_contests, (score, i) => {
       const rank = score.rank ? score.rank : "N/a";
       const score_point = score.score ? score.score : "N/a";
       return (
@@ -89,7 +75,9 @@ class TaskContainer extends Component {
     const num_contestants = task.scores ? task.scores.length : "N/a";
     const image_src =
       task.navigation && task.navigation.current.name
-        ? `/tasks/${task.navigation.current.name}.png`
+        ? `/tasks/${task.navigation.current.name}-${
+            task.navigation.current.year
+          }.png`
         : "/tasks/notfound";
     return (
       <div>

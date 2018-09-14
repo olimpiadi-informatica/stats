@@ -26,7 +26,7 @@ const TaskListItem = ({ task, year }) => {
           <div className="media">
             <img
               className="mr-3 align-self-start img-fluid"
-              src={`/tasks/${task.name}.png`}
+              src={`/tasks/${task.name}-${year}.png`}
               alt="Region"
               onError={imageError}
               width="125"

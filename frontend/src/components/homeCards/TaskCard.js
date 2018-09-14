@@ -34,7 +34,11 @@ function generateBodyCard(coin) {
 function generateImageCard(coin) {
   if (coin === 0) {
     return (
-      <img className="card-img-top" src="/tasks/specchi.png" alt="Specchi" />
+      <img
+        className="card-img-top"
+        src="/tasks/specchi-2017.png"
+        alt="Specchi"
+      />
     );
   } else if (coin === 1) {
     return <span />;

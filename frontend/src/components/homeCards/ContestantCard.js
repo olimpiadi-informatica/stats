@@ -81,6 +81,30 @@ function generateBodyCard(coin) {
         </Link>
       </div>
     );
+  }
+  if (coin === 3) {
+    return (
+      <div>
+        <div className="card-text">
+          Christopher Mezzomo won the first medal for the Valle d'Aosta in 2018.
+          With 103 points he took home a bronze medal.
+          <div className="row text-center">
+            <div className="col-12 align-items-center">
+              <div className="bronze d-inline-block p-2">
+                <ion-icon name="medal" size="large" />
+                <div className="text-center">1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Link
+          to={"/contestant/__________"}
+          className="card-link btn btn-outline-success text-success btn-block"
+        >
+          More
+        </Link>
+      </div>
+    );
   } else {
     return <div />;
   }
@@ -104,6 +128,8 @@ function generateImageCard(coin) {
         alt="Massimo Cairo"
       />
     );
+  } else if (coin === 3) {
+    return <span />;
   } else {
     return <span />;
   }

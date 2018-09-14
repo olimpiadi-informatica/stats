@@ -13,7 +13,6 @@ export function fetchTasks(year) {
 
 export function fetchTask(year, task) {
   const request = axios.get(`${ROOT_URL}/tasks/${year}/${task}`);
-  console.log(request);
   return {
     type: FETCH_TASK,
     payload: request

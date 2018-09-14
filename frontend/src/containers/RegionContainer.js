@@ -188,7 +188,7 @@ class RegionContainer extends Component {
           </td>
           <td className="text-center">{medal}</td>
           <td>{rank}</td>
-          <td>{final_score}</td>
+          <td>{Math.round(final_score)}</td>
           {problem_1}
           {problem_2}
           {problem_3}

@@ -31,20 +31,17 @@ function About() {
           <h2 className="text-center text-danger">About Us</h2>
         </div>
         <div className="col-12 mt-2">
-          <img className="float-right p-3" src="/logo.png" alt="Card cap" />
-          As an agreement between MIUR - Ministry of Education, University and
-          Research and AICA - Italian Association for Informatics and Automatic
-          Calculation, the participation of upper secondary school students is
-          promoted to the Italian Games Olympics. The event takes on particular
-          significance as it is an opportunity to bring out and enhance the
-          excellences existing in the Italian school, with positive effects on
-          the entire educational system. A fortiori, if we consider that the
-          scientific disciplines have a strategic value both for the development
-          of scientific and technological research and for the cultural and
-          professional training of young people. Furthermore, through
-          initiatives such as the Information Olympics, preconditions are
-          created to prepare students for work and for further levels of study
-          and research.
+          <img
+            className="float-right p-3 img-fluid"
+            width="200"
+            src="/oiistats.png"
+            alt="Logo"
+          />
+          OII stats is a platform that was created to provide essential but
+          reliable statistics on the progress of the national competitions of
+          the Italian IT Olympics. The data are collected during the entire
+          duration of the various tenders and contain all the information
+          available to the staff of the Olympics tutors.
         </div>
       </div>
       {renderGallery()}
