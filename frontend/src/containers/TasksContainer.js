@@ -21,8 +21,9 @@ class TasksContainer extends Component {
 
   renderTasks(tasks) {
     if (!tasks) return <div className="Loading">Loading ...</div>;
-    const tasks_list = _.map(tasks, (value, key) => {
-      return <div key={key}>{this.renderTaskOfYear(value, key)}</div>;
+    const years = _.keys(tasks).reverse();
+    const tasks_list = _.map(years, year => {
+      return <div key={year}>{this.renderTaskOfYear(tasks[year], year)}</div>;
     });
     return <ul className="list-group list-group-flush">{tasks_list}</ul>;
   }
