@@ -80,7 +80,7 @@ pub fn get_user_task_scores(
 
 pub fn get_task_scores(conn: &DbConn) -> Result<Vec<TaskScore>, Error> {
     schema::task_scores::table
-        .order(schema::task_scores::columns::contest_year.desc())
+        .order(schema::task_scores::columns::contest_year)
         .then_order_by(schema::task_scores::columns::task_name)
         .load::<TaskScore>(&**conn)
 }

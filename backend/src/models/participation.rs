@@ -52,7 +52,7 @@ pub fn get_user_participations(
 ) -> Result<Vec<Participation>, Error> {
     schema::participations::table
         .filter(schema::participations::columns::user_id.eq(user_id))
-        .order(schema::participations::columns::contest_year.desc())
+        .order(schema::participations::columns::contest_year)
         .load::<Participation>(&**conn)
 }
 
