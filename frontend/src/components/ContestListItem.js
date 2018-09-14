@@ -1,6 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+function imageError(event) {
+  event.target.src = "/placeholder.jpg";
+}
+
 const ContestListItem = ({ contest }) => {
   if (!contest) return <div className="Loading">Loading ...</div>;
 
@@ -12,9 +16,6 @@ const ContestListItem = ({ contest }) => {
     : "N/a";
   const max_score = contest.max_score ? contest.max_score : "N/a";
   const avg_score = contest.avg_score ? contest.avg_score.toFixed(2) : "N/a";
-  const picture = contest.picture
-    ? contest.picture
-    : `/contests/${contest.year}.jpg`;
 
   return (
     <li className="list-group-item ">
@@ -31,12 +32,13 @@ const ContestListItem = ({ contest }) => {
         <div className="col-12 col-md-7">
           <div className="media">
             <img
-              className="mr-3 align-self-start"
-              height="100"
-              width="100"
-              src={picture}
-              alt="proPicture"
+              className="mr-3 align-self-start img-fluid"
+              src={`/contests/${contest.year}.jpg`}
+              alt="Contest"
+              onError={imageError}
+              width="125"
             />
+
             <div className="media-body">
               <dl className="row">
                 <dt className="col-sm-6">Contestants</dt>

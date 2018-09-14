@@ -12,7 +12,13 @@ const ContestantListItem = ({ contestant }) => {
   const participations = _.map(
     contestant.participations,
     (partecipation, i) => {
-      return <span key={contestant + i}>{partecipation.year} </span>;
+      return (
+        <span key={contestant + i}>
+          <Link to={`/contest/${partecipation.year}`}>
+            {partecipation.year}{" "}
+          </Link>
+        </span>
+      );
     }
   );
   const best_rank = contestant.best_rank ? (
@@ -20,7 +26,6 @@ const ContestantListItem = ({ contestant }) => {
   ) : (
     "N/a"
   );
-  const picture = contestant.picture ? contestant.picture : "/placeholder.jpg";
 
   const medals = contestant.num_medals ? (
     <div className="col-12 col-md-5 align-self-center text-center">

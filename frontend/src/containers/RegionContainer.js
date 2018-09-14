@@ -109,7 +109,12 @@ class RegionContainer extends Component {
 
   renderBadge(score) {
     if (!score) return <span />;
-    return <span className="badge badge-pill badge-primary"> {score}</span>;
+    return (
+      <span className="badge badge-pill badge-light border border-danger">
+        {" "}
+        {score}
+      </span>
+    );
   }
 
   renderContestatsPerYear(contestants, year) {
@@ -126,10 +131,7 @@ class RegionContainer extends Component {
       const problem_1 =
         scores && scores[0] ? (
           <td>
-            <Link
-              to={`/task/${year}/${scores[0].task}`}
-              className="text-success"
-            >
+            <Link to={`/task/${year}/${scores[0].task}`} className="">
               {this.renderBadge(scores[0].score)} {scores[0].name}
             </Link>
           </td>
@@ -139,10 +141,7 @@ class RegionContainer extends Component {
       const problem_2 =
         scores && scores[1] ? (
           <td>
-            <Link
-              to={`/task/${year}/${scores[1].task}`}
-              className="text-success"
-            >
+            <Link to={`/task/${year}/${scores[1].task}`} className="">
               {this.renderBadge(scores[1].score)} {scores[1].name}
             </Link>
           </td>
@@ -152,10 +151,7 @@ class RegionContainer extends Component {
       const problem_3 =
         scores && scores[2] ? (
           <td>
-            <Link
-              to={`/task/${year}/${scores[2].task}`}
-              className="text-success"
-            >
+            <Link to={`/task/${year}/${scores[2].task}`} className="">
               {this.renderBadge(scores[2].score)} {scores[2].name}
             </Link>
           </td>
@@ -165,10 +161,7 @@ class RegionContainer extends Component {
       const problem_4 =
         scores && scores[3] ? (
           <td>
-            <Link
-              to={`/task/${year}/${scores[3].task}`}
-              className="text-success"
-            >
+            <Link to={`/task/${year}/${scores[3].task}`} className="">
               {this.renderBadge(scores[3].score)} {scores[3].name}
             </Link>
           </td>
@@ -183,15 +176,12 @@ class RegionContainer extends Component {
       return (
         <tr key={year + contestant.contestant.id}>
           <th scope="row">
-            <Link className="text-success" to={`/contest/${year}`}>
+            <Link className="" to={`/contest/${year}`}>
               {year}
             </Link>
           </th>
           <td>
-            <Link
-              className="text-success"
-              to={`/contestant/${contestant.contestant.id}`}
-            >
+            <Link className="" to={`/contestant/${contestant.contestant.id}`}>
               {contestant.contestant.first_name}{" "}
               {contestant.contestant.last_name}
             </Link>
@@ -209,15 +199,18 @@ class RegionContainer extends Component {
   }
 
   renderResults(results) {
-    const results_list = _.map(results, result => {
+    const ordered_results_list = _.sortBy(_.values(results), function(o) {
+      return -o.year;
+    });
+    const results_list = _.map(ordered_results_list, result => {
       const year = result.year;
       return this.renderContestatsPerYear(result.contestants, year);
     });
     return (
-      <div className=" row">
+      <div className="row mt-4">
         <div className="col-12">
           <table className="table table-responsive-xs">
-            <thead>
+            <thead className="bg-success text-white">
               <tr>
                 <th scope="col">Year</th>
                 <th scope="col">Contestant</th>
@@ -240,7 +233,11 @@ class RegionContainer extends Component {
 
   renderInfoPerYear(years) {
     if (!years) return <div className="Loading">Loading ...</div>;
-    const years_list = _.map(years, item => {
+
+    const ordered_years_list = _.sortBy(_.values(years), function(o) {
+      return -o.year;
+    });
+    const years_list = _.map(ordered_years_list, item => {
       const year = item.year;
       const num_contestants = item.num_contestants;
       const medals = item.num_medals ? (
@@ -262,7 +259,6 @@ class RegionContainer extends Component {
         <div />
       );
       const location = item.location.location;
-      const picture = item.picture ? item.picture : "/placeholder.jpg";
       return (
         <li key={year} className="list-group-item">
           <div className=" row">
@@ -278,10 +274,11 @@ class RegionContainer extends Component {
             <div className="col-12 col-md-7">
               <div className="media">
                 <img
-                  className="mr-3 align-self-start"
-                  height="100"
-                  src={picture}
-                  alt="proPicture"
+                  className="mr-3 align-self-start img-fluid"
+                  src={`/contests/${year}.jpg`}
+                  alt="Contestant"
+                  onError={this.imageError.bind(this)}
+                  width="125"
                 />
                 <div className="media-body">
                   <dl className="row">
@@ -321,6 +318,10 @@ class RegionContainer extends Component {
     return <h5 className="text-center"> Host in {hostedin}</h5>;
   }
 
+  imageError(event) {
+    event.target.src = "/placeholder.jpg";
+  }
+
   render() {
     const { error } = this.props;
     if (error) return <div>{error}</div>;
@@ -330,13 +331,20 @@ class RegionContainer extends Component {
     return (
       <div>
         <div className="row p-2">
-          <div className="col-12">
-            <h2 className="text-center">{region.name}</h2>
+          <div className="col-12 text-center">
+            <h2 className="text-danger">{region.name}</h2>
             {this.hasHosted(region.hosted)}
+            <img
+              className="mr-3 align-self-start img-fluid"
+              src={`/regions/${region.name}.png`}
+              alt="Region"
+              onError={this.imageError.bind(this)}
+              width="125"
+            />
           </div>
         </div>
-        <Nav pills>
-          <NavItem>
+        <Nav tabs className="mt-4">
+          <NavItem className="ml-auto">
             <NavLink
               className={this.state.activeTab === "1" ? "active" : ""}
               onClick={() => {
@@ -347,7 +355,7 @@ class RegionContainer extends Component {
               Participations
             </NavLink>
           </NavItem>
-          <NavItem>
+          <NavItem className="mr-auto">
             <NavLink
               className={this.state.activeTab === "2" ? "active" : ""}
               onClick={() => {

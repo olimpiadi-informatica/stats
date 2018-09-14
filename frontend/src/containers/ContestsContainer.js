@@ -10,10 +10,13 @@ class ContestsContainer extends Component {
     this.props.fetchContests();
   }
 
-  renderContest(contests_r) {
-    if (!contests_r) return <div className="Loading">Loading ...</div>;
-    return _.map(contests_r, (contest, i) => {
-      return <ContestListItem key={contest.year + i} contest={contest} />;
+  renderContest(contests) {
+    if (!contests) return <div className="Loading">Loading ...</div>;
+    const ordered_contests = _.sortBy(_.values(contests), function(o) {
+      return -o.year;
+    });
+    return _.map(ordered_contests, (contest, i) => {
+      return <ContestListItem key={contest.year} contest={contest} />;
     });
   }
 
@@ -25,7 +28,7 @@ class ContestsContainer extends Component {
 
     return (
       <div className="row p-2">
-        <h2 className="col-12 title text-center">Contests</h2>
+        <h2 className="col-12 title text-center text-danger">Contests</h2>
         <div className="col-12">
           <ul className="list-group list-group-flush">
             {this.renderContest(contests)}

@@ -25,7 +25,7 @@ class RegionsContainer extends Component {
     if (!regions) return <div className="Loading">Loading ...</div>;
     return (
       <div className="row p-2">
-        <div className="col-12 text-center">
+        <div className="col-12 text-center text-danger">
           <h2>Regions</h2>
         </div>
         <div className="col-12">{this.renderRegions(regions)}</div>

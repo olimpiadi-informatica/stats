@@ -27,7 +27,7 @@ class ContestContainer extends Component {
       <div>
         <div className="row p-2">
           <div className="col-12 ">
-            <h2 className="title text-center">
+            <h2 className="title text-center  text-danger">
               {contest.location.location} {contest.navigation.current}
             </h2>
           </div>

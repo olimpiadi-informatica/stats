@@ -1,0 +1,73 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: black;
+  font-style: italic;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #28a746;
+}
+
+.gold ion-icon {
+  color: #ffdb19 !important;
+}
+.silver ion-icon {
+  color: #c0c0c0;
+}
+.bronze ion-icon {
+  color: #cd7f32;
+}
+
+.card {
+  padding: 20px;
+  border: none;
+}
+
+/* Responsive Typography */
+@include media-breakpoint-up(sm) {
+  html {
+    font-size: 1.2rem;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  html {
+    font-size: 1.4rem;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  html {
+    font-size: 1.6rem;
+  }
+}
+
+/* Card columns
+@media (min-width: 576px) {
+  .card-columns {
+    column-count: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .card-columns {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 992px) {
+  .card-columns {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1200px) {
+  .card-columns {
+    column-count: 3;
+  }
+} */

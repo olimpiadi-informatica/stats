@@ -1,14 +1,7 @@
 import React, { Component } from "react";
 // import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
-import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem
-} from "reactstrap";
+import { Collapse, Navbar, NavbarToggler, Nav, NavItem } from "reactstrap";
 
 class Header extends Component {
   constructor(props) {
@@ -39,7 +32,7 @@ class Header extends Component {
       <div className="row" style={{ marginTop: "15px" }}>
         <div className="col-12">
           <Link to="/" className="logo-header">
-            <img src="/oiistats.png" height="50" />
+            <img src="/oiistats.png" height="50" alt="logo" />
           </Link>
         </div>
         <Navbar color="white" light expand="lg">
@@ -96,7 +89,7 @@ class Header extends Component {
                     required
                   />
                   <button
-                    className="btn btn-outline-primary my-2 my-sm-0"
+                    className="btn btn-outline-success my-2 my-sm-0"
                     type="submit"
                   >
                     Search

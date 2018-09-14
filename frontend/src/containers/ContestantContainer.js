@@ -12,7 +12,12 @@ class ContestantContainer extends Component {
   }
   renderBadge(score) {
     if (!score) return <span />;
-    return <span className="badge badge-pill badge-primary"> {score}</span>;
+    return (
+      <span className="badge badge-pill badge-light border border-danger">
+        {" "}
+        {score}
+      </span>
+    );
   }
 
   renderParticipations(participations) {
@@ -32,10 +37,7 @@ class ContestantContainer extends Component {
       const problem_1 =
         scores && scores[0] ? (
           <td>
-            <Link
-              to={`/task/${year}/${scores[0].task}`}
-              className="text-success"
-            >
+            <Link to={`/task/${year}/${scores[0].task}`} className="">
               {this.renderBadge(scores[0].score)} {scores[0].task}
             </Link>
           </td>
@@ -45,10 +47,7 @@ class ContestantContainer extends Component {
       const problem_2 =
         scores && scores[1] ? (
           <td>
-            <Link
-              to={`/task/${year}/${scores[1].task}`}
-              className="text-success"
-            >
+            <Link to={`/task/${year}/${scores[1].task}`} className="">
               {this.renderBadge(scores[1].score)} {scores[1].task}
             </Link>
           </td>
@@ -58,10 +57,7 @@ class ContestantContainer extends Component {
       const problem_3 =
         scores && scores[2] ? (
           <td>
-            <Link
-              to={`/task/${year}/${scores[2].task}`}
-              className="text-success"
-            >
+            <Link to={`/task/${year}/${scores[2].task}`} className="">
               {this.renderBadge(scores[2].score)} {scores[2].task}
             </Link>
           </td>
@@ -71,10 +67,7 @@ class ContestantContainer extends Component {
       const problem_4 =
         scores && scores[3] ? (
           <td>
-            <Link
-              to={`/task/${year}/${scores[3].task}`}
-              className="text-success"
-            >
+            <Link to={`/task/${year}/${scores[3].task}`} className="">
               {this.renderBadge(scores[3].score)} {scores[3].task}
             </Link>
           </td>
@@ -90,13 +83,13 @@ class ContestantContainer extends Component {
       return (
         <tr key={year}>
           <th scope="row">
-            <Link to={`/contest/${year}`} className="text-success">
+            <Link to={`/contest/${year}`} className="">
               {year}
             </Link>
           </th>
           <td>{rank}</td>
           <td>{medal}</td>
-          <td>{final_score}</td>
+          <td>{Math.round(final_score)}</td>
           {problem_1}
           {problem_2}
           {problem_3}
@@ -107,9 +100,9 @@ class ContestantContainer extends Component {
 
     return (
       <div>
-        <h3 className="text-center m-3">Participations</h3>
+        <h3 className="text-center m-3 text-danger">Participations</h3>
         <table className="table table-responsive-xs">
-          <thead>
+          <thead className="bg-success text-white">
             <tr>
               <th scope="col">Year</th>
               <th scope="col">Rank</th>
@@ -152,15 +145,12 @@ class ContestantContainer extends Component {
     const num_silvers = medals.silver ? medals.silver : 0;
     const num_bronzes = medals.bronze ? medals.bronze : 0;
     const total_medals = num_golds + num_silvers + num_bronzes;
-    const picture = contestant.picture
-      ? contestant.picture
-      : "/placeholder.jpg";
 
     return (
       <div>
         <div className="row p-2">
           <div className="col-12">
-            <h2 className="text-center">
+            <h2 className="text-center text-danger">
               {contestant.first_name} {contestant.last_name}
             </h2>
           </div>

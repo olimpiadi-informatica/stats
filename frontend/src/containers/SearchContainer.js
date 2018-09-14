@@ -49,7 +49,7 @@ class SearchContainer extends Component {
 
     return (
       <div className="row p-2">
-        <h2 className="col-12 text-center">
+        <h2 className="col-12 text-center text-danger">
           {number_results} Results for <span className="text-success">{q}</span>
         </h2>
         <div className="col-12">{no_results}</div>

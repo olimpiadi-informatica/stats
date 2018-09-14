@@ -49,7 +49,7 @@ class ContestantsContainer extends Component {
       this.state.cutoff < contestants.length ? (
         <button
           onClick={this.moreContestants.bind(this)}
-          className="btn btn-outline-primary mt-2 "
+          className="btn btn-outline-success mt-2 "
         >
           More contestants
         </button>
@@ -59,7 +59,7 @@ class ContestantsContainer extends Component {
     return (
       <div className="row p-2">
         <div className="col-12">
-          <h2 className="p-2 text-center">Hall of Fame</h2>
+          <h2 className="p-2 text-center text-danger">Hall of Fame</h2>
           {this.renderContestants(contestants_list)}
           <div className="text-center">{show_more_contestants}</div>
         </div>

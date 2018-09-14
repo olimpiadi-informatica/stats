@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import _ from "lodash";
 import { connect } from "react-redux";
 import { fetchRegions } from "../../actions/regions";
 
@@ -65,13 +64,13 @@ function generateBodyCard(coin) {
 function generateImageCard(coin) {
   if (coin === 0) {
     return (
-      <img className="card-img-top" src="/regions/veneto.png" alt="Veneto" />
+      <img className="card-img-top" src="/regions/Veneto.png" alt="Veneto" />
     );
   } else if (coin === 1) {
     return (
       <img
         className="card-img-top"
-        src="/regions/lombardia.png"
+        src="/regions/Lombardia.png"
         alt="Lombardia"
       />
     );
@@ -94,20 +93,6 @@ class RegionCard extends Component {
       </div>
     );
   }
-}
-
-function medalsContestants(regions) {
-  if (!regions) return [];
-  let regionMA = [];
-  _.map(regions, region => {
-    const { medals } = region;
-    const total_medals = medals.gold + medals.silver + medals.bronze;
-    regionMA.push({
-      region: region.id,
-      ma: Math.round(total_medals / region.num_contestants)
-    });
-  });
-  return regionMA;
 }
 
 function mapStateToProps(state) {

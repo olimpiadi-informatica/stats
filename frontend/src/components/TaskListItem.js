@@ -1,13 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+function imageError(event) {
+  event.target.src = "/placeholder.jpg";
+}
+
 const TaskListItem = ({ task, year }) => {
   if (!task) return <div className="Loading">Loading ...</div>;
   const max_score_possible = task.max_score_possible
     ? task.max_score_possible
     : "N/a";
   const max_score = task.max_score ? task.max_score : "N/a";
-  const picture = task.picture ? task.picture : "/placeholder.jpg";
 
   return (
     <li className="TaskListItemContainer list-group-item">
@@ -22,10 +25,11 @@ const TaskListItem = ({ task, year }) => {
         <div className="col-12 col-md-7">
           <div className="media">
             <img
-              className="mr-3 align-self-start"
-              height="100"
-              src={picture}
-              alt="proPicture"
+              className="mr-3 align-self-start img-fluid"
+              src={`/tasks/${task.name}.png`}
+              alt="Region"
+              onError={imageError}
+              width="125"
             />
             <div className="media-body">
               <dl className="row">

@@ -38,10 +38,7 @@ class TaskContainer extends Component {
         <tr key={score.contestant.id}>
           <th scope="row">{i + 1}</th>
           <td>
-            <Link
-              className="text-success"
-              to={`/contestant/${score.contestant.id}`}
-            >
+            <Link className="" to={`/contestant/${score.contestant.id}`}>
               {score.contestant.first_name} {score.contestant.last_name}
             </Link>
           </td>
@@ -53,9 +50,9 @@ class TaskContainer extends Component {
 
     return (
       <div>
-        <h3 className="text-center p-2"> Ranking </h3>
+        <h3 className="text-center p-2 text-danger"> Ranking </h3>
         <table className="table table-responsive-xs">
-          <thead>
+          <thead className="bg-success text-white">
             <tr>
               <th scope="col">#</th>
               <th scope="col">Contestant</th>
@@ -67,6 +64,10 @@ class TaskContainer extends Component {
         </table>
       </div>
     );
+  }
+
+  imageError(event) {
+    event.target.src = "/placeholder.jpg";
   }
 
   render() {
@@ -86,22 +87,22 @@ class TaskContainer extends Component {
       ""
     );
     const num_contestants = task.scores ? task.scores.length : "N/a";
-    const picture = task.picture ? task.picture : "/placeholder.jpg";
     return (
       <div>
         <div className="row p-2">
           <div className="col-12 ">
-            <h2 className="title text-center">{task.title}</h2>
+            <h2 className="title text-center text-danger">{task.title}</h2>
           </div>
         </div>
         <div className="row ">
-          <div className="col-12 col-md-5">
+          <div className="col-12 col-md-7">
             <div className="media">
               <img
-                className="mr-3 align-self-start"
-                height="100"
-                src={picture}
-                alt="proPicture"
+                className="mr-3 align-self-start img-fluid"
+                src={`/tasks/${task.navigation.current.name}.png`}
+                alt="Task"
+                onError={this.imageError.bind(this)}
+                width="125"
               />
               <div className="media-body">
                 <dl className="row">

@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import _ from "lodash";
 import { TaskListItem } from "../components";
 
+function imageError(event) {
+  event.target.src = "/placeholder.jpg";
+}
+
 function renderResults(results) {
   if (!results) return <div className="Loading">Loading ...</div>;
   const contestants = _.map(results.results, contestant => {
@@ -13,17 +17,14 @@ function renderResults(results) {
       <tr key={contestant.contestant.id}>
         <th scope="row">{contestant.rank}</th>
         <td>
-          <Link
-            className="text-success"
-            to={`/contestant/${contestant.contestant.id}`}
-          >
+          <Link className="" to={`/contestant/${contestant.contestant.id}`}>
             {contestant.contestant.first_name} {contestant.contestant.last_name}
           </Link>
         </td>
         <td>{contestant.score}</td>
         <td className="text-center">{medal}</td>
         <td>
-          <Link className="text-success" to={`/region/${contestant.region}`}>
+          <Link className="" to={`/region/${contestant.region}`}>
             {contestant.region}
           </Link>
         </td>
@@ -32,9 +33,9 @@ function renderResults(results) {
   });
   return (
     <div>
-      <h3 className="text-center m-3">Results</h3>
-      <table className="table  table-responsive-xs">
-        <thead>
+      <h3 className="text-center m-3  text-danger">Results</h3>
+      <table className="table   table-responsive-xs">
+        <thead className="bg-success text-white">
           <tr>
             <th scope="col">#</th>
             <th scope="col">Contestant</th>
@@ -111,7 +112,7 @@ function renderTasks(tasks, year) {
   });
   return (
     <div>
-      <h3 className="text-center m-3">Tasks</h3>
+      <h3 className="text-center m-3 text-danger">Tasks</h3>
       <div className="row">
         <div className="col-12">
           <ul className="list-group list-group-flush">{tasks_list}</ul>
@@ -131,23 +132,19 @@ function renderInfo(contest) {
     : "N/a";
   const max_score = contest.max_score ? contest.max_score : "N/a";
   const avg_score = contest.avg_score ? contest.avg_score.toFixed(2) : "N/a";
-  console.log(contest);
-  const picture = contest.picture
-    ? contest.picture
-    : `/contests/${contest.navigation.current}.jpg`;
 
   return (
     <div className="media m-3">
       <img
-        className="mr-3 align-self-start"
-        height="100"
-        width="100"
-        src={picture}
-        alt="proPicture"
+        className="mr-3 align-self-start img-fluid"
+        src={`/contests/${contest.navigation.current}.jpg`}
+        alt="Contest"
+        onError={imageError}
+        width="125"
       />
       <div className="media-body">
         <dl className="row">
-          <dt className="col-sm-6">Contestants</dt>
+          <dt className="col-sm-6 ">Contestants</dt>
           <dd className="col-sm-6">{num_contestants}</dd>
           <dt className="col-sm-6">Max possible score</dt>
           <dd className="col-sm-6">{max_score_possible}</dd>

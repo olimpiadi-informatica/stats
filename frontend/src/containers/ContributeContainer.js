@@ -32,7 +32,7 @@ class ContributeContainer extends Component {
   render() {
     return (
       <div className="row p-2">
-        <h2 className="col-12 text-center">Contribute</h2>
+        <h2 className="col-12 text-center text-danger">Contribute</h2>
         <div className="col-12">
           <p>
             You can contribute to OII Stats by sending us bug reports or missing
@@ -93,7 +93,7 @@ class ContributeContainer extends Component {
             <input
               type="submit"
               value="Send"
-              className="btn btn-primary disabled"
+              className="btn  btn-outline-success disabled"
             />
           </form>
         </div>

@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 import { ContestantCard } from "../components";
-import { InfoCard } from "../components";
 import { NewsCard } from "../components";
 import { RegionCard } from "../components";
 import { TaskCard } from "../components";
