@@ -87,6 +87,10 @@ class TaskContainer extends Component {
       ""
     );
     const num_contestants = task.scores ? task.scores.length : "N/a";
+    const image_src =
+      task.navigation && task.navigation.current.name
+        ? `/tasks/${task.navigation.current.name}.png`
+        : "/tasks/notfound";
     return (
       <div>
         <div className="row p-2">
@@ -99,7 +103,7 @@ class TaskContainer extends Component {
             <div className="media">
               <img
                 className="mr-3 align-self-start img-fluid"
-                src={`/tasks/${task.navigation.current.name}.png`}
+                src={image_src}
                 alt="Task"
                 onError={this.imageError.bind(this)}
                 width="125"
