@@ -34,51 +34,20 @@ class ContestantContainer extends Component {
       const year = participation.year ? participation.year : "N/a";
 
       const { scores } = participation;
-      const problem_1 =
-        scores && scores[0] ? (
-          <td>
-            <Link to={`/task/${year}/${scores[0].task}`} className="">
-              {this.renderBadge(scores[0].score)} {scores[0].task}
+      let problems = [];
+      let final_score = null;
+      for (const score of scores || []) {
+        if (!score) continue;
+        if (score.score !== null && final_score === null) final_score = 0;
+        if (score.score !== null) final_score += score.score;
+        problems.push(
+          <td key={`/task/${year}/${score.task}`}>
+            <Link to={`/task/${year}/${score.task}`} className="">
+              {this.renderBadge(score.score)} {score.task}
             </Link>
           </td>
-        ) : (
-          <td />
         );
-      const problem_2 =
-        scores && scores[1] ? (
-          <td>
-            <Link to={`/task/${year}/${scores[1].task}`} className="">
-              {this.renderBadge(scores[1].score)} {scores[1].task}
-            </Link>
-          </td>
-        ) : (
-          <td />
-        );
-      const problem_3 =
-        scores && scores[2] ? (
-          <td>
-            <Link to={`/task/${year}/${scores[2].task}`} className="">
-              {this.renderBadge(scores[2].score)} {scores[2].task}
-            </Link>
-          </td>
-        ) : (
-          <td />
-        );
-      const problem_4 =
-        scores && scores[3] ? (
-          <td>
-            <Link to={`/task/${year}/${scores[3].task}`} className="">
-              {this.renderBadge(scores[3].score)} {scores[3].task}
-            </Link>
-          </td>
-        ) : (
-          <td />
-        );
-
-      let final_score = 0;
-      _.each(scores, score => {
-        if (score.score) final_score += score.score;
-      });
+      }
 
       return (
         <tr key={year}>
@@ -89,11 +58,8 @@ class ContestantContainer extends Component {
           </th>
           <td>{rank}</td>
           <td>{medal}</td>
-          <td>{Math.round(final_score)}</td>
-          {problem_1}
-          {problem_2}
-          {problem_3}
-          {problem_4}
+          <td>{final_score !== null ? final_score : "N/a"}</td>
+          {problems}
         </tr>
       );
     }).reverse();
