@@ -12,11 +12,11 @@ function generateBodyCard(coin) {
     return (
       <div>
         <p className="card-text">
-          Veneto is the region that has brought the greatest number of athletes
-          to the competition, exactly 179, eight more than Lombardy
+          Lombardy is the region that has brought the greatest number of
+          athletes to the competition, exactly 219, seven more than Veneto
         </p>
         <Link
-          to={"/region/VEN"}
+          to={"/region/LOM"}
           className="card-link btn btn-outline-danger text-danger btn-block"
         >
           More
@@ -27,22 +27,22 @@ function generateBodyCard(coin) {
     return (
       <div>
         <div className="card-text ">
-          Lombardy is the region that has won the most medals, 89, and the
-          highest number of gold medals, 19.
+          Lombardy is the region that has won the most medals, 114, and the
+          highest number of gold medals, 21.
         </div>
         <div className="row text-center">
           <div className="col-12 align-items-center">
             <div className="gold d-inline-block p-2">
               <ion-icon name="medal" size="large" />
-              <div className="text-center">19</div>
+              <div className="text-center">21</div>
             </div>
             <div className="silver d-inline-block p-2">
               <ion-icon name="medal" size="large" />
-              <div className="text-center">29</div>
+              <div className="text-center">38</div>
             </div>
             <div className="bronze d-inline-block p-2">
               <ion-icon name="medal" size="large" />
-              <div className="text-center">41</div>
+              <div className="text-center">55</div>
             </div>
           </div>
         </div>
@@ -64,7 +64,11 @@ function generateBodyCard(coin) {
 function generateImageCard(coin) {
   if (coin === 0) {
     return (
-      <img className="card-img-top" src="/regions/Veneto.png" alt="Veneto" />
+      <img
+        className="card-img-top"
+        src="/regions/Lombardia.png"
+        alt="Lombardia"
+      />
     );
   } else if (coin === 1) {
     return (
