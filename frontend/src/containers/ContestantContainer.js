@@ -96,7 +96,7 @@ class ContestantContainer extends Component {
           {problem_4}
         </tr>
       );
-    });
+    }).reverse();
 
     return (
       <div>

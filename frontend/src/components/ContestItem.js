@@ -3,11 +3,21 @@ import { Link } from "react-router-dom";
 import _ from "lodash";
 import { TaskListItem } from "../components";
 
+function renderBadge(score) {
+  if (score === null) return <span />;
+  return (
+    <span className="badge badge-pill badge-light border border-danger">
+      {" "}
+      {score}
+    </span>
+  );
+}
+
 function imageError(event) {
   event.target.src = "/placeholder.jpg";
 }
 
-function renderResults(results) {
+function renderResults(contest, results) {
   if (!results) return <div className="Loading">Loading ...</div>;
   const array_contestants = _.values(results.results);
   const sorted_results = _(array_contestants)
@@ -17,10 +27,22 @@ function renderResults(results) {
       return contestant.rank;
     })
     .value();
+  const tasks = contest.tasks;
   const contestants = _.map(sorted_results, contestant => {
     const medal = contestant.medal
       ? renderMedal(contestant.medal, contestant.medal, false)
       : "";
+    const task_scores = contestant.scores;
+    const scores = _.map(_.zip(tasks, task_scores), data => {
+      const [task, score] = data;
+      return (
+        <td key={contestant.contestant.id + task.name}>
+          <Link to={`/task/${task.year}/${task.name}`} className="">
+            {renderBadge(score)} {task.name}
+          </Link>
+        </td>
+      );
+    });
     return (
       <tr key={contestant.contestant.id}>
         <th scope="row">{contestant.rank ? contestant.rank : "N/a"}</th>
@@ -30,6 +52,7 @@ function renderResults(results) {
           </Link>
         </td>
         <td>{contestant.score}</td>
+        {scores}
         <td className="text-center">{medal}</td>
         <td>
           <Link className="" to={`/region/${contestant.region}`}>
@@ -48,6 +71,9 @@ function renderResults(results) {
             <th scope="col">#</th>
             <th scope="col">Contestant</th>
             <th scope="col">Score</th>
+            <th scope="col" colSpan={tasks.length}>
+              Tasks
+            </th>
             <th className="text-center" scope="col">
               Medal
             </th>
@@ -175,7 +201,7 @@ const ContestItem = ({ contest, results }) => {
       <div className="col-12">
         {renderTasks(contest.tasks, contest.navigation.current)}
       </div>
-      <div className="col-12">{renderResults(results)}</div>
+      <div className="col-12">{renderResults(contest, results)}</div>
     </div>
   );
 };
