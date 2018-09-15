@@ -37,7 +37,10 @@ function renderResults(contest, results) {
       const [task, score] = data;
       return (
         <td key={contestant.contestant.id + task.name}>
-          <Link to={`/task/${task.year}/${task.name}`} className="">
+          <Link
+            to={`/task/${contest.navigation.current}/${task.name}`}
+            className=""
+          >
             {renderBadge(score)} {task.name}
           </Link>
         </td>

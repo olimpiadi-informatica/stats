@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-// import _ from "lodash";
-// import { Link } from "react-router-dom";
 
 class ContributeContainer extends Component {
   constructor(props) {
@@ -41,61 +39,10 @@ class ContributeContainer extends Component {
             want to see your picture appear among the participants, send it
             along with an authorization to process the data.
             <br />
+            Please send an email to edoardo.morassutto@gmail.com
             <br />
             Thank you
           </p>
-        </div>
-        <div className="col-12">
-          <form onSubmit={this.handleSubmit}>
-            <div className="input-group mb-3">
-              <input
-                type="text"
-                name="name"
-                value={this.state.name}
-                onChange={this.handleInputChange}
-                className="form-control"
-                placeholder="Name"
-                aria-label="Name"
-                aria-describedby="basic-addon1"
-                required
-              />
-            </div>
-
-            <div className="input-group mb-3">
-              <div className="input-group-prepend">
-                <span className="input-group-text">@</span>
-              </div>
-              <input
-                type="email"
-                name="email"
-                value={this.state.email}
-                onChange={this.handleInputChange}
-                className="form-control"
-                placeholder="Email"
-                aria-label="Email"
-                aria-describedby="basic-addon1"
-                required
-              />
-            </div>
-
-            <div className="input-group mb-3">
-              <textarea
-                name="contribute"
-                value={this.state.contribute}
-                onChange={this.handleInputChange}
-                className="form-control"
-                required
-                placeholder="Your Contribute"
-              />
-            </div>
-
-            <br />
-            <input
-              type="submit"
-              value="Send"
-              className="btn  btn-outline-success disabled"
-            />
-          </form>
         </div>
       </div>
     );
