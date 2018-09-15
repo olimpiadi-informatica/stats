@@ -11,7 +11,7 @@ class ContestantContainer extends Component {
     this.props.fetchContestat(id);
   }
   renderBadge(score) {
-    if (!score) return <span />;
+    if (score === null) return <span />;
     return (
       <span className="badge badge-pill badge-light border border-danger">
         {" "}
