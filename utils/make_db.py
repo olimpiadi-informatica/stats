@@ -147,7 +147,7 @@ class User:
         return hash(self.name) ^ hash(self.surname)
 
     def __repr__(self):
-        return "<User %s %s -- %s>" % (self.name, self.surname, str(self.birth))
+        return "<User %s %s -- %s id=%s>" % (self.name, self.surname, str(self.birth), self.id())
 
 
 class Contest:

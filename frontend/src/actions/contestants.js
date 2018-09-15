@@ -1,7 +1,7 @@
 import axios from "axios";
 import { FETCH_CONTESTANTS, FETCH_CONTESTANT } from "../constants/ActionTypes";
 
-const ROOT_URL = "https://stats.olinfo.it/api";
+const ROOT_URL = "http://localhost:8000";
 
 export function fetchContestats(year) {
   const request = axios.get(`${ROOT_URL}/users`);

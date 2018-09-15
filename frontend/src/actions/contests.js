@@ -5,7 +5,7 @@ import {
   FETCH_CONTEST_RESULTS
 } from "../constants/ActionTypes";
 
-const ROOT_URL = "https://stats.olinfo.it/api";
+const ROOT_URL = "http://localhost:8000";
 
 export function fetchContests() {
   const request = axios.get(`${ROOT_URL}/contests`);
