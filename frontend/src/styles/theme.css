@@ -29,7 +29,7 @@ a:hover {
 }
 
 .badge {
-  width: 42px;
+  min-width: 42px;
   font-style: normal;
 }
 

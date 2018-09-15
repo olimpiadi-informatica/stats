@@ -1,17 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
-import { TaskListItem } from "../components";
-
-function renderBadge(score) {
-  if (score === null) return <span />;
-  return (
-    <span className="badge badge-pill badge-light border border-danger">
-      {" "}
-      {score}
-    </span>
-  );
-}
+import { TaskListItem, ScoreBadge } from "../components";
 
 function imageError(event) {
   event.target.src = "/placeholder.jpg";
@@ -41,7 +31,8 @@ function renderResults(contest, results) {
             to={`/task/${contest.navigation.current}/${task.name}`}
             className=""
           >
-            {renderBadge(score)} {task.name}
+            <ScoreBadge score={score} max_score={task.max_score_possible} />{" "}
+            {task.name}
           </Link>
         </td>
       );

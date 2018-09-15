@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import _ from "lodash";
 import { Link } from "react-router-dom";
+import { ScoreBadge } from "../components";
 
 import { fetchContestat } from "../actions/contestants";
 
@@ -9,15 +10,6 @@ class ContestantContainer extends Component {
   componentDidMount() {
     const id = this.props.match.params.id;
     this.props.fetchContestat(id);
-  }
-  renderBadge(score) {
-    if (score === null) return <span />;
-    return (
-      <span className="badge badge-pill badge-light border border-danger">
-        {" "}
-        {score}
-      </span>
-    );
   }
 
   renderParticipations(participations) {
@@ -43,7 +35,7 @@ class ContestantContainer extends Component {
         problems.push(
           <td key={`/task/${year}/${score.task}`}>
             <Link to={`/task/${year}/${score.task}`} className="">
-              {this.renderBadge(score.score)} {score.task}
+              <ScoreBadge score={score.score} /> {score.task}
             </Link>
           </td>
         );

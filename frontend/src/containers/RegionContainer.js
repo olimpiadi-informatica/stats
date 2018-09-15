@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { TabContent, TabPane, Nav, NavItem, NavLink } from "reactstrap";
 import _ from "lodash";
 import { fetchRegion, fetchRegionResults } from "../actions/regions";
+import { ScoreBadge } from "../components";
 
 class RegionContainer extends Component {
   constructor(props) {
@@ -107,16 +108,6 @@ class RegionContainer extends Component {
     );
   }
 
-  renderBadge(score) {
-    if (score === null) return <span />;
-    return (
-      <span className="badge badge-pill badge-light border border-danger">
-        {" "}
-        {score}
-      </span>
-    );
-  }
-
   renderContestatsPerYear(contestants, year) {
     return _.map(contestants, contestant => {
       const medal = contestant.medal ? (
@@ -128,51 +119,21 @@ class RegionContainer extends Component {
       );
       const rank = contestant.rank ? contestant.rank : "N/a";
       const scores = contestant.task_scores;
-      const problem_1 =
-        scores && scores[0] ? (
+      let problems = [];
+      let final_score = null;
+      for (const score of scores || []) {
+        if (!score) continue;
+        if (score.score !== null && final_score === null) final_score = 0;
+        if (score.score !== null) final_score += score.score;
+        problems.push(
           <td>
-            <Link to={`/task/${year}/${scores[0].task}`} className="">
-              {this.renderBadge(scores[0].score)} {scores[0].name}
+            <Link to={`/task/${year}/${score.task}`} className="">
+              <ScoreBadge score={score.score} /> {score.name}
             </Link>
           </td>
-        ) : (
-          <td />
         );
-      const problem_2 =
-        scores && scores[1] ? (
-          <td>
-            <Link to={`/task/${year}/${scores[1].task}`} className="">
-              {this.renderBadge(scores[1].score)} {scores[1].name}
-            </Link>
-          </td>
-        ) : (
-          <td />
-        );
-      const problem_3 =
-        scores && scores[2] ? (
-          <td>
-            <Link to={`/task/${year}/${scores[2].task}`} className="">
-              {this.renderBadge(scores[2].score)} {scores[2].name}
-            </Link>
-          </td>
-        ) : (
-          <td />
-        );
-      const problem_4 =
-        scores && scores[3] ? (
-          <td>
-            <Link to={`/task/${year}/${scores[3].task}`} className="">
-              {this.renderBadge(scores[3].score)} {scores[3].name}
-            </Link>
-          </td>
-        ) : (
-          <td />
-        );
+      }
 
-      let final_score = 0;
-      _.each(scores, score => {
-        if (score.score) final_score += score.score;
-      });
       return (
         <tr key={year + contestant.contestant.id}>
           <th scope="row">
@@ -189,10 +150,7 @@ class RegionContainer extends Component {
           <td className="text-center">{medal}</td>
           <td>{rank}</td>
           <td>{Math.round(final_score)}</td>
-          {problem_1}
-          {problem_2}
-          {problem_3}
-          {problem_4}
+          {problems}
         </tr>
       );
     });
