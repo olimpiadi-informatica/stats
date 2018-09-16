@@ -29,6 +29,7 @@ use rocket::Catcher;
 
 mod cache;
 mod controllers;
+mod cors;
 mod db;
 mod models;
 mod schema;
@@ -41,6 +42,7 @@ use controllers::region;
 use controllers::search;
 use controllers::task;
 use controllers::user;
+use cors::CORS;
 
 pub fn error_status(error: Error) -> Failure {
     Failure(match error {
@@ -76,5 +78,6 @@ fn main() {
             ],
         ).catch(vec![Catcher::new(200, cache::handle_cache)])
         .catch(catchers![not_found])
+        .attach(CORS())
         .launch();
 }

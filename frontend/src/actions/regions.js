@@ -4,8 +4,7 @@ import {
   FETCH_REGION,
   FETCH_REGION_RESULTS
 } from "../constants/ActionTypes";
-
-const ROOT_URL = "https://stats.olinfo.it/api";
+import { ROOT_URL } from "./remote.js";
 
 export function fetchRegions() {
   const request = axios.get(`${ROOT_URL}/regions`);

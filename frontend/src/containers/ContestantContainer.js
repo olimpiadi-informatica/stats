@@ -35,7 +35,11 @@ class ContestantContainer extends Component {
         problems.push(
           <td key={`/task/${year}/${score.task}`}>
             <Link to={`/task/${year}/${score.task}`} className="">
-              <ScoreBadge score={score.score} /> {score.task}
+              <ScoreBadge
+                score={score.score}
+                max_score={score.max_score_possible}
+              />{" "}
+              {score.task}
             </Link>
           </td>
         );

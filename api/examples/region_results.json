@@ -19,15 +19,18 @@
           "task_scores": [
             {
               "name": "caduta",
-              "score": 80
+              "score": 80,
+              "max_score_possible": 100
             },
             {
               "name": "corteo",
-              "score": 100
+              "score": 100,
+              "max_score_possible": 100
             },
             {
               "name": "specchi",
-              "score": 80
+              "score": 80,
+              "max_score_possible": 100
             }
           ]
         }

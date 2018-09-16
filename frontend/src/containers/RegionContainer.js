@@ -126,9 +126,13 @@ class RegionContainer extends Component {
         if (score.score !== null && final_score === null) final_score = 0;
         if (score.score !== null) final_score += score.score;
         problems.push(
-          <td>
-            <Link to={`/task/${year}/${score.task}`} className="">
-              <ScoreBadge score={score.score} /> {score.name}
+          <td key={`/task/${year}/${score.name}`}>
+            <Link to={`/task/${year}/${score.name}`} className="">
+              <ScoreBadge
+                score={score.score}
+                max_score={score.max_score_possible}
+              />{" "}
+              {score.name}
             </Link>
           </td>
         );

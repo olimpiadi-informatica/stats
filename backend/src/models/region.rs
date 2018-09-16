@@ -13,10 +13,11 @@ use controllers::{get_num_medals, NumMedals};
 use db::DbConn;
 use models::contest::{get_contest_location, get_contests, ContestLocation};
 use models::participation::get_participations_per_regions;
+use models::task::get_tasks_by_year;
 use models::task_score::get_users_task_scores;
 use models::user::{contestant_from_user, Contestant};
 use schema;
-use types::{Contest, Participation, Region, TaskScore, User, Year};
+use types::{Contest, Participation, Region, Task, TaskScore, User, Year};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -61,6 +62,7 @@ pub struct RegionDetail {
 pub struct RegionContestantTaskScore {
     pub name: String,
     pub score: Option<f32>,
+    pub max_score_possible: Option<f32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -285,6 +287,7 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
                 ),
             )
         }).collect();
+    let tasks: HashMap<Year, Vec<Task>> = get_tasks_by_year(&conn)?.into_iter().collect();
 
     let mut result = Vec::new();
     for year in contest_years {
@@ -303,6 +306,11 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
                     .map(|s| RegionContestantTaskScore {
                         name: s.task_name.clone(),
                         score: s.score,
+                        max_score_possible: tasks[&year]
+                            .iter()
+                            .find(|t| t.name == s.task_name)
+                            .expect("TaskScore without task")
+                            .max_score,
                     }).collect(),
             });
         }

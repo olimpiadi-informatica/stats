@@ -1,7 +1,6 @@
 import axios from "axios";
 import { FETCH_CONTEST_RESULTS } from "../constants/ActionTypes";
-
-const ROOT_URL = "https://stats.olinfo.it/api";
+import { ROOT_URL } from "./remote.js";
 
 export function fetchResults(year) {
   const request = axios.get(`${ROOT_URL}/contests/${year}/results`);

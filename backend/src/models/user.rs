@@ -5,14 +5,16 @@
 use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::RunQueryDsl;
+use std::collections::HashMap;
 use std::usize;
 
 use controllers::{get_num_medals, NumMedals};
 use db::DbConn;
 use models::participation::{get_user_participations, get_users_participations};
+use models::task::get_tasks_by_year;
 use models::task_score::get_user_task_scores;
 use schema;
-use types::{User, Year};
+use types::{Task, User, Year};
 use utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -44,6 +46,7 @@ pub struct UserList {
 pub struct UserDetailScore {
     pub task: String,
     pub score: Option<f32>,
+    pub max_score_possible: Option<f32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -108,6 +111,7 @@ pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Erro
     let user = schema::users::table.find(&user_id).first::<User>(&*conn)?;
     let participations = get_user_participations(&conn, &user_id)?;
     let scores = get_user_task_scores(&conn, &user_id)?;
+    let tasks: HashMap<Year, Vec<Task>> = get_tasks_by_year(&conn)?.into_iter().collect();
     let mut result: Vec<UserDetailParticipation> = Vec::new();
     for (participation, (year, scores)) in izip!(participations, scores) {
         if participation.contest_year != year {
@@ -122,6 +126,11 @@ pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Erro
                 .map(|s| UserDetailScore {
                     task: s.task_name.clone(),
                     score: s.score,
+                    max_score_possible: tasks[&year]
+                        .iter()
+                        .find(|t| t.name == s.task_name)
+                        .expect("TaskScore without task")
+                        .max_score,
                 }).collect(),
         });
     }
