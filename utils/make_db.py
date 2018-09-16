@@ -354,6 +354,9 @@ def main(args):
     contests_sheet = wb["contests"]
     locations = dict((int(contest["year"]), contest) for contest in dictify(contests_sheet))
 
+    missing_venue = set()  # type: Set[str]
+    known_venue = dict()  # type: Dict[str, str]
+
     for sheet_name in reversed(sheets):
         if not sheet_name.isdigit():
             continue
@@ -378,6 +381,15 @@ def main(args):
             user = User(**raw_user)
             users[user] = user
             participation = Participation(user, contest, **raw_user)
+            if participation.venue is None:
+                missing_venue.add(repr(user))
+            elif repr(user) in missing_venue:
+                missing_venue.remove(repr(user))
+            if participation.venue is not None:
+                known_venue[repr(user)] = participation.venue
+            if repr(user) in known_venue and participation.venue is None:
+                print("Deduced venue", user, "-->", known_venue[repr(user)])
+                participation.venue = known_venue[repr(user)]
             participations.append(participation)
             for task_name in task_names:
                 score = raw_user[task_name]
@@ -385,6 +397,9 @@ def main(args):
                     score *= task_coefficients[task_name]
                 task_score = TaskScore(tasks[task_name], participation, score)
                 task_scores.append(task_score)
+
+    for missing in missing_venue:
+        print("Missing venue:", missing)
 
     if args.drop and os.path.exists(args.db):
         os.unlink(args.db)
