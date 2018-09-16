@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { TabContent, TabPane, Nav, NavItem, NavLink } from "reactstrap";
 import _ from "lodash";
+
+import { round } from "../utils/math";
 import { fetchRegion, fetchRegionResults } from "../actions/regions";
 import { ScoreBadge } from "../components";
 
@@ -138,6 +140,8 @@ class RegionContainer extends Component {
         );
       }
 
+      final_score = final_score === null ? "N/a" : round(final_score, 4);
+
       return (
         <tr key={year + contestant.contestant.id}>
           <th scope="row">
@@ -153,7 +157,7 @@ class RegionContainer extends Component {
           </td>
           <td className="text-center">{medal}</td>
           <td>{rank}</td>
-          <td>{Math.round(final_score)}</td>
+          <td>{final_score}</td>
           {problems}
         </tr>
       );

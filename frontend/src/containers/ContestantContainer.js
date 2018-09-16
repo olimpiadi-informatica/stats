@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import _ from "lodash";
 import { Link } from "react-router-dom";
-import { ScoreBadge } from "../components";
 
+import { round } from "../utils/math";
+import { ScoreBadge } from "../components";
 import { fetchContestat } from "../actions/contestants";
 
 class ContestantContainer extends Component {
@@ -44,6 +45,7 @@ class ContestantContainer extends Component {
           </td>
         );
       }
+      final_score = final_score === null ? "N/a" : round(final_score, 4);
 
       return (
         <tr key={year}>
@@ -54,7 +56,7 @@ class ContestantContainer extends Component {
           </th>
           <td>{rank}</td>
           <td>{medal}</td>
-          <td>{final_score !== null ? final_score : "N/a"}</td>
+          <td>{final_score}</td>
           {problems}
         </tr>
       );
