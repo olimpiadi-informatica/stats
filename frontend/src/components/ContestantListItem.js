@@ -64,13 +64,15 @@ const ContestantListItem = ({ contestant }) => {
       <div className=" row align-items-center">
         <div className="col-12 col-md-7">
           <div className="media">
-            <img
-              className="mr-3 align-self-start img-fluid"
-              src={`/contestants/${contestant.contestant.id}.jpg`}
-              alt="Contestant"
-              onError={imageError}
-              width="125"
-            />
+            <Link to={`/contestant/${contestant.contestant.id}`}>
+              <img
+                className="mr-3 align-self-start img-fluid"
+                src={`/contestants/${contestant.contestant.id}.jpg`}
+                alt="Contestant"
+                onError={imageError}
+                width="125"
+              />
+            </Link>
             <div className="media-body">
               <dl className="row">
                 <dt className="col-sm-6">Best Rank</dt>

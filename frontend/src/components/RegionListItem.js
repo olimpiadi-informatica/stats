@@ -48,13 +48,15 @@ const RegionListItem = ({ region }) => {
       <div className="row align-items-center">
         <div className="col-12 col-md-7">
           <div className="media">
-            <img
-              className="mr-3 align-self-start img-fluid"
-              src={`/regions/${region.name}.png`}
-              alt="Region"
-              onError={imageError}
-              width="125"
-            />
+            <Link to={`/region/${region.id}`}>
+              <img
+                className="mr-3 align-self-start img-fluid"
+                src={`/regions/${region.name}.png`}
+                alt="Region"
+                onError={imageError}
+                width="125"
+              />
+            </Link>
             <div className="media-body">
               <dl className="row">
                 <dt className="col-sm-6">Avg Contestants per Year</dt>
