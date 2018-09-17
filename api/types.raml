@@ -165,7 +165,6 @@ contest_region:
   type: object
   properties:
     name: string
-    # TODO: add position and border informations
     num_participants: integer?
     num_medals: num_medals
     max_score: number?
@@ -391,22 +390,30 @@ user_detail:
                 max_score_possible: number?
 
 search_result_user:
-  type: users
+  type: object
+  properties:
+    user:
+      type: user
 
 search_result_task:
-  type: tasks
+  type: object
+  properties:
+    task:
+      type: object
+      properties:
+        year: number
+        task: task
 
 search_result_contest:
-  type: contest
+  type: object
+  properties:
+    contest: contest
 
 search_result_region:
   type: object
   properties:
     region:
-      type: object
-      properties:
-        id: string
-        name: string
+      type: region
 
 search_result:
   type: search_result_user | search_result_task | search_result_contest | search_result_region
