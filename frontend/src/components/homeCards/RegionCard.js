@@ -58,8 +58,8 @@ function generateBodyCard(coin) {
     return (
       <div>
         <div className="card-text ">
-          40% of the medals won by the Abbruzzo region are gold medals, three
-          won by Andrea Ciprietti and one by William Di Luigi
+          40% of the medals won by the Abruzzo region are gold medals, three won
+          by Andrea Ciprietti and one by William Di Luigi
         </div>
         <div className="row text-center">
           <div className="col-12 align-items-center">
