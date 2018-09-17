@@ -5,11 +5,11 @@ body {
 
 a {
   color: black;
-  font-style: italic;
+  /* font-style: italic; */
 }
 
 a:hover {
-  text-decoration: none;
+  /* text-decoration: none; */
   color: #28a746;
 }
 
@@ -21,6 +21,10 @@ a:hover {
 }
 .bronze ion-icon {
   color: #cd7f32;
+}
+
+.list-group-item:hover {
+  /* background-color: #deebf7; */
 }
 
 .card {

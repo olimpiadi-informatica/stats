@@ -54,8 +54,37 @@ function generateBodyCard(coin) {
         </Link>
       </div>
     );
-  }
-  if (coin === 2) {
+  } else if (coin === 2) {
+    return (
+      <div>
+        <div className="card-text ">
+          40% of the medals won by the Abbruzzo region are gold medals, three
+          won by Andrea Ciprietti and one by William Di Luigi
+        </div>
+        <div className="row text-center">
+          <div className="col-12 align-items-center">
+            <div className="gold d-inline-block p-2">
+              <ion-icon name="medal" size="large" />
+              <div className="text-center">4</div>
+            </div>
+            <div className="silver d-inline-block p-2">
+              <ion-icon name="medal" size="large" />
+              <div className="text-center">2</div>
+            </div>
+            <div className="bronze d-inline-block p-2">
+              <ion-icon name="medal" size="large" />
+              <div className="text-center">4</div>
+            </div>
+          </div>
+        </div>
+        <Link
+          to={"/region/ABR"}
+          className="card-link btn btn-outline-danger text-danger btn-block"
+        >
+          More
+        </Link>
+      </div>
+    );
   } else {
     return <div />;
   }
@@ -79,7 +108,9 @@ function generateImageCard(coin) {
       />
     );
   } else if (coin === 2) {
-    return <span />;
+    return (
+      <img className="card-img-top" src="/regions/Abruzzo.png" alt="Abruzzo" />
+    );
   } else {
     return <span />;
   }
@@ -89,7 +120,7 @@ class RegionCard extends Component {
     this.props.fetchRegions();
   }
   render() {
-    const coin = flipCoin(2);
+    const coin = flipCoin(3);
     return (
       <div className="card border-danger">
         {generateImageCard(coin)}

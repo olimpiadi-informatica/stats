@@ -14,3 +14,4 @@ export { default as NewsCard } from "./homeCards/NewsCard";
 export { default as RegionCard } from "./homeCards/RegionCard";
 export { default as TaskCard } from "./homeCards/TaskCard";
 export { default as ContestCard } from "./homeCards/ContestCard";
+export { default as CuriosityCard } from "./homeCards/CuriosityCard";

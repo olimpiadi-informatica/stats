@@ -5,6 +5,7 @@ import { NewsCard } from "../components";
 import { RegionCard } from "../components";
 import { TaskCard } from "../components";
 import { ContestCard } from "../components";
+import { CuriosityCard } from "../components";
 
 class HomeContainer extends Component {
   render() {
@@ -18,6 +19,7 @@ class HomeContainer extends Component {
               <RegionCard />
               <TaskCard />
               <ContestCard />
+              <CuriosityCard />
             </div>
           </div>
         </div>

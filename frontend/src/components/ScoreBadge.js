@@ -1,17 +1,24 @@
 import React from "react";
 
 const COLORS = [
-  "#FF0000",
-  "#FF3300",
-  "#FF6600",
-  "#FF9900",
+  "#d53e4f",
+  "#f46d43",
+  "#fdae61",
   "#FFCC00",
-  "#FFFF00",
-  "#CCFF00",
-  "#99FF00",
-  "#66FF00",
-  "#33FF00",
-  "#00FF00"
+  "#41ab5d",
+  "#66c2a5",
+  "#3288bd"
+  // "#FF0000",
+  // "#FF3300",
+  // "#FF6600",
+  // "#FF9900",
+  // "#FFCC00",
+  // "#FFFF00",
+  // "#CCFF00",
+  // "#99FF00",
+  // "#66FF00",
+  // "#33FF00",
+  // "#00FF00"
 ];
 
 const ScoreBadge = ({ score, max_score }) => {
@@ -23,10 +30,11 @@ const ScoreBadge = ({ score, max_score }) => {
     <span
       className="badge badge-pill"
       style={{
-        border: "1px solid black",
-        background: COLORS[index],
-        color: "black",
-        textShadow: "0px 0px 3px white"
+        // border: "1px solid black",
+        border: "none",
+        // background: '#ededed',
+        color: COLORS[index]
+        // textShadow: "0px 0px 2px black"
       }}
     >
       {" "}

@@ -98,7 +98,7 @@ function generateBodyCard(coin) {
           </div>
         </div>
         <Link
-          to={"/contestant/__________"}
+          to={"/contestant/2e49fc709cc9f2b0c03181195cb1fa27"}
           className="card-link btn btn-outline-success text-success btn-block"
         >
           More
@@ -129,14 +129,20 @@ function generateImageCard(coin) {
       />
     );
   } else if (coin === 3) {
-    return <span />;
+    return (
+      <img
+        className="card-img-top"
+        src="/contestants/2e49fc709cc9f2b0c03181195cb1fa27.jpg"
+        alt="Christopher Mezzomo"
+      />
+    );
   } else {
     return <span />;
   }
 }
 
 function ContestantCard() {
-  const coin = flipCoin(3);
+  const coin = flipCoin(4);
   return (
     <div className="card border-success">
       {generateImageCard(coin)}
