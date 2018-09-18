@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+mod contest;
 mod region;
 mod task;
 mod user;
@@ -27,6 +28,15 @@ pub enum HomepageStat {
     TaskWithLowestMaxScore(task::TaskWithLowestMaxScore),
     TaskWithMostZeros(task::TaskWithMostZeros),
     TaskWithMostFullscores(task::TaskWithMostFullscores),
+
+    ContestWithMostParticipants(contest::ContestWithMostParticipants),
+    ContestWithMostExAequo(contest::ContestWithMostExAequo),
+    MostNorthernContest(contest::MostNorthernContest),
+    MostSouthernContest(contest::MostSouthernContest),
+    ContestWithMostGirls(contest::ContestWithMostGirls),
+    NumBoysGirls(contest::NumBoysGirls),
+    NumParticipantsPerYear(contest::NumParticipantsPerYear),
+    MostUsedLocation(contest::MostUsedLocation),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -39,5 +49,6 @@ pub fn get_homepage_stats(conn: &DbConn) -> Result<HomepageStats, Error> {
     region::get_region_stats(conn, &mut results)?;
     user::get_user_stats(conn, &mut results)?;
     task::get_task_stats(conn, &mut results)?;
+    contest::get_contest_stats(conn, &mut results)?;
     Ok(HomepageStats { results: results })
 }
