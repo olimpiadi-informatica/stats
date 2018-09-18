@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 mod region;
+mod user;
 
 use db::DbConn;
 use diesel::result::Error;
@@ -14,6 +15,11 @@ pub enum HomepageStat {
     RegionWithMostMedalsPerParticipant(region::RegionWithMostMedalsPerParticipant),
     RegionWithMostFirstPlaces(region::RegionWithMostFirstPlaces),
     RegionWithMostParticipants(region::RegionWithMostParticipants),
+
+    BestStudent(user::BestStudent),
+    GoldAtFirstParticipation(user::GoldAtFirstParticipation),
+    StudentWithMostParticipations(user::StudentWithMostParticipations),
+    IOIstWithWorstRank(user::IOIstWithWorstRank),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -24,5 +30,6 @@ pub struct HomepageStats {
 pub fn get_homepage_stats(conn: &DbConn) -> Result<HomepageStats, Error> {
     let mut results: Vec<HomepageStat> = vec![];
     region::get_region_stats(conn, &mut results)?;
+    user::get_user_stats(conn, &mut results)?;
     Ok(HomepageStats { results: results })
 }
