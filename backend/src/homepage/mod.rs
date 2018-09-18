@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 mod region;
+mod task;
 mod user;
 
 use db::DbConn;
@@ -20,6 +21,12 @@ pub enum HomepageStat {
     GoldAtFirstParticipation(user::GoldAtFirstParticipation),
     StudentWithMostParticipations(user::StudentWithMostParticipations),
     IOIstWithWorstRank(user::IOIstWithWorstRank),
+
+    TaskWithLowestAvgScore(task::TaskWithLowestAvgScore),
+    TaskWithHighestAvgScore(task::TaskWithHighestAvgScore),
+    TaskWithLowestMaxScore(task::TaskWithLowestMaxScore),
+    TaskWithMostZeros(task::TaskWithMostZeros),
+    TaskWithMostFullscores(task::TaskWithMostFullscores),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -31,5 +38,6 @@ pub fn get_homepage_stats(conn: &DbConn) -> Result<HomepageStats, Error> {
     let mut results: Vec<HomepageStat> = vec![];
     region::get_region_stats(conn, &mut results)?;
     user::get_user_stats(conn, &mut results)?;
+    task::get_task_stats(conn, &mut results)?;
     Ok(HomepageStats { results: results })
 }
