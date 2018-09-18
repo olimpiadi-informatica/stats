@@ -34,6 +34,7 @@ pub fn get_num_medals(participations: &Vec<Participation>) -> NumMedals {
 
 pub mod contest;
 pub mod error;
+pub mod home;
 pub mod region;
 pub mod search;
 pub mod task;

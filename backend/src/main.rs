@@ -31,6 +31,7 @@ mod cache;
 mod controllers;
 mod cors;
 mod db;
+mod homepage;
 mod models;
 mod schema;
 mod types;
@@ -38,6 +39,7 @@ mod utility;
 
 use controllers::contest;
 use controllers::error::*;
+use controllers::home;
 use controllers::region;
 use controllers::search;
 use controllers::task;
@@ -74,7 +76,8 @@ fn main() {
                 task::search,
                 user::list,
                 user::search,
-                search::search
+                search::search,
+                home::home
             ],
         ).catch(vec![Catcher::new(200, cache::handle_cache)])
         .catch(catchers![not_found])
