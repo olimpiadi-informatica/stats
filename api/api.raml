@@ -178,3 +178,12 @@ types: !include types.raml
           application/json:
             type: search_results
             example: !include examples/search_results.json
+
+/home:
+  get:
+    description: Get some statistics for the homepage
+    responses:
+      200:
+        body:
+          application/json:
+            type: homepage
