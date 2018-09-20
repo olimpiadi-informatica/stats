@@ -8,10 +8,22 @@ use diesel::result::Error;
 use diesel::sql_types::{Float, Integer, Nullable, Text};
 
 use db::DbConn;
-use homepage::HomepageStat;
 use models::contest::ContestLocation;
 use schema;
 use types::Year;
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum ContestStat {
+    ContestWithMostParticipants(ContestWithMostParticipants),
+    ContestWithMostExAequo(ContestWithMostExAequo),
+    MostNorthernContest(MostNorthernContest),
+    MostSouthernContest(MostSouthernContest),
+    ContestWithMostGirls(ContestWithMostGirls),
+    NumBoysGirls(NumBoysGirls),
+    NumParticipantsPerYear(NumParticipantsPerYear),
+    MostUsedLocation(MostUsedLocation),
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestWithMostParticipants {
@@ -74,7 +86,7 @@ pub struct MostUsedLocation {
 
 fn get_contest_with_most_participants(
     conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
+    results: &mut Vec<ContestStat>,
 ) -> Result<(), Error> {
     let query = "SELECT
         contest_year, COUNT(*) AS num
@@ -91,7 +103,7 @@ fn get_contest_with_most_participants(
     if first.1 == second.1 {
         return Ok(());
     }
-    results.push(HomepageStat::ContestWithMostParticipants(
+    results.push(ContestStat::ContestWithMostParticipants(
         ContestWithMostParticipants {
             year: first.0,
             num_participants: first.1 as usize,
@@ -102,7 +114,7 @@ fn get_contest_with_most_participants(
 
 fn get_contest_with_most_ex_aequo(
     conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
+    results: &mut Vec<ContestStat>,
 ) -> Result<(), Error> {
     let query = "SELECT
         contest_year, COUNT(*) AS num
@@ -124,7 +136,7 @@ fn get_contest_with_most_ex_aequo(
     if first.1 == second.1 {
         return Ok(());
     }
-    results.push(HomepageStat::ContestWithMostExAequo(
+    results.push(ContestStat::ContestWithMostExAequo(
         ContestWithMostExAequo {
             year: first.0,
             num_ex_aequo: first.1 as usize,
@@ -133,7 +145,7 @@ fn get_contest_with_most_ex_aequo(
     Ok(())
 }
 
-fn get_most_northern_contest(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
+fn get_most_northern_contest(conn: &DbConn, results: &mut Vec<ContestStat>) -> Result<(), Error> {
     let query = "SELECT
         year, location, gmaps, latitude, longitude
         FROM contests
@@ -160,7 +172,7 @@ fn get_most_northern_contest(conn: &DbConn, results: &mut Vec<HomepageStat>) -> 
     if first.3 == second.3 {
         return Ok(());
     }
-    results.push(HomepageStat::MostNorthernContest(MostNorthernContest {
+    results.push(ContestStat::MostNorthernContest(MostNorthernContest {
         year: first.0,
         location: ContestLocation {
             location: first.1.clone(),
@@ -172,7 +184,7 @@ fn get_most_northern_contest(conn: &DbConn, results: &mut Vec<HomepageStat>) -> 
     Ok(())
 }
 
-fn get_most_southern_contest(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
+fn get_most_southern_contest(conn: &DbConn, results: &mut Vec<ContestStat>) -> Result<(), Error> {
     let query = "SELECT
         year, location, gmaps, latitude, longitude
         FROM contests
@@ -199,7 +211,7 @@ fn get_most_southern_contest(conn: &DbConn, results: &mut Vec<HomepageStat>) -> 
     if first.3 == second.3 {
         return Ok(());
     }
-    results.push(HomepageStat::MostSouthernContest(MostSouthernContest {
+    results.push(ContestStat::MostSouthernContest(MostSouthernContest {
         year: first.0,
         location: ContestLocation {
             location: first.1.clone(),
@@ -211,10 +223,7 @@ fn get_most_southern_contest(conn: &DbConn, results: &mut Vec<HomepageStat>) -> 
     Ok(())
 }
 
-fn get_contest_with_most_girls(
-    conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
-) -> Result<(), Error> {
+fn get_contest_with_most_girls(conn: &DbConn, results: &mut Vec<ContestStat>) -> Result<(), Error> {
     let query = "SELECT
         contest_year, COUNT(*) AS num
         FROM participations
@@ -232,21 +241,21 @@ fn get_contest_with_most_girls(
     if first.1 == second.1 {
         return Ok(());
     }
-    results.push(HomepageStat::ContestWithMostGirls(ContestWithMostGirls {
+    results.push(ContestStat::ContestWithMostGirls(ContestWithMostGirls {
         year: first.0,
         num_girls: first.1 as usize,
     }));
     Ok(())
 }
 
-fn get_num_boys_girls(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
+fn get_num_boys_girls(conn: &DbConn, results: &mut Vec<ContestStat>) -> Result<(), Error> {
     let query = "SELECT
     	year,
     	(SELECT COUNT(*) FROM participations JOIN users ON user_id = id WHERE contest_year = year AND gender = 'M'),
     	(SELECT COUNT(*) FROM participations JOIN users ON user_id = id WHERE contest_year = year AND gender = 'F')
         FROM contests;";
     let contests: Vec<(i32, i32, i32)> = sql::<(Integer, Integer, Integer)>(query).load(&**conn)?;
-    results.push(HomepageStat::NumBoysGirls(NumBoysGirls {
+    results.push(ContestStat::NumBoysGirls(NumBoysGirls {
         years: contests
             .into_iter()
             .map(|c| SingleContestNumBoysGirls {
@@ -260,14 +269,14 @@ fn get_num_boys_girls(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<
 
 fn get_num_participants_per_year(
     conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
+    results: &mut Vec<ContestStat>,
 ) -> Result<(), Error> {
     let query = "SELECT
     	year,
     	(SELECT COUNT(*) FROM participations JOIN users ON user_id = id WHERE contest_year = year)
         FROM contests;";
     let contests: Vec<(i32, i32)> = sql::<(Integer, Integer)>(query).load(&**conn)?;
-    results.push(HomepageStat::NumParticipantsPerYear(
+    results.push(ContestStat::NumParticipantsPerYear(
         NumParticipantsPerYear {
             years: contests
                 .into_iter()
@@ -280,7 +289,7 @@ fn get_num_participants_per_year(
     Ok(())
 }
 
-fn get_most_used_location(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
+fn get_most_used_location(conn: &DbConn, results: &mut Vec<ContestStat>) -> Result<(), Error> {
     let query = "SELECT
         location, gmaps, latitude, longitude, COUNT(*) AS num
         FROM contests
@@ -312,7 +321,7 @@ fn get_most_used_location(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Res
         .filter(schema::contests::columns::gmaps.eq(&first.1))
         .select(schema::contests::columns::year)
         .load(&**conn)?;
-    results.push(HomepageStat::MostUsedLocation(MostUsedLocation {
+    results.push(ContestStat::MostUsedLocation(MostUsedLocation {
         location: ContestLocation {
             location: first.0.clone(),
             gmaps: first.1.clone(),
@@ -324,14 +333,15 @@ fn get_most_used_location(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Res
     Ok(())
 }
 
-pub fn get_contest_stats(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
-    get_contest_with_most_participants(conn, results)?;
-    get_contest_with_most_ex_aequo(conn, results)?;
-    get_most_northern_contest(conn, results)?;
-    get_most_southern_contest(conn, results)?;
-    get_contest_with_most_girls(conn, results)?;
-    get_num_boys_girls(conn, results)?;
-    get_num_participants_per_year(conn, results)?;
-    get_most_used_location(conn, results)?;
-    Ok(())
+pub fn get_contest_stats(conn: &DbConn) -> Result<Vec<ContestStat>, Error> {
+    let mut results: Vec<ContestStat> = vec![];
+    get_contest_with_most_participants(conn, &mut results)?;
+    get_contest_with_most_ex_aequo(conn, &mut results)?;
+    get_most_northern_contest(conn, &mut results)?;
+    get_most_southern_contest(conn, &mut results)?;
+    get_contest_with_most_girls(conn, &mut results)?;
+    get_num_boys_girls(conn, &mut results)?;
+    get_num_participants_per_year(conn, &mut results)?;
+    get_most_used_location(conn, &mut results)?;
+    Ok(results)
 }

@@ -8,8 +8,17 @@ use diesel::result::Error;
 use diesel::sql_types::{Float, Integer, Text};
 
 use db::DbConn;
-use homepage::HomepageStat;
 use types::Year;
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum TaskStat {
+    TaskWithLowestAvgScore(TaskWithLowestAvgScore),
+    TaskWithHighestAvgScore(TaskWithHighestAvgScore),
+    TaskWithLowestMaxScore(TaskWithLowestMaxScore),
+    TaskWithMostZeros(TaskWithMostZeros),
+    TaskWithMostFullscores(TaskWithMostFullscores),
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskWithLowestAvgScore {
@@ -54,10 +63,7 @@ pub struct TaskWithMostFullscores {
     pub num_fullscores: usize,
 }
 
-fn get_task_with_lowest_avg_score(
-    conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
-) -> Result<(), Error> {
+fn get_task_with_lowest_avg_score(conn: &DbConn, results: &mut Vec<TaskStat>) -> Result<(), Error> {
     let query = "SELECT
         task_name, title, tasks.contest_year, max_score, AVG(score), AVG(score)/max_score
         FROM task_scores
@@ -76,21 +82,19 @@ fn get_task_with_lowest_avg_score(
     if first.5 == second.5 {
         return Ok(());
     }
-    results.push(HomepageStat::TaskWithLowestAvgScore(
-        TaskWithLowestAvgScore {
-            contest_year: first.2,
-            name: first.0.clone(),
-            title: first.1.clone(),
-            avg_score: first.4,
-            max_score_possible: first.3,
-        },
-    ));
+    results.push(TaskStat::TaskWithLowestAvgScore(TaskWithLowestAvgScore {
+        contest_year: first.2,
+        name: first.0.clone(),
+        title: first.1.clone(),
+        avg_score: first.4,
+        max_score_possible: first.3,
+    }));
     Ok(())
 }
 
 fn get_task_with_highest_avg_score(
     conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
+    results: &mut Vec<TaskStat>,
 ) -> Result<(), Error> {
     let query = "SELECT
         task_name, title, tasks.contest_year, max_score, AVG(score), AVG(score)/max_score
@@ -110,22 +114,17 @@ fn get_task_with_highest_avg_score(
     if first.5 == second.5 {
         return Ok(());
     }
-    results.push(HomepageStat::TaskWithHighestAvgScore(
-        TaskWithHighestAvgScore {
-            contest_year: first.2,
-            name: first.0.clone(),
-            title: first.1.clone(),
-            avg_score: first.4,
-            max_score_possible: first.3,
-        },
-    ));
+    results.push(TaskStat::TaskWithHighestAvgScore(TaskWithHighestAvgScore {
+        contest_year: first.2,
+        name: first.0.clone(),
+        title: first.1.clone(),
+        avg_score: first.4,
+        max_score_possible: first.3,
+    }));
     Ok(())
 }
 
-fn get_task_with_lowest_max_score(
-    conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
-) -> Result<(), Error> {
+fn get_task_with_lowest_max_score(conn: &DbConn, results: &mut Vec<TaskStat>) -> Result<(), Error> {
     let query = "SELECT
         task_name, title, tasks.contest_year, max_score, MAX(score), MAX(score)/max_score
         FROM task_scores
@@ -144,19 +143,17 @@ fn get_task_with_lowest_max_score(
     if first.5 == second.5 {
         return Ok(());
     }
-    results.push(HomepageStat::TaskWithLowestMaxScore(
-        TaskWithLowestMaxScore {
-            contest_year: first.2,
-            name: first.0.clone(),
-            title: first.1.clone(),
-            max_score: first.4,
-            max_score_possible: first.3,
-        },
-    ));
+    results.push(TaskStat::TaskWithLowestMaxScore(TaskWithLowestMaxScore {
+        contest_year: first.2,
+        name: first.0.clone(),
+        title: first.1.clone(),
+        max_score: first.4,
+        max_score_possible: first.3,
+    }));
     Ok(())
 }
 
-fn get_task_with_most_zeros(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
+fn get_task_with_most_zeros(conn: &DbConn, results: &mut Vec<TaskStat>) -> Result<(), Error> {
     let query = "SELECT
         task_name, title, tasks.contest_year, COUNT(*) AS num
         FROM task_scores
@@ -175,7 +172,7 @@ fn get_task_with_most_zeros(conn: &DbConn, results: &mut Vec<HomepageStat>) -> R
     if first.3 == second.3 {
         return Ok(());
     }
-    results.push(HomepageStat::TaskWithMostZeros(TaskWithMostZeros {
+    results.push(TaskStat::TaskWithMostZeros(TaskWithMostZeros {
         contest_year: first.2,
         name: first.0.clone(),
         title: first.1.clone(),
@@ -184,10 +181,7 @@ fn get_task_with_most_zeros(conn: &DbConn, results: &mut Vec<HomepageStat>) -> R
     Ok(())
 }
 
-fn get_task_with_most_fullscores(
-    conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
-) -> Result<(), Error> {
+fn get_task_with_most_fullscores(conn: &DbConn, results: &mut Vec<TaskStat>) -> Result<(), Error> {
     let query = "SELECT
         task_name, title, tasks.contest_year, COUNT(*) AS num
         FROM task_scores
@@ -206,22 +200,21 @@ fn get_task_with_most_fullscores(
     if first.3 == second.3 {
         return Ok(());
     }
-    results.push(HomepageStat::TaskWithMostFullscores(
-        TaskWithMostFullscores {
-            contest_year: first.2,
-            name: first.0.clone(),
-            title: first.1.clone(),
-            num_fullscores: first.3 as usize,
-        },
-    ));
+    results.push(TaskStat::TaskWithMostFullscores(TaskWithMostFullscores {
+        contest_year: first.2,
+        name: first.0.clone(),
+        title: first.1.clone(),
+        num_fullscores: first.3 as usize,
+    }));
     Ok(())
 }
 
-pub fn get_task_stats(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
-    get_task_with_lowest_avg_score(conn, results)?;
-    get_task_with_highest_avg_score(conn, results)?;
-    get_task_with_lowest_max_score(conn, results)?;
-    get_task_with_most_zeros(conn, results)?;
-    get_task_with_most_fullscores(conn, results)?;
-    Ok(())
+pub fn get_task_stats(conn: &DbConn) -> Result<Vec<TaskStat>, Error> {
+    let mut results: Vec<TaskStat> = vec![];
+    get_task_with_lowest_avg_score(conn, &mut results)?;
+    get_task_with_highest_avg_score(conn, &mut results)?;
+    get_task_with_lowest_max_score(conn, &mut results)?;
+    get_task_with_most_zeros(conn, &mut results)?;
+    get_task_with_most_fullscores(conn, &mut results)?;
+    Ok(results)
 }

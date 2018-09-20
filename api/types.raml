@@ -505,7 +505,7 @@ best_student:
     contestant: contestant
     num_medals: num_medals
 
-gold_at_first_participation:
+win_at_first_participation:
   type: object
   properties:
     contestant: contestant
@@ -631,15 +631,38 @@ most_used_location:
       items:
         type: integer
 
-home_stat:
+region_stat:
   type: object
   properties:
-    type: string
-    data: best_student | region_with_most_medals | region_with_most_medals_per_participant | region_with_most_participants | gold_at_first_participation | region_with_most_first_places | contest_with_most_ex_equo | task_with_lowest_avg_score | task_with_highest_avg_score | task_with_lowest_max_score | student_with_most_participations | contest_with_most_participants | ioist_with_worst_rank | task_with_most_zeros | task_with_most_fullscores | most_northern_contest | most_southern_contest | num_boys_girls | num_contestants_per_year | most_used_location
+    data: region_with_most_medals | region_with_most_medals_per_participant | region_with_most_participants | region_with_most_first_places
+
+task_stat:
+  type: object
+  properties:
+    data: task_with_lowest_avg_score | task_with_highest_avg_score | task_with_lowest_max_score | task_with_most_zeros | task_with_most_fullscores
+
+contest_stat:
+  type: object
+  properties:
+    data: contest_with_most_ex_aequo | contest_with_most_participants | num_participants_per_year | most_used_location | most_northern_contest | most_southern_contest | num_boys_girls
+
+user_stat:
+  type: object
+  properties:
+    data: best_student | win_at_first_participation | student_with_most_participations | ioist_with_worst_rank
 
 homepage:
   type: object
   properties:
-    results:
+    region:
       type: array
-      items: home_stat
+      items: region_stat
+    task:
+      type: array
+      items: task_stat
+    contest:
+      type: array
+      items: contest_stat
+    user:
+      type: array
+      items: user_stat

@@ -9,9 +9,18 @@ use diesel::sql_types::{Integer, Text};
 
 use controllers::NumMedals;
 use db::DbConn;
-use homepage::HomepageStat;
 use models::user::Contestant;
 use types::Year;
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum UserStat {
+    BestStudent(BestStudent),
+    WinAtFirstParticipation(WinAtFirstParticipation),
+    StudentWithMostParticipations(StudentWithMostParticipations),
+    #[serde(rename = "ioist_with_worst_rank")]
+    IOIstWithWorstRank(IOIstWithWorstRank),
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BestStudent {
@@ -38,7 +47,7 @@ pub struct IOIstWithWorstRank {
     rank: usize,
 }
 
-fn get_best_student(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
+fn get_best_student(conn: &DbConn, results: &mut Vec<UserStat>) -> Result<(), Error> {
     let query = "SELECT
         id, name, surname,
         (SELECT COUNT (*) FROM participations WHERE user_id = id AND medal = 'G') AS gold,
@@ -58,7 +67,7 @@ fn get_best_student(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<()
     if (first.3, first.4, first.5) == (second.3, second.4, second.5) {
         return Ok(());
     }
-    results.push(HomepageStat::BestStudent(BestStudent {
+    results.push(UserStat::BestStudent(BestStudent {
         contestant: Contestant {
             id: first.0.clone(),
             first_name: first.1.clone(),
@@ -73,10 +82,7 @@ fn get_best_student(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<()
     Ok(())
 }
 
-fn get_win_at_first_participation(
-    conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
-) -> Result<(), Error> {
+fn get_win_at_first_participation(conn: &DbConn, results: &mut Vec<UserStat>) -> Result<(), Error> {
     let query = "SELECT user_id, contest_year, name, surname
             FROM participations AS p
             JOIN users ON users.id = p.user_id
@@ -91,23 +97,21 @@ fn get_win_at_first_participation(
     let users: Vec<(String, i32, String, String)> =
         sql::<(Text, Integer, Text, Text)>(query).load(&**conn)?;
     for user in users {
-        results.push(HomepageStat::WinAtFirstParticipation(
-            WinAtFirstParticipation {
-                contestant: Contestant {
-                    id: user.0.clone(),
-                    first_name: user.2.clone(),
-                    last_name: user.3.clone(),
-                },
-                year: user.1,
+        results.push(UserStat::WinAtFirstParticipation(WinAtFirstParticipation {
+            contestant: Contestant {
+                id: user.0.clone(),
+                first_name: user.2.clone(),
+                last_name: user.3.clone(),
             },
-        ));
+            year: user.1,
+        }));
     }
     Ok(())
 }
 
 fn get_student_with_most_participations(
     conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
+    results: &mut Vec<UserStat>,
 ) -> Result<(), Error> {
     let query = "SELECT
         user_id, name, surname, COUNT(user_id) AS num
@@ -127,7 +131,7 @@ fn get_student_with_most_participations(
     if first.3 == second.3 {
         return Ok(());
     }
-    results.push(HomepageStat::StudentWithMostParticipations(
+    results.push(UserStat::StudentWithMostParticipations(
         StudentWithMostParticipations {
             contestant: Contestant {
                 id: first.0.clone(),
@@ -140,7 +144,7 @@ fn get_student_with_most_participations(
     Ok(())
 }
 
-fn get_ioist_with_worst_rank(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
+fn get_ioist_with_worst_rank(conn: &DbConn, results: &mut Vec<UserStat>) -> Result<(), Error> {
     let query = "SELECT
         user_id, name, surname, contest_year, position
         FROM participations JOIN users ON id = user_id
@@ -158,7 +162,7 @@ fn get_ioist_with_worst_rank(conn: &DbConn, results: &mut Vec<HomepageStat>) -> 
     if first.4 == second.4 {
         return Ok(());
     }
-    results.push(HomepageStat::IOIstWithWorstRank(IOIstWithWorstRank {
+    results.push(UserStat::IOIstWithWorstRank(IOIstWithWorstRank {
         contestant: Contestant {
             id: first.0.clone(),
             first_name: first.1.clone(),
@@ -170,10 +174,11 @@ fn get_ioist_with_worst_rank(conn: &DbConn, results: &mut Vec<HomepageStat>) -> 
     Ok(())
 }
 
-pub fn get_user_stats(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
-    get_best_student(conn, results)?;
-    get_win_at_first_participation(conn, results)?;
-    get_student_with_most_participations(conn, results)?;
-    get_ioist_with_worst_rank(conn, results)?;
-    Ok(())
+pub fn get_user_stats(conn: &DbConn) -> Result<Vec<UserStat>, Error> {
+    let mut results: Vec<UserStat> = vec![];
+    get_best_student(conn, &mut results)?;
+    get_win_at_first_participation(conn, &mut results)?;
+    get_student_with_most_participations(conn, &mut results)?;
+    get_ioist_with_worst_rank(conn, &mut results)?;
+    Ok(results)
 }

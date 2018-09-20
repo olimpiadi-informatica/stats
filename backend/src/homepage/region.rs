@@ -9,7 +9,15 @@ use diesel::sql_types::{Float, Integer, Text};
 
 use controllers::NumMedals;
 use db::DbConn;
-use homepage::HomepageStat;
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum RegionStat {
+    RegionWithMostMedals(RegionWithMostMedals),
+    RegionWithMostMedalsPerParticipant(RegionWithMostMedalsPerParticipant),
+    RegionWithMostFirstPlaces(RegionWithMostFirstPlaces),
+    RegionWithMostParticipants(RegionWithMostParticipants),
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 struct SingleRegionWithMedals {
@@ -45,10 +53,7 @@ pub struct RegionWithMostParticipants {
     num_participants: usize,
 }
 
-fn get_region_with_most_medals(
-    conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
-) -> Result<(), Error> {
+fn get_region_with_most_medals(conn: &DbConn, results: &mut Vec<RegionStat>) -> Result<(), Error> {
     let query = "SELECT
             id, name,
             (SELECT COUNT (*) FROM participations WHERE region = id AND medal = 'G') AS gold,
@@ -64,7 +69,7 @@ fn get_region_with_most_medals(
     }
     let first = &regions[0];
     let second = &regions[1];
-    results.push(HomepageStat::RegionWithMostMedals(RegionWithMostMedals {
+    results.push(RegionStat::RegionWithMostMedals(RegionWithMostMedals {
         first: SingleRegionWithMedals {
             id: first.0.clone(),
             name: first.1.clone(),
@@ -89,7 +94,7 @@ fn get_region_with_most_medals(
 
 fn get_region_with_most_medals_per_participant(
     conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
+    results: &mut Vec<RegionStat>,
 ) -> Result<(), Error> {
     let query = "SELECT
             id, name,
@@ -106,7 +111,7 @@ fn get_region_with_most_medals_per_participant(
         return Ok(());
     }
     let region = &regions[0];
-    results.push(HomepageStat::RegionWithMostMedalsPerParticipant(
+    results.push(RegionStat::RegionWithMostMedalsPerParticipant(
         RegionWithMostMedalsPerParticipant {
             id: region.0.clone(),
             name: region.1.clone(),
@@ -118,7 +123,7 @@ fn get_region_with_most_medals_per_participant(
 
 fn get_region_with_most_first_places(
     conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
+    results: &mut Vec<RegionStat>,
 ) -> Result<(), Error> {
     let query = "SELECT
             id, name,
@@ -135,7 +140,7 @@ fn get_region_with_most_first_places(
         return Ok(());
     }
     let region = &regions[0];
-    results.push(HomepageStat::RegionWithMostFirstPlaces(
+    results.push(RegionStat::RegionWithMostFirstPlaces(
         RegionWithMostFirstPlaces {
             id: region.0.clone(),
             name: region.1.clone(),
@@ -147,7 +152,7 @@ fn get_region_with_most_first_places(
 
 fn get_region_with_most_participants(
     conn: &DbConn,
-    results: &mut Vec<HomepageStat>,
+    results: &mut Vec<RegionStat>,
 ) -> Result<(), Error> {
     let query = "SELECT
             id, name,
@@ -164,7 +169,7 @@ fn get_region_with_most_participants(
         return Ok(());
     }
     let region = &regions[0];
-    results.push(HomepageStat::RegionWithMostParticipants(
+    results.push(RegionStat::RegionWithMostParticipants(
         RegionWithMostParticipants {
             id: region.0.clone(),
             name: region.1.clone(),
@@ -174,10 +179,11 @@ fn get_region_with_most_participants(
     Ok(())
 }
 
-pub fn get_region_stats(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
-    get_region_with_most_medals(conn, results)?;
-    get_region_with_most_medals_per_participant(conn, results)?;
-    get_region_with_most_first_places(conn, results)?;
-    get_region_with_most_participants(conn, results)?;
-    Ok(())
+pub fn get_region_stats(conn: &DbConn) -> Result<Vec<RegionStat>, Error> {
+    let mut results: Vec<RegionStat> = vec![];
+    get_region_with_most_medals(conn, &mut results)?;
+    get_region_with_most_medals_per_participant(conn, &mut results)?;
+    get_region_with_most_first_places(conn, &mut results)?;
+    get_region_with_most_participants(conn, &mut results)?;
+    Ok(results)
 }
