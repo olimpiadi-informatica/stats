@@ -20,7 +20,7 @@ pub struct BestStudent {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct GoldAtFirstParticipation {
+pub struct WinAtFirstParticipation {
     pub contestant: Contestant,
     pub year: Year,
 }
@@ -73,7 +73,7 @@ fn get_best_student(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<()
     Ok(())
 }
 
-fn get_gold_at_first_participation(
+fn get_win_at_first_participation(
     conn: &DbConn,
     results: &mut Vec<HomepageStat>,
 ) -> Result<(), Error> {
@@ -81,7 +81,7 @@ fn get_gold_at_first_participation(
             FROM participations AS p
             JOIN users ON users.id = p.user_id
             WHERE
-            	medal = 'G' AND
+            	position = 1 AND
             	contest_year > (SELECT MIN(contest_year) FROM participations) AND
             	(
                     SELECT COUNT(*)
@@ -91,8 +91,8 @@ fn get_gold_at_first_participation(
     let users: Vec<(String, i32, String, String)> =
         sql::<(Text, Integer, Text, Text)>(query).load(&**conn)?;
     for user in users {
-        results.push(HomepageStat::GoldAtFirstParticipation(
-            GoldAtFirstParticipation {
+        results.push(HomepageStat::WinAtFirstParticipation(
+            WinAtFirstParticipation {
                 contestant: Contestant {
                     id: user.0.clone(),
                     first_name: user.2.clone(),
@@ -172,7 +172,7 @@ fn get_ioist_with_worst_rank(conn: &DbConn, results: &mut Vec<HomepageStat>) -> 
 
 pub fn get_user_stats(conn: &DbConn, results: &mut Vec<HomepageStat>) -> Result<(), Error> {
     get_best_student(conn, results)?;
-    get_gold_at_first_participation(conn, results)?;
+    get_win_at_first_participation(conn, results)?;
     get_student_with_most_participations(conn, results)?;
     get_ioist_with_worst_rank(conn, results)?;
     Ok(())

@@ -19,7 +19,7 @@ pub enum HomepageStat {
     RegionWithMostParticipants(region::RegionWithMostParticipants),
 
     BestStudent(user::BestStudent),
-    GoldAtFirstParticipation(user::GoldAtFirstParticipation),
+    WinAtFirstParticipation(user::WinAtFirstParticipation),
     StudentWithMostParticipations(user::StudentWithMostParticipations),
     IOIstWithWorstRank(user::IOIstWithWorstRank),
 
