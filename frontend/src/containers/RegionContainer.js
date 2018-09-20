@@ -6,7 +6,7 @@ import _ from "lodash";
 
 import { round } from "../utils/math";
 import { fetchRegion, fetchRegionResults } from "../actions/regions";
-import { ScoreBadge } from "../components";
+import { ScoreBadge, ContestantLink } from "../components";
 
 class RegionContainer extends Component {
   constructor(props) {
@@ -150,10 +150,10 @@ class RegionContainer extends Component {
             </Link>
           </th>
           <td>
-            <Link className="" to={`/contestant/${contestant.contestant.id}`}>
-              {contestant.contestant.first_name}{" "}
-              {contestant.contestant.last_name}
-            </Link>
+            <ContestantLink
+              contestant={contestant.contestant}
+              ioi={contestant.ioi}
+            />
           </td>
           <td className="text-center">{medal}</td>
           <td>{rank}</td>

@@ -32,7 +32,7 @@ a:hover {
   border: none;
 }
 
-.badge {
+.score-badge {
   min-width: 42px;
   font-style: normal;
 }

@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 function flipCoin(number_of_cards) {
   return Math.floor(Math.random() * number_of_cards);

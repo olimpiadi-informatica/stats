@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
-import { TaskListItem, ScoreBadge } from "../components";
+import { TaskListItem, ScoreBadge, ContestantLink } from "../components";
 
 function imageError(event) {
   event.target.src = "/placeholder.jpg";
@@ -41,9 +41,10 @@ function renderResults(contest, results) {
       <tr key={contestant.contestant.id}>
         <th scope="row">{contestant.rank ? contestant.rank : "N/a"}</th>
         <td>
-          <Link className="" to={`/contestant/${contestant.contestant.id}`}>
-            {contestant.contestant.first_name} {contestant.contestant.last_name}
-          </Link>
+          <ContestantLink
+            contestant={contestant.contestant}
+            ioi={contestant.ioi}
+          />
         </td>
         <td>{contestant.score}</td>
         {scores}

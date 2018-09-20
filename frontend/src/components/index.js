@@ -7,6 +7,7 @@ export { default as ContestItem } from "./ContestItem";
 export { default as ContestantListItem } from "./ContestantListItem";
 export { default as RegionListItem } from "./RegionListItem";
 export { default as ScoreBadge } from "./ScoreBadge";
+export { default as ContestantLink } from "./ContestantLink";
 export { default as ContestantCard } from "./homeCards/ContestantCard";
 export { default as InfoCard } from "./homeCards/InfoCard";
 export { default as NewsCard } from "./homeCards/NewsCard";

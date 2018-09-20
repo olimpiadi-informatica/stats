@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
 import _ from "lodash";
 
 import { fetchTask } from "../actions/tasks";
+import { ContestantLink } from "../components";
 
 class TaskContainer extends Component {
   componentDidMount() {
@@ -24,9 +24,7 @@ class TaskContainer extends Component {
         <tr key={score.contestant.id}>
           <th scope="row">{rank}</th>
           <td>
-            <Link className="" to={`/contestant/${score.contestant.id}`}>
-              {score.contestant.first_name} {score.contestant.last_name}
-            </Link>
+            <ContestantLink contestant={score.contestant} ioi={score.ioi} />
           </td>
           <td>{score_point}</td>
         </tr>
