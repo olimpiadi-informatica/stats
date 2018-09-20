@@ -5,7 +5,6 @@ function flipCoin(number_of_cards) {
 }
 
 function generateBodyCard(coin) {
-  console.log(coin);
   if (coin === 0) {
     return (
       <div className="card-text">

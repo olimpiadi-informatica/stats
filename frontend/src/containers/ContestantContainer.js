@@ -46,13 +46,18 @@ class ContestantContainer extends Component {
         );
       }
       final_score = final_score === null ? "N/a" : round(final_score, 4);
-
+      const ioi_badge = participation.ioi ? (
+        <span className="badge badge-pill badge-success">IOI</span>
+      ) : (
+        <span />
+      );
       return (
         <tr key={year}>
           <th scope="row">
             <Link to={`/contest/${year}`} className="">
               {year}
-            </Link>
+            </Link>{" "}
+            {ioi_badge}
           </th>
           <td>{rank}</td>
           <td>{medal}</td>
