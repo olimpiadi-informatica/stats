@@ -1,3 +1,7 @@
+###########################################################################
+# Common                                                                  #
+###########################################################################
+
 error:
   type: object
   properties:
@@ -20,6 +24,11 @@ contestant:
 medal:
   type: string?
   enum: [gold, silver, bronze, ~]
+
+
+###########################################################################
+# Contest                                                                 #
+###########################################################################
 
 contest_info_task:
   type: object
@@ -133,6 +142,7 @@ contest_result:
     contestant: contestant
     region: string?
     score: number?
+    ioi: boolean
     scores:
       type: array
       items: number?
@@ -193,7 +203,6 @@ contest_task:
     max_score_possible: number?
     max_score: number?
     avg_score: number?
-    # TODO add num_full_scores
 
 contest_tasks:
   type: object
@@ -207,6 +216,10 @@ contest_tasks:
     tasks:
       type: array
       items: contest_task
+
+###########################################################################
+# Region                                                                  #
+###########################################################################
 
 region:
   type: object
@@ -254,6 +267,7 @@ region_contestant_result:
   type: object
   properties:
     contestant: contestant
+    ioi: boolean
     rank: integer?
     medal: medal
     task_scores:
@@ -285,6 +299,11 @@ region_results:
     results:
       type: array
       items: region_result
+
+
+###########################################################################
+# Task                                                                    #
+###########################################################################
 
 task:
   type: object
@@ -344,8 +363,14 @@ task_detail:
         type: object
         properties:
           contestant: contestant
+          ioi: boolean
           rank: integer?
           score: number?
+
+
+###########################################################################
+# User                                                                    #
+###########################################################################
 
 user:
   type: object
@@ -360,6 +385,7 @@ user:
         properties:
           year: integer
           medal: medal
+          ioi: boolean
 
 users:
   type: object
@@ -379,6 +405,7 @@ user_detail:
         properties:
           year: integer
           medal: medal
+          ioi: boolean
           rank: integer?
           scores:
             type: array
@@ -388,6 +415,11 @@ user_detail:
                 task: string
                 score: number?
                 max_score_possible: number?
+
+
+###########################################################################
+# Search                                                                  #
+###########################################################################
 
 search_result_user:
   type: object

@@ -68,6 +68,7 @@ pub struct RegionContestantTaskScore {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegionContestantResult {
     pub contestant: Contestant,
+    pub ioi: bool,
     pub rank: Option<usize>,
     pub medal: Option<Medal>,
     pub task_scores: Vec<RegionContestantTaskScore>,
@@ -299,6 +300,7 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
             let scores = task_scores.get(&u.id.clone()).ok_or(Error::NotFound)?;
             contestants.push(RegionContestantResult {
                 contestant: contestant_from_user(&u),
+                ioi: p.IOI.unwrap_or(false),
                 rank: p.position.map(|p| p as usize),
                 medal: medal_from_string(&p.medal),
                 task_scores: scores

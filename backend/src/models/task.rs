@@ -56,6 +56,7 @@ pub struct TaskList {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskDetailScore {
     contestant: Contestant,
+    ioi: bool,
     rank: Option<usize>,
     score: Option<f32>,
 }
@@ -214,6 +215,7 @@ pub fn get_task_detail(year: Year, task_name: String, conn: DbConn) -> Result<Ta
     for ((score, user), participation) in izip!(scores, &participations) {
         result.push(TaskDetailScore {
             contestant: contestant_from_user(&user),
+            ioi: participation.IOI.unwrap_or(false),
             rank: participation.position.map(|p| p as usize),
             score: score.score,
         });

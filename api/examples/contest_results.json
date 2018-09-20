@@ -13,6 +13,7 @@
         "first_name": "Andrea",
         "last_name": "Ciprietti"
       },
+      "ioi": true,
       "region": "ABR",
       "score": 260,
       "scores": [80, 100, 80],
@@ -39,6 +40,7 @@
         "first_name": "Paolo",
         "last_name": "Battellani"
       },
+      "ioi": false,
       "region": "EMI",
       "score": 234,
       "scores": [91, 100, 43],

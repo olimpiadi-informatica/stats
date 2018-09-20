@@ -15,19 +15,23 @@
       "participations": [
         {
           "year": 2017,
-          "medal": "gold"
+          "medal": "gold",
+          "ioi": true
         },
         {
           "year": 2016,
-          "medal": "gold"
+          "medal": "gold",
+          "ioi": true
         },
         {
           "year": 2015,
-          "medal": "gold"
+          "medal": "gold",
+          "ioi": true
         },
         {
           "year": 2014,
-          "medal": "silver"
+          "medal": "silver",
+          "ioi": false
         }
       ]
     }

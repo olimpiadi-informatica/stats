@@ -14,6 +14,7 @@
             "first_name": "Andrea",
             "last_name": "Ciprietti"
           },
+          "ioi": true,
           "rank": 1,
           "medal": "gold",
           "task_scores": [

@@ -26,6 +26,7 @@ pub struct Contestant {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInfoParticipation {
     pub year: Year,
+    pub ioi: bool,
     pub medal: Option<Medal>,
 }
 
@@ -52,6 +53,7 @@ pub struct UserDetailScore {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserDetailParticipation {
     pub year: Year,
+    pub ioi: bool,
     pub medal: Option<Medal>,
     pub rank: Option<usize>,
     pub scores: Vec<UserDetailScore>,
@@ -95,6 +97,7 @@ pub fn get_users_list(conn: &DbConn, users: &Vec<User>) -> Result<UserList, Erro
                 .iter()
                 .map(|p| UserInfoParticipation {
                     year: p.contest_year,
+                    ioi: p.IOI.unwrap_or(false),
                     medal: medal_from_string(&p.medal),
                 }).collect(),
         });
@@ -119,6 +122,7 @@ pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Erro
         }
         result.push(UserDetailParticipation {
             year: year,
+            ioi: participation.IOI.unwrap_or(false),
             medal: medal_from_string(&participation.medal),
             rank: participation.position.map(|p| p as usize),
             scores: scores

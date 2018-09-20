@@ -105,6 +105,7 @@ pub struct ContestsInfo {
 pub struct ContestResult {
     pub rank: Option<usize>,
     pub contestant: Contestant,
+    pub ioi: bool,
     pub region: Option<String>,
     pub score: Option<f32>,
     pub scores: Vec<Option<f32>>,
@@ -352,6 +353,7 @@ pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, E
         results.push(ContestResult {
             rank: participation.position.map(|p| p as usize),
             contestant: contestant_from_user(&user),
+            ioi: participation.IOI.unwrap_or(false),
             region: participation.region.clone(),
             score: participation.score,
             scores: scores,
