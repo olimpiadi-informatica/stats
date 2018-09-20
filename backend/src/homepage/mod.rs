@@ -21,6 +21,7 @@ pub enum HomepageStat {
     BestStudent(user::BestStudent),
     WinAtFirstParticipation(user::WinAtFirstParticipation),
     StudentWithMostParticipations(user::StudentWithMostParticipations),
+    #[serde(rename = "ioist_with_worst_rank")]
     IOIstWithWorstRank(user::IOIstWithWorstRank),
 
     TaskWithLowestAvgScore(task::TaskWithLowestAvgScore),
