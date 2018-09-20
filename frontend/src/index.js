@@ -6,6 +6,10 @@ import Routes from "./routes";
 // import './styles/global-styles'
 import registerServiceWorker from "./utils/registerServiceWorker";
 import "./styles/theme.css";
+
+import ReactGA from "react-ga";
+ReactGA.initialize("UA-XXXXXXXX");
+
 render(
   <Provider store={configureStore()}>
     <Routes />

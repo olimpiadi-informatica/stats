@@ -14,10 +14,17 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 // const Container = styled.div`text-align: center;`
 
+import ReactGA from "react-ga";
+ReactGA.initialize("UA-126101681-1");
+
+function fireTracking() {
+  ReactGA.pageview(window.location.hash);
+}
+
 function Routes() {
   return (
     <div>
-      <BrowserRouter>
+      <BrowserRouter onUpdate={fireTracking}>
         <div>
           <Header />
           <Switch>
