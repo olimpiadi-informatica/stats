@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Ionicon from "react-ionicons";
 
 type Props = {
-  color: string;
+  color: string | null;
   fontSize: string;
 };
 
@@ -15,6 +15,7 @@ const COLORS: any = {
 export default class MedalIcon extends Component<Props> {
   static defaultProps = { fontSize: "35px" };
   render() {
+    if (!this.props.color) return <span />;
     const color = COLORS[this.props.color];
     if (!color) return <span />;
     return (

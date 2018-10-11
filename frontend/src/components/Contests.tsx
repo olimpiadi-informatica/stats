@@ -24,9 +24,9 @@ export default class ContestsComponent extends Component<Props, State> {
   render() {
     if (!this.state.contests) return <Loading />;
 
-    let contests = _.sortBy(this.state.contests, ["-year"]).map(contest => (
-      <ContestListItem key={contest.year} contest={contest} />
-    ));
+    let contests = _.orderBy(this.state.contests, ["year"], ["desc"]).map(
+      contest => <ContestListItem key={contest.year} contest={contest} />
+    );
 
     return (
       <div className="row p-2">
