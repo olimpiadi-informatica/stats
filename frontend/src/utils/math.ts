@@ -1,4 +1,5 @@
-exports.round = function(num: number, scale: number) {
+function round(num: number | null, scale: number) {
+  if (num === null) return null;
   let num_as_str: string = "" + num;
   let scale_as_str: string = "" + scale;
   if (!num_as_str.includes("e")) {
@@ -16,4 +17,6 @@ exports.round = function(num: number, scale: number) {
     let base: any = +arr[0] + "e" + sig + (+arr[1] + scale);
     return +(Math.round(base) + "e-" + scale_as_str);
   }
-};
+}
+
+export { round };

@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Header from "./components/Header";
 import HomeContainer from "./components/HomeContainer";
 import ContestsComponent from "./components/Contests";
+import ContestComponent from "./components/Contest";
 
 function Routes() {
   return (
@@ -13,6 +14,7 @@ function Routes() {
           <Header />
           <Switch>
             <Route path="/contests" component={ContestsComponent} />
+            <Route path="/contest/:year" component={ContestComponent} />
             <Route path="/" component={HomeContainer} />
           </Switch>
         </div>

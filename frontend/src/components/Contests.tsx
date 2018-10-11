@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import _ from "lodash";
 
-import { loadContestList } from "../remote/contest";
+import { loadContestList, ContestItem } from "../remote/contest";
 import Loading from "./Loading";
 import ContestListItem from "./ContestListItem";
 
 type Props = {};
 type State = {
-  contests: any | null;
+  contests: ContestItem[] | null;
 };
 
 export default class ContestsComponent extends Component<Props, State> {
@@ -19,11 +19,6 @@ export default class ContestsComponent extends Component<Props, State> {
   async componentDidMount() {
     this.setState({ contests: null });
     this.setState({ contests: await loadContestList() });
-  }
-
-  renderContest() {
-    if (!this.state.contests) return <Loading />;
-    return <div>{this.state.contests[0].year}</div>;
   }
 
   render() {

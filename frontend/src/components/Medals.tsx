@@ -1,27 +1,32 @@
 import React, { Component } from "react";
-import Ionicon from "react-ionicons";
+
+import { ContestMedalInfo } from "../remote/contest";
+import MedalIcon from "./MedalIcon";
 
 type Props = {
-  gold: number | null;
-  silver: number | null;
-  bronze: number | null;
+  medals: ContestMedalInfo;
+  cutoffs: boolean;
 };
 
 export default class MedalsComponent extends Component<Props> {
   render() {
+    const { cutoffs } = this.props;
     return (
       <div>
-        <div className="gold d-inline-block p-2">
-          <Ionicon icon="md-medal" fontSize="35px" color="#ffdb19" />
-          <div className="text-center">{this.props.gold}</div>
+        <div className="text-center d-inline-block p-2">
+          <MedalIcon color="gold" />
+          <div>{this.props.medals.gold.number}</div>
+          {cutoffs ? this.props.medals.gold.cutoff : ""}
         </div>
-        <div className="silver d-inline-block p-2">
-          <Ionicon icon="md-medal" fontSize="35px" color="#c0c0c0" />
-          <div className="text-center">{this.props.silver}</div>
+        <div className="text-center d-inline-block p-2">
+          <MedalIcon color="silver" />
+          <div>{this.props.medals.silver.number}</div>
+          {cutoffs ? this.props.medals.silver.cutoff : ""}
         </div>
-        <div className="bronze d-inline-block p-2">
-          <Ionicon icon="md-medal" fontSize="35px" color="#cd7f32" />
-          <div className="text-center">{this.props.bronze}</div>
+        <div className="text-center d-inline-block p-2">
+          <MedalIcon color="bronze" />
+          <div>{this.props.medals.bronze.number}</div>
+          {cutoffs ? this.props.medals.bronze.cutoff : ""}
         </div>
       </div>
     );

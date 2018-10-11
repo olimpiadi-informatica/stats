@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
+import { round } from "../utils/math";
 import { ContestItem } from "../remote/contest";
 import MedalsComponent from "./Medals";
 
@@ -15,14 +16,10 @@ type Props = {
 export default class ContestListItem extends Component<Props> {
   render() {
     const contest = this.props.contest;
-    const num_contestants = contest.num_contestants
-      ? contest.num_contestants
-      : "N/a";
-    const max_score_possible = contest.max_score_possible
-      ? contest.max_score_possible
-      : "N/a";
-    const max_score = contest.max_score ? contest.max_score : "N/a";
-    const avg_score = contest.avg_score ? contest.avg_score.toFixed(2) : "N/a";
+    const num_contestants = contest.num_contestants || "N/a";
+    const max_score_possible = contest.max_score_possible || "N/a";
+    const max_score = contest.max_score || "N/a";
+    const avg_score = contest.avg_score ? round(contest.avg_score, 2) : "N/a";
 
     return (
       <li className="list-group-item ">
@@ -63,11 +60,7 @@ export default class ContestListItem extends Component<Props> {
             </div>
           </div>
           <div className="col-12 col-md-5 align-items-center text-center">
-            <MedalsComponent
-              gold={contest.medals.gold.number}
-              silver={contest.medals.silver.number}
-              bronze={contest.medals.bronze.number}
-            />
+            <MedalsComponent medals={contest.medals} cutoffs={false} />
           </div>
         </div>
       </li>
