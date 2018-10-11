@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import Ionicon from "react-ionicons";
 
 import { ContestItem } from "../remote/contest";
+import MedalsComponent from "./Medals";
 
 function imageError(event: any) {
   event.target.src = "/placeholder.jpg";
@@ -63,18 +63,11 @@ export default class ContestListItem extends Component<Props> {
             </div>
           </div>
           <div className="col-12 col-md-5 align-items-center text-center">
-            <div className="gold d-inline-block p-2">
-              <Ionicon icon="md-medal" fontSize="35px" color="#ffdb19" />
-              <div className="text-center">{contest.medals.gold.number}</div>
-            </div>
-            <div className="silver d-inline-block p-2">
-              <Ionicon icon="md-medal" fontSize="35px" color="#c0c0c0" />
-              <div className="text-center">{contest.medals.silver.number}</div>
-            </div>
-            <div className="bronze d-inline-block p-2">
-              <Ionicon icon="md-medal" fontSize="35px" color="#cd7f32" />
-              <div className="text-center">{contest.medals.bronze.number}</div>
-            </div>
+            <MedalsComponent
+              gold={contest.medals.gold.number}
+              silver={contest.medals.silver.number}
+              bronze={contest.medals.bronze.number}
+            />
           </div>
         </div>
       </li>

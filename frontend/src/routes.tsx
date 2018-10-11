@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Header from "./components/Header";
 import HomeContainer from "./components/HomeContainer";
-import ContestsContainer from "./components/ContestsContainer";
+import ContestsComponent from "./components/Contests";
 
 function Routes() {
   return (
@@ -12,7 +12,7 @@ function Routes() {
         <div>
           <Header />
           <Switch>
-            <Route path="/contests" component={ContestsContainer} />
+            <Route path="/contests" component={ContestsComponent} />
             <Route path="/" component={HomeContainer} />
           </Switch>
         </div>
