@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import _ from "lodash";
 
+import { round } from "../utils/math";
 import { fetchTask } from "../actions/tasks";
 import { ContestantLink } from "../components";
 
@@ -15,7 +16,7 @@ class TaskContainer extends Component {
   renderRanking(scores) {
     if (!scores) return <div className="Loading" />;
     const ordered_contests = _.sortBy(_.values(scores), function(o) {
-      return o.rank;
+      return -o.score;
     });
     const scores_lists = _.map(ordered_contests, (score, i) => {
       const rank = score.rank ? score.rank : "N/a";
@@ -26,7 +27,7 @@ class TaskContainer extends Component {
           <td>
             <ContestantLink contestant={score.contestant} ioi={score.ioi} />
           </td>
-          <td>{score_point}</td>
+          <td>{round(score_point, 2)}</td>
         </tr>
       );
     });

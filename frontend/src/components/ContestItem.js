@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
+
 import { TaskListItem, ScoreBadge, ContestantLink } from "../components";
+import { round } from "../utils/math";
 
 function imageError(event) {
   event.target.src = "/placeholder.jpg";
@@ -46,7 +48,7 @@ function renderResults(contest, results) {
             ioi={contestant.ioi}
           />
         </td>
-        <td>{contestant.score}</td>
+        <td>{round(contestant.score, 2)}</td>
         {scores}
         <td className="text-center">{medal}</td>
         <td>

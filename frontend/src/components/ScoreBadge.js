@@ -1,5 +1,7 @@
 import React from "react";
 
+import { round } from "../utils/math";
+
 const COLORS = [
   "#d53e4f",
   "#f46d43",
@@ -24,7 +26,7 @@ const ScoreBadge = ({ score, max_score }) => {
       }}
     >
       {" "}
-      {score}
+      {round(score, 2)}
     </span>
   );
 };

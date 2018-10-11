@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import styled, { keyframes } from "styled-components";
+import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Collapse, Navbar, NavbarToggler, Nav, NavItem } from "reactstrap";
 
@@ -18,9 +18,9 @@ class Header extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const q = this.state.value;
-    window.location = `/search/${q}`;
+    this.props.history.push(`/search/${encodeURI(this.state.value)}`);
   }
+
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
@@ -104,4 +104,4 @@ class Header extends Component {
   }
 }
 
-export default Header;
+export default withRouter(Header);

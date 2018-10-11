@@ -15,15 +15,20 @@ class SearchContainer extends Component {
     this.props.fetchSearchResults(q);
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const q = this.props.match.params.q;
+    if (q !== prevProps.match.params.q) this.props.fetchSearchResults(q);
+  }
+
   renderResult(result, type, key) {
     if (type === "region") {
-      return <RegionListItem region={result} />;
+      return <RegionListItem key={key} region={result} />;
     } else if (type === "user") {
-      return <ContestantListItem contestant={result} />;
+      return <ContestantListItem key={key} contestant={result} />;
     } else if (type === "contest") {
-      return <ContestListItem contest={result} />;
+      return <ContestListItem key={key} contest={result} />;
     } else if (type === "task") {
-      return <TaskListItem task={result.task} year={result.year} />;
+      return <TaskListItem key={key} task={result.task} year={result.year} />;
     }
   }
 
@@ -60,6 +65,7 @@ class SearchContainer extends Component {
 }
 
 function mapStateToProps(state) {
+  console.log("mapStateToProps", state);
   if (state.search && state.search.error) return { error: "Connection Error" };
   return { search: state.search };
 }
