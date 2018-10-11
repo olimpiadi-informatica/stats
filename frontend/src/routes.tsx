@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import HomeContainer from "./components/HomeContainer";
 import ContestsComponent from "./components/Contests";
 import ContestComponent from "./components/Contest";
+import ContestantsComponent from "./components/Contestants";
 import ContestantComponent from "./components/Contestant";
 
 function Routes() {
@@ -16,6 +17,7 @@ function Routes() {
           <Switch>
             <Route path="/contests" component={ContestsComponent} />
             <Route path="/contest/:year" component={ContestComponent} />
+            <Route path="/contestants" component={ContestantsComponent} />
             <Route path="/contestant/:id" component={ContestantComponent} />
             <Route path="/" component={HomeContainer} />
           </Switch>

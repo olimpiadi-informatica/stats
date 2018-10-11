@@ -21,10 +21,40 @@ class ContestantDetail {
   participations!: ContestantParticipation[];
 }
 
+class NumMedals {
+  gold!: number;
+  silver!: number;
+  bronze!: number;
+}
+
+class ContestantItemParticipation {
+  year!: number;
+  ioi!: boolean;
+  medal!: string | null;
+}
+
+class ContestantItem {
+  contestant!: Contestant;
+  num_medals!: NumMedals;
+  best_rank!: number | null;
+  participations!: ContestantItemParticipation[];
+}
+
 async function loadContestant(id: string): Promise<ContestantDetail> {
   return axios.get(`${ROOT_URL}/users/${id}`).then(res => {
     return res.data;
   });
 }
 
-export { ContestantDetail, loadContestant };
+async function loadContestantsList(): Promise<ContestantItem[]> {
+  return axios.get(`${ROOT_URL}/users`).then(res => {
+    return res.data.users;
+  });
+}
+
+export {
+  ContestantDetail,
+  ContestantItem,
+  loadContestant,
+  loadContestantsList
+};
