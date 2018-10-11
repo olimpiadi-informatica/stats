@@ -20,7 +20,7 @@ use utility::*;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Contestant {
     pub id: String,
-    pub first_name: String,
+    pub first_name: Option<String>,
     pub last_name: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -99,7 +99,8 @@ pub fn get_users_list(conn: &DbConn, users: &Vec<User>) -> Result<UserList, Erro
                     year: p.contest_year,
                     ioi: p.IOI.unwrap_or(false),
                     medal: medal_from_string(&p.medal),
-                }).collect(),
+                })
+                .collect(),
         });
     }
     Ok(UserList { users: result })
@@ -135,7 +136,8 @@ pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Erro
                         .find(|t| t.name == s.task_name)
                         .expect("TaskScore without task")
                         .max_score,
-                }).collect(),
+                })
+                .collect(),
         });
     }
     Ok(UserDetail {

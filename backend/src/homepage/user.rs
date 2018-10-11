@@ -5,7 +5,7 @@
 use diesel::expression::sql_literal::sql;
 use diesel::prelude::*;
 use diesel::result::Error;
-use diesel::sql_types::{Integer, Text};
+use diesel::sql_types::{Integer, Nullable, Text};
 
 use controllers::NumMedals;
 use db::DbConn;
@@ -56,8 +56,8 @@ fn get_best_student(conn: &DbConn, results: &mut Vec<UserStat>) -> Result<(), Er
         FROM users
         ORDER BY gold DESC, silver DESC, bronze DESC
         LIMIT 2;";
-    let users: Vec<(String, String, String, i32, i32, i32)> =
-        sql::<(Text, Text, Text, Integer, Integer, Integer)>(query).load(&**conn)?;
+    let users: Vec<(String, Option<String>, String, i32, i32, i32)> =
+        sql::<(Text, Nullable<Text>, Text, Integer, Integer, Integer)>(query).load(&**conn)?;
     if users.len() != 2 {
         return Ok(());
     }
@@ -94,8 +94,8 @@ fn get_win_at_first_participation(conn: &DbConn, results: &mut Vec<UserStat>) ->
                     FROM participations
                     WHERE user_id = p.user_id AND contest_year < p.contest_year
                 ) = 0";
-    let users: Vec<(String, i32, String, String)> =
-        sql::<(Text, Integer, Text, Text)>(query).load(&**conn)?;
+    let users: Vec<(String, i32, Option<String>, String)> =
+        sql::<(Text, Integer, Nullable<Text>, Text)>(query).load(&**conn)?;
     for user in users {
         results.push(UserStat::WinAtFirstParticipation(WinAtFirstParticipation {
             contestant: Contestant {
@@ -120,8 +120,8 @@ fn get_student_with_most_participations(
         GROUP BY user_id
         ORDER BY num DESC
         LIMIT 2";
-    let users: Vec<(String, String, String, i32)> =
-        sql::<(Text, Text, Text, Integer)>(query).load(&**conn)?;
+    let users: Vec<(String, Option<String>, String, i32)> =
+        sql::<(Text, Nullable<Text>, Text, Integer)>(query).load(&**conn)?;
     if users.len() != 2 {
         return Ok(());
     }
@@ -151,8 +151,8 @@ fn get_ioist_with_worst_rank(conn: &DbConn, results: &mut Vec<UserStat>) -> Resu
         WHERE IOI
         ORDER BY position
         DESC LIMIT 2";
-    let users: Vec<(String, String, String, i32, i32)> =
-        sql::<(Text, Text, Text, Integer, Integer)>(query).load(&**conn)?;
+    let users: Vec<(String, Option<String>, String, i32, i32)> =
+        sql::<(Text, Nullable<Text>, Text, Integer, Integer)>(query).load(&**conn)?;
     if users.len() != 2 {
         return Ok(());
     }

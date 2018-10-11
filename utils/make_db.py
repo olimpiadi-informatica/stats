@@ -54,7 +54,7 @@ CREATE TABLE regions (
 CREATE VIRTUAL TABLE regions_fts4 USING fts4(id, name);
 CREATE TABLE users (
     id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
+    name TEXT,
     surname TEXT NOT NULL,
     birth TEXT,
     gender TEXT
@@ -171,7 +171,7 @@ class Contest:
             cursor.execute(query, {"year": self.year, "location": self.location, "region": self.region,
                                    "gmaps": self.gmaps, "latitude": self.latitude, "longitude": self.longitude})
             cursor.execute(query_fts, {"year": self.year, "location": self.location, "region": self.region,
-                                       "full_region": REGION_NAMES[self.region]})
+                                       "full_region": REGION_NAMES.get(self.region, None)})
         except Exception as e:
             print("Failed to insert contest", self)
             print(e)

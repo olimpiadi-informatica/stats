@@ -23,7 +23,7 @@ table! {
 table! {
     users (id) {
         id -> Text,
-        name -> Text,
+        name -> Nullable<Text>,
         surname -> Text,
         birth -> Nullable<Text>,
         gender -> Nullable<Text>,

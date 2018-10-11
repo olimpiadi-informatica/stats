@@ -35,7 +35,7 @@ pub struct Contest {
 #[derive(Serialize, Deserialize, Queryable, Identifiable, Debug, Clone)]
 pub struct User {
     pub id: String,
-    pub name: String,
+    pub name: Option<String>,
     pub surname: String,
     pub birth: Option<String>,
     pub gender: Option<String>,
