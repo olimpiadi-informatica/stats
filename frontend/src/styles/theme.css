@@ -13,13 +13,13 @@ a:hover {
   color: #28a746;
 }
 
-.gold ion-icon {
+.gold .medal {
   color: #ffdb19 !important;
 }
-.silver ion-icon {
+.silver .medal {
   color: #c0c0c0;
 }
-.bronze ion-icon {
+.bronze svg {
   color: #cd7f32;
 }
 

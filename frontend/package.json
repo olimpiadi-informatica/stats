@@ -1,27 +1,32 @@
 {
-  "name": "frontend",
+  "name": "oii-stats",
   "description": "",
   "version": "0.1.0",
   "author": "gixpix",
   "dependencies": {
+    "@types/lodash": "^4.14.117",
+    "@types/react": "^16.4.16",
+    "@types/react-dom": "^16.0.9",
+    "@types/react-router-dom": "^4.3.1",
+    "@types/reactstrap": "^6.4.0",
     "axios": "^0.18.0",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-ga": "^2.5.3",
+    "react-ionicons": "^2.1.6",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
     "react-scripts": "^1.1.5",
+    "react-scripts-ts": "^3.1.0",
     "reactstrap": "^6.4.0",
     "recompose": "^0.27.0",
-    "redux": "^4.0.0",
-    "redux-actions": "^2.3.0",
-    "redux-devtools-extension": "^2.13.2",
-    "redux-promise": "^0.6.0",
-    "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "semiotic": "^1.14.2",
-    "styled-components": "^3.2.6"
+    "styled-components": "^3.2.6",
+    "tslint": "^5.11.0",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.1.2"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.2",
@@ -40,22 +45,19 @@
     "pretty-quick": "^1.6.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
     "prettier": "prettier --single-quote --print-width=120 --trailing-comma es5 --no-semi",
     "format": "npm run prettier --write 'src/**/*.{js,jsx,json,css}'",
     "precommit": "pretty-quick --staged",
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "lint": "eslint **/*.js --quiet",
-    "lint-fix": "eslint --fix",
-    "generate": "plop --plopfile generators/index.js"
+    "lint-fix": "eslint --fix"
   },
   "lint-staged": {
     "gitDir": "../",
     "linters": {
-      "src/**/*.{js,jsx,json,css}": [
+      "src/**/*.{js,jsx,json,css,ts,tsx}": [
         "npm run prettier --write",
         "git add"
       ]
