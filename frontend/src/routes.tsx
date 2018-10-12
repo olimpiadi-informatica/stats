@@ -7,6 +7,8 @@ import ContestsComponent from "./components/Contests";
 import ContestComponent from "./components/Contest";
 import ContestantsComponent from "./components/Contestants";
 import ContestantComponent from "./components/Contestant";
+import TasksComponent from "./components/Tasks";
+import TaskComponent from "./components/Task";
 
 function Routes() {
   return (
@@ -19,6 +21,8 @@ function Routes() {
             <Route path="/contest/:year" component={ContestComponent} />
             <Route path="/contestants" component={ContestantsComponent} />
             <Route path="/contestant/:id" component={ContestantComponent} />
+            <Route path="/tasks" component={TasksComponent} />
+            <Route path="/task/:year/:name" component={TaskComponent} />
             <Route path="/" component={HomeContainer} />
           </Switch>
         </div>
