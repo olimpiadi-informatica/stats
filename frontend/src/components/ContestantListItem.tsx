@@ -64,7 +64,9 @@ export default class ContestantListItem extends Component<Props> {
               </div>
             </div>
           </div>
-          <MedalsComponent medals={medals} cutoffs={false} />
+          <div className="col-12 col-md-5 align-self-center text-center">
+            <MedalsComponent medals={medals} cutoffs={false} />
+          </div>
         </div>
       </li>
     );
