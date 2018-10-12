@@ -112,6 +112,7 @@ export {
   ContestDetailTask,
   ContestMedalInfo,
   ContestResults,
+  ContestLocation,
   loadContestList,
   loadContestDetail,
   loadContestResults
