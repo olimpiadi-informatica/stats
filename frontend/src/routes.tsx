@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Header from "./components/Header";
-import HomeContainer from "./components/HomeContainer";
+import HomeComponent from "./components/Home";
 import ContestsComponent from "./components/Contests";
 import ContestComponent from "./components/Contest";
 import ContestantsComponent from "./components/Contestants";
@@ -33,7 +33,7 @@ export default function Routes() {
             <Route path="/search/:q" component={SearchComponent} />
             <Route path="/contribute" component={ContributeComponent} />
             <Route path="/about" component={AboutComponent} />
-            <Route path="/" component={HomeContainer} />
+            <Route path="/" component={HomeComponent} />
           </Switch>
         </div>
       </BrowserRouter>

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { ROOT_URL, Contestant } from "./index";
+import { ROOT_URL, Contestant, NumMedals } from "./index";
 
 class ContestantParticipationScore {
   task!: string;
@@ -19,12 +19,6 @@ class ContestantParticipation {
 class ContestantDetail {
   contestant!: Contestant;
   participations!: ContestantParticipation[];
-}
-
-class NumMedals {
-  gold!: number;
-  silver!: number;
-  bronze!: number;
 }
 
 class ContestantItemParticipation {

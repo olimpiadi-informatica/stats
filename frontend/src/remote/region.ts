@@ -1,17 +1,13 @@
 import axios from "axios";
 
 import { ContestLocation } from "./contest";
-import { ROOT_URL, Contestant } from "./index";
+import { ROOT_URL, Contestant, NumMedals } from "./index";
 
 class RegionItem {
   id!: string;
   name!: string;
   num_contestants!: number;
-  medals!: {
-    gold: number;
-    silver: number;
-    bronze: number;
-  };
+  medals!: NumMedals;
   avg_contestants_per_year!: number;
   hosted!: number[];
 }
@@ -20,11 +16,7 @@ class RegionDetailYear {
   year!: number;
   location!: ContestLocation;
   num_contestants!: number;
-  num_medals!: {
-    gold: number;
-    silver: number;
-    bronze: number;
-  };
+  num_medals!: NumMedals;
 }
 
 class RegionNavigation {
