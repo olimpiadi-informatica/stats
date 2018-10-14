@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { RegionItem } from "../remote/region";
 import { round } from "../utils/math";
 import Medals from "./Medals";
+import RegionsSVG from "./regions/Regions";
 
 type Props = {
   region: RegionItem;
@@ -23,6 +24,12 @@ export default class RegionListItem extends Component<Props> {
       bronze: { number: region.medals.bronze, cutoff: 0 }
     };
 
+    const SVG = RegionsSVG[region.id];
+    const origWidth = SVG({}).props.width;
+    const width = 50;
+    const scale = width / origWidth;
+    console.log(scale);
+
     return (
       <li className="RegionListItemContainer list-group-item">
         <div className=" row">
@@ -35,15 +42,18 @@ export default class RegionListItem extends Component<Props> {
         <div className="row align-items-center">
           <div className="col-12 col-md-7">
             <div className="media">
-              <Link to={`/region/${region.id}`}>
-                <img
+              <Link
+                to={`/region/${region.id}`}
+                style={{
+                  width: "100px",
+                  marginRight: "10px"
+                }}
+              >
+                <SVG
                   className="mr-3 align-self-start img-fluid"
-                  src={`/static/regions/${region.id}.svg`}
-                  alt="Region"
-                  onError={(event: any) => {
-                    event.target.src = "/static/placeholder.jpg";
-                  }}
-                  width="125"
+                  width="100%"
+                  height="100%"
+                  preserveAspectRatio="xMaxYMax meet"
                 />
               </Link>
               <div className="media-body">

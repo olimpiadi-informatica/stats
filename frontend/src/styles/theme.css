@@ -69,6 +69,7 @@ a:hover {
   }
 }
 
-svg {
+svg path {
   vector-effect: non-scaling-stroke;
+  stroke-width: 1;
 }
