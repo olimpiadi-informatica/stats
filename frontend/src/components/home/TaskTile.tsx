@@ -29,6 +29,9 @@ export default class TaskTile extends Component<Props> {
           className="card-img-top"
           src={`/task/${task.name}-${task.contest_year}.png`}
           alt={task.title}
+          onError={(event: any) => {
+            event.target.style = "display: none";
+          }}
         />
       </Link>
     );
@@ -108,7 +111,7 @@ export default class TaskTile extends Component<Props> {
       body = this.renderTaskWithMostFullscores(stat as TaskWithMostFullscores);
     else return null;
     return (
-      <div className="card">
+      <div className="card border-info">
         <div className="card-text">{body}</div>
       </div>
     );

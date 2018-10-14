@@ -103,7 +103,7 @@ export default class RegionTile extends Component<Props> {
       );
     else return null;
     return (
-      <div className="card">
+      <div className="card border-primary">
         <div className="card-text">{body}</div>
       </div>
     );

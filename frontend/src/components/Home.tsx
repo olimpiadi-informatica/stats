@@ -6,12 +6,14 @@ import {
   StatsRegion,
   StatsUser,
   StatsTask,
+  StatsContest,
   loadHome
 } from "../remote/home";
 import Loading from "./Loading";
 import RegionTile from "./home/RegionTile";
 import UserTile from "./home/UserTile";
 import TaskTile from "./home/TaskTile";
+import ContestTile from "./home/ContestTile";
 
 type Props = {};
 type State = {
@@ -19,9 +21,10 @@ type State = {
 };
 
 const NUM_CARDS = {
-  region: 1,
+  region: 2,
   user: 2,
-  task: 1000
+  task: 2,
+  contest: 2
 };
 
 export default class HomeComponent extends Component<Props, State> {
@@ -53,6 +56,12 @@ export default class HomeComponent extends Component<Props, State> {
     ));
   }
 
+  renderContest(stats: StatsContest[]) {
+    return _.sampleSize(stats, NUM_CARDS.contest).map((stat, i) => (
+      <ContestTile key={`contest-${i}`} stat={stat} />
+    ));
+  }
+
   render() {
     if (!this.state.stats) return <Loading />;
     return (
@@ -63,6 +72,7 @@ export default class HomeComponent extends Component<Props, State> {
               {this.renderRegion(this.state.stats.region)}
               {this.renderUser(this.state.stats.user)}
               {this.renderTask(this.state.stats.task)}
+              {this.renderContest(this.state.stats.contest)}
             </div>
           </div>
         </div>

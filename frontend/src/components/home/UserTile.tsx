@@ -31,6 +31,9 @@ export default class UserTile extends Component<Props> {
           className="card-img-top"
           src={`/contestants/${contestant.id}.jpg`}
           alt={`${contestant.first_name} ${contestant.last_name}`}
+          onError={(event: any) => {
+            event.target.style = "display: none";
+          }}
         />
       </Link>
     );
@@ -110,7 +113,7 @@ export default class UserTile extends Component<Props> {
       body = this.renderIOIstWithWorstRank(stat as IOIstWithWorstRank);
     else return null;
     return (
-      <div className="card">
+      <div className="card border-danger">
         <div className="card-text">{body}</div>
       </div>
     );

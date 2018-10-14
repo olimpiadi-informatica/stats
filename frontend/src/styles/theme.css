@@ -13,23 +13,8 @@ a:hover {
   color: #28a746;
 }
 
-.gold .medal {
-  color: #ffdb19 !important;
-}
-.silver .medal {
-  color: #c0c0c0;
-}
-.bronze svg {
-  color: #cd7f32;
-}
-
-.list-group-item:hover {
-  /* background-color: #deebf7; */
-}
-
 .card {
   padding: 20px;
-  border: none;
 }
 
 .score-badge {
@@ -60,7 +45,6 @@ a:hover {
   }
 }
 
-/* Card columns
 @media (min-width: 576px) {
   .card-columns {
     column-count: 1;
@@ -83,4 +67,4 @@ a:hover {
   .card-columns {
     column-count: 3;
   }
-} */
+}
