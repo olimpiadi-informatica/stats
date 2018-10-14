@@ -27,7 +27,7 @@ export default class TaskTile extends Component<Props> {
       <Link to={`/task/${task.contest_year}/${task.name}`}>
         <img
           className="card-img-top"
-          src={`/task/${task.name}-${task.contest_year}.png`}
+          src={`/static/tasks/${task.contest_year}/${task.name}.png`}
           alt={task.title}
           onError={(event: any) => {
             event.target.style = "display: none";

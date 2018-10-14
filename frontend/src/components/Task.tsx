@@ -80,10 +80,10 @@ export default class TaskComponent extends Component<Props, State> {
             <div className="media">
               <img
                 className="mr-3 align-self-start img-fluid"
-                src={`/tasks/${name}-${year}.png`}
+                src={`/static/tasks/${year}/${name}.png`}
                 alt="Task"
                 onError={(event: any) => {
-                  event.target.src = "/placeholder.jpg";
+                  event.target.src = "/static/placeholder.jpg";
                 }}
                 width="125"
               />

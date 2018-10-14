@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function imageError(event) {
-  event.target.src = "/placeholder.jpg";
+  event.target.src = "/static/placeholder.jpg";
 }
 
 const TaskListItem = ({ task, year }) => {
@@ -27,7 +27,7 @@ const TaskListItem = ({ task, year }) => {
             <Link to={`/task/${year}/${task.name}`}>
               <img
                 className="mr-3 align-self-start img-fluid"
-                src={`/tasks/${task.name}-${year}.png`}
+                src={`/static/tasks/${task.year}/${task.name}.png`}
                 alt="Region"
                 onError={imageError}
                 width="125"

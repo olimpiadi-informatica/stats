@@ -6,7 +6,7 @@ import { ContestItem } from "../remote/contest";
 import MedalsComponent from "./Medals";
 
 function imageError(event: any) {
-  event.target.src = "/placeholder.jpg";
+  event.target.src = "/static/placeholder.jpg";
 }
 
 type Props = {
@@ -37,8 +37,8 @@ export default class ContestListItem extends Component<Props> {
             <div className="media">
               <Link to={`/contest/${contest.year}`}>
                 <img
-                  className="mr-3 align-self-start img-fluid"
-                  src={`/contests/${contest.year}.jpg`}
+                  className="mr-3 align-self-start static/img-fluid"
+                  src={`/static/contests/${contest.year}.jpg`}
                   alt="Contest"
                   onError={imageError}
                   width="125"

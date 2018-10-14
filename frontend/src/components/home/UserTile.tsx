@@ -29,7 +29,7 @@ export default class UserTile extends Component<Props> {
       <Link to={`/contestant/${contestant.id}`}>
         <img
           className="card-img-top"
-          src={`/contestants/${contestant.id}.jpg`}
+          src={`/static/contestants/${contestant.id}.jpg`}
           alt={`${contestant.first_name} ${contestant.last_name}`}
           onError={(event: any) => {
             event.target.style = "display: none";

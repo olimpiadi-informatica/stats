@@ -24,7 +24,7 @@ type Props = {
 
 export default class SimpleMap extends Component<Props> {
   static defaultProps = {
-    map: "/italy-regions.json",
+    map: "/static/maps/italy-regions.json",
     scale: 1500,
     width: 350,
     height: 350,

@@ -77,10 +77,10 @@ export default class RegionContainer extends Component<Props, State> {
                 <Link to={`/contest/${year.year}`}>
                   <img
                     className="mr-3 align-self-start img-fluid"
-                    src={`/contests/${year.year}.jpg`}
+                    src={`/static/contests/${year.year}.jpg`}
                     alt="Contestant"
                     onError={(event: any) => {
-                      event.target.src = "/placeholder.jpg";
+                      event.target.src = "/static/placeholder.jpg";
                     }}
                     width="125"
                   />
@@ -207,10 +207,10 @@ export default class RegionContainer extends Component<Props, State> {
             {this.renderHosted(region.hosted)}
             <img
               className="mr-3 align-self-start img-fluid"
-              src={`/regions/${region.name}.png`}
+              src={`/static/regions/${region.navigation.current}.svg`}
               alt="Region"
               onError={(event: any) => {
-                event.target.src = "/placeholder.jpg";
+                event.target.src = "/static/placeholder.jpg";
               }}
               width="125"
             />

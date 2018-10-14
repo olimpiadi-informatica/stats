@@ -12,7 +12,7 @@ export default class AboutComponent extends Component {
             <img
               className="float-right p-3 img-fluid"
               width="200"
-              src="/oiistats.png"
+              src="/static/oiistats.png"
               alt="Logo"
             />
             OII stats is a platform that was created to provide essential but
@@ -28,28 +28,28 @@ export default class AboutComponent extends Component {
           </div>
           <div className="col-12 col-md-4 p-2">
             <img
-              src="/gallery/gallery4.jpg"
+              src="/static/gallery/gallery4.jpg"
               className="img-fluid"
               alt="Card cap"
             />
           </div>
           <div className="col-12 col-md-4 p-2">
             <img
-              src="/gallery/gallery2.png"
+              src="/static/gallery/gallery2.png"
               className="img-fluid"
               alt="Card cap"
             />
           </div>
           <div className="col-12 col-md-4 p-2">
             <img
-              src="/gallery/gallery3.png"
+              src="/static/gallery/gallery3.png"
               className="img-fluid"
               alt="Card cap"
             />
           </div>
           <div className="col-12 col-md-4 p-2">
             <img
-              src="/gallery/gallery1.png"
+              src="/static/gallery/gallery1.png"
               className="img-fluid"
               alt="Card cap"
             />

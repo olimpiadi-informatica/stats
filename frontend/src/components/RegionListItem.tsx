@@ -38,10 +38,10 @@ export default class RegionListItem extends Component<Props> {
               <Link to={`/region/${region.id}`}>
                 <img
                   className="mr-3 align-self-start img-fluid"
-                  src={`/regions/${region.name}.png`}
+                  src={`/static/regions/${region.id}.svg`}
                   alt="Region"
                   onError={(event: any) => {
-                    event.target.src = "/placeholder.jpg";
+                    event.target.src = "/static/placeholder.jpg";
                   }}
                   width="125"
                 />

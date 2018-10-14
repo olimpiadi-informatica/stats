@@ -38,7 +38,7 @@ class Header extends Component<Props, State> {
       <div className="row" style={{ marginTop: "15px" }}>
         <div className="col-12">
           <Link to="/" className="logo-header">
-            <img src="/oiistats.png" height="50" alt="logo" />
+            <img src="/static/oiistats.png" height="50" alt="logo" />
           </Link>
         </div>
         <Navbar color="white" light expand="lg">

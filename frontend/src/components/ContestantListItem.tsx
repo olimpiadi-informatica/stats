@@ -46,10 +46,10 @@ export default class ContestantListItem extends Component<Props> {
               <Link to={`/contestant/${contestant.contestant.id}`}>
                 <img
                   className="mr-3 align-self-start img-fluid"
-                  src={`/contestants/${contestant.contestant.id}.jpg`}
+                  src={`/static/contestants/${contestant.contestant.id}.jpg`}
                   alt="Contestant"
                   onError={(event: any) => {
-                    event.target.src = "/placeholder.jpg";
+                    event.target.src = "/static/placeholder.jpg";
                   }}
                   width="125"
                 />

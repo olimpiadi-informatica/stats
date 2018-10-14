@@ -32,8 +32,11 @@ export default class ContestTile extends Component<Props> {
       <Link to={`/contest/${year}`}>
         <img
           className="card-img-top"
-          src={`/contests/${year}.jpg`}
+          src={`/static/contests/${year}.jpg`}
           alt={`${year}`}
+          onError={(event: any) => {
+            event.target.style = "display: none";
+          }}
         />
       </Link>
     );

@@ -24,8 +24,11 @@ export default class RegionTile extends Component<Props> {
       <Link to={`/region/${region.id}`}>
         <img
           className="card-img-top"
-          src={`/regions/${region.name}.png`}
+          src={`/static/regions/${region.id}.svg`}
           alt={region.name}
+          onError={(event: any) => {
+            event.target.style = "display: none";
+          }}
         />
       </Link>
     );

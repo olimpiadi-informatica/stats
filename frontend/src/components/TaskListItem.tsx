@@ -29,10 +29,10 @@ export default class TaskListItem extends Component<Props> {
               <Link to={`/task/${year}/${task.name}`}>
                 <img
                   className="mr-3 align-self-start img-fluid"
-                  src={`/tasks/${task.name}-${year}.png`}
+                  src={`/static/tasks/${year}/${task.name}.png`}
                   alt="Region"
                   onError={(event: any) => {
-                    event.target.src = "/placeholder.jpg";
+                    event.target.src = "/static/placeholder.jpg";
                   }}
                   width="125"
                 />

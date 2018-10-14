@@ -135,10 +135,10 @@ export default class ContestantContainer extends Component<Props, State> {
             <div className="media">
               <img
                 className="mr-3 align-self-start img-fluid"
-                src={`/contestants/${id}.jpg`}
+                src={`/static/contestants/${id}.jpg`}
                 alt="Contestant"
                 onError={(event: any) => {
-                  event.target.src = "/placeholder.jpg";
+                  event.target.src = "/static/placeholder.jpg";
                 }}
                 width="125"
               />

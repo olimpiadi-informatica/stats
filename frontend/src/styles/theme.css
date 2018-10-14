@@ -68,3 +68,7 @@ a:hover {
     column-count: 3;
   }
 }
+
+svg {
+  vector-effect: non-scaling-stroke;
+}
