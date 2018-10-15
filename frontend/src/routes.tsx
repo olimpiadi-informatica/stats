@@ -2,18 +2,18 @@ import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Header from "./components/Header";
-import HomeComponent from "./components/Home";
-import ContestsComponent from "./components/Contests";
-import ContestComponent from "./components/Contest";
-import ContestantsComponent from "./components/Contestants";
-import ContestantComponent from "./components/Contestant";
-import TasksComponent from "./components/Tasks";
-import TaskComponent from "./components/Task";
-import RegionsComponent from "./components/Regions";
-import RegionComponent from "./components/Region";
-import SearchComponent from "./components/Search";
-import ContributeComponent from "./components/Contribute";
-import AboutComponent from "./components/About";
+import Home from "./components/Home";
+import Contests from "./components/Contests";
+import Contest from "./components/Contest";
+import Contestants from "./components/Contestants";
+import Contestant from "./components/Contestant";
+import Tasks from "./components/Tasks";
+import Task from "./components/Task";
+import Regions from "./components/Regions";
+import Region from "./components/Region";
+import Search from "./components/Search";
+import Contribute from "./components/Contribute";
+import About from "./components/About";
 
 export default function Routes() {
   return (
@@ -22,18 +22,18 @@ export default function Routes() {
         <div>
           <Header />
           <Switch>
-            <Route path="/contests" component={ContestsComponent} />
-            <Route path="/contest/:year" component={ContestComponent} />
-            <Route path="/contestants" component={ContestantsComponent} />
-            <Route path="/contestant/:id" component={ContestantComponent} />
-            <Route path="/tasks" component={TasksComponent} />
-            <Route path="/task/:year/:name" component={TaskComponent} />
-            <Route path="/regions" component={RegionsComponent} />
-            <Route path="/region/:id" component={RegionComponent} />
-            <Route path="/search/:q" component={SearchComponent} />
-            <Route path="/contribute" component={ContributeComponent} />
-            <Route path="/about" component={AboutComponent} />
-            <Route path="/" component={HomeComponent} />
+            <Route path="/contests" component={Contests} />
+            <Route path="/contest/:year" component={Contest} />
+            <Route path="/contestants" component={Contestants} />
+            <Route path="/contestant/:id" component={Contestant} />
+            <Route path="/tasks" component={Tasks} />
+            <Route path="/task/:year/:name" component={Task} />
+            <Route path="/regions" component={Regions} />
+            <Route path="/region/:id" component={Region} />
+            <Route path="/search/:q" component={Search} />
+            <Route path="/contribute" component={Contribute} />
+            <Route path="/about" component={About} />
+            <Route path="/" component={Home} />
           </Switch>
         </div>
       </BrowserRouter>

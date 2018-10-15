@@ -20,7 +20,7 @@ type State = {
   results: SearchResult[] | null;
 };
 
-export default class SearchComponent extends Component<Props, State> {
+export default class Search extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { results: null };

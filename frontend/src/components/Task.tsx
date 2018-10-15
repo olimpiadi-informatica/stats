@@ -12,7 +12,7 @@ type State = {
   task: TaskDetail | null;
 };
 
-export default class TaskComponent extends Component<Props, State> {
+export default class Task extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { task: null };

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-export default class ContributeComponent extends Component {
+export default class Contribute extends Component {
   render() {
     return (
       <div className="row p-2">

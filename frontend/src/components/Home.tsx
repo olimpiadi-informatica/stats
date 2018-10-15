@@ -27,7 +27,7 @@ const NUM_CARDS = {
   contest: 2
 };
 
-export default class HomeComponent extends Component<Props, State> {
+export default class Home extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { stats: null };

@@ -11,7 +11,7 @@ import {
 import ContestantLink from "./ContestantLink";
 import Loading from "./Loading";
 import TaskListItem from "./TaskListItem";
-import MedalsComponent from "./Medals";
+import Medals from "./Medals";
 import ScoreBadge from "./ScoreBadge";
 import MedalIcon from "./MedalIcon";
 import { round } from "../utils/math";
@@ -22,7 +22,7 @@ type State = {
   results: ContestResults | null;
 };
 
-export default class ContestsComponent extends Component<Props, State> {
+export default class Contest extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { contest: null, results: null };
@@ -159,7 +159,7 @@ export default class ContestsComponent extends Component<Props, State> {
         </div>
         <div className="row align-items-center">
           <div className="col-12 col-md-7">{this.renderInfo(contest)}</div>
-          <MedalsComponent medals={contest.medals} cutoffs={true} />
+          <Medals medals={contest.medals} cutoffs={true} />
           <div className="col-12">{this.renderTasks(contest)}</div>
           <div className="col-12">{this.renderResults(contest, results)}</div>
         </div>

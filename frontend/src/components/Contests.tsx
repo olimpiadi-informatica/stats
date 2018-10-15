@@ -10,7 +10,7 @@ type State = {
   contests: ContestItem[] | null;
 };
 
-export default class ContestsComponent extends Component<Props, State> {
+export default class Contests extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { contests: null };

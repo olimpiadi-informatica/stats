@@ -9,7 +9,7 @@ type State = {
   regions: RegionItem[] | null;
 };
 
-export default class RegionsComponent extends Component<Props, State> {
+export default class Regions extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { regions: null };

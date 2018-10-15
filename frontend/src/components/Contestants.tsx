@@ -11,7 +11,7 @@ type State = {
   cutoff: number;
 };
 
-export default class ContestantsComponent extends Component<Props, State> {
+export default class Contestants extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { users: null, cutoff: 50 };

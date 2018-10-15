@@ -25,7 +25,7 @@ type State = {
   activeTab: "detail" | "results";
 };
 
-export default class RegionContainer extends Component<Props, State> {
+export default class Region extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { region: null, results: null, activeTab: "detail" };

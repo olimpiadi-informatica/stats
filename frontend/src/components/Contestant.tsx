@@ -4,7 +4,7 @@ import _ from "lodash";
 
 import Loading from "./Loading";
 import { ContestantDetail, loadContestant } from "../remote/user";
-import MedalsComponent from "./Medals";
+import Medals from "./Medals";
 import MedalIcon from "./MedalIcon";
 import ScoreBadge from "./ScoreBadge";
 import IOIBadge from "./IOIBadge";
@@ -15,7 +15,7 @@ type State = {
   contestant: ContestantDetail | null;
 };
 
-export default class ContestantContainer extends Component<Props, State> {
+export default class Contestant extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { contestant: null };
@@ -157,7 +157,7 @@ export default class ContestantContainer extends Component<Props, State> {
             </div>
           </div>
           <div className="col-12 col-md-5 text-center">
-            <MedalsComponent medals={medals} cutoffs={false} />
+            <Medals medals={medals} cutoffs={false} />
           </div>
           <div className="col-12 p-2">
             {this.renderParticipations(contestant)}

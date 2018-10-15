@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import _ from "lodash";
 
 import { ContestantItem } from "../remote/user";
-import MedalsComponent from "./Medals";
+import Medals from "./Medals";
 
 type Props = {
   contestant: ContestantItem;
@@ -65,7 +65,7 @@ export default class ContestantListItem extends Component<Props> {
             </div>
           </div>
           <div className="col-12 col-md-5 align-self-center text-center">
-            <MedalsComponent medals={medals} cutoffs={false} />
+            <Medals medals={medals} cutoffs={false} />
           </div>
         </div>
       </li>

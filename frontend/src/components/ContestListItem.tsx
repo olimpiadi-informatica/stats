@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { round } from "../utils/math";
 import { ContestItem } from "../remote/contest";
-import MedalsComponent from "./Medals";
+import Medals from "./Medals";
 
 function imageError(event: any) {
   event.target.src = "/static/placeholder.jpg";
@@ -60,7 +60,7 @@ export default class ContestListItem extends Component<Props> {
             </div>
           </div>
           <div className="col-12 col-md-5 align-items-center text-center">
-            <MedalsComponent medals={contest.medals} cutoffs={false} />
+            <Medals medals={contest.medals} cutoffs={false} />
           </div>
         </div>
       </li>

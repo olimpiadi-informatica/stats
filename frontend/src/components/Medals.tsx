@@ -8,7 +8,7 @@ type Props = {
   cutoffs: boolean;
 };
 
-export default class MedalsComponent extends Component<Props> {
+export default class Medals extends Component<Props> {
   render() {
     const { cutoffs } = this.props;
     return (
