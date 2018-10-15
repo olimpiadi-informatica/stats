@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import queryString from "query-string";
 
 import {
   SearchResult,
@@ -28,11 +29,17 @@ export default class Search extends Component<Props, State> {
     this.state = { results: null, error: null };
   }
 
-  async doSearch(q: string) {
+  getQuery(search = this.props.location.search): string {
+    const values = queryString.parse(search);
+    if (typeof values.q === "string") return values.q;
+    return "";
+  }
+
+  async doSearch() {
     this.setState({ results: null });
     try {
       this.setState({
-        results: await loadSearchResults(q),
+        results: await loadSearchResults(this.getQuery()),
         error: null,
       });
     } catch (error) {
@@ -41,13 +48,13 @@ export default class Search extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    this.doSearch(this.props.match.params.q);
+    this.doSearch();
   }
 
   async componentDidUpdate(prevProps: Props) {
-    const q = this.props.match.params.q;
-    if (q !== prevProps.match.params.q) {
-      this.doSearch(this.props.match.params.q);
+    const q = this.getQuery();
+    if (q !== this.getQuery(prevProps.location.search)) {
+      this.doSearch();
     }
   }
 
@@ -73,7 +80,7 @@ export default class Search extends Component<Props, State> {
     if (this.state.error) return <Error error={this.state.error} />;
     if (!this.state.results) return <Loading />;
 
-    const { q } = this.props.match.params;
+    const q = this.getQuery();
     const num_result = this.state.results.length;
     const results = this.state.results.map(res => this.renderResult(res));
     return (

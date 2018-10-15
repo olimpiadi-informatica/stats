@@ -5,6 +5,7 @@
   "author": "gixpix",
   "dependencies": {
     "@types/lodash": "^4.14.117",
+    "@types/query-string": "^6.1.1",
     "@types/react": "^16.4.16",
     "@types/react-dom": "^16.0.9",
     "@types/react-router-dom": "^4.3.1",
@@ -12,6 +13,7 @@
     "@types/recharts": "^1.1.0",
     "axios": "^0.18.0",
     "prop-types": "^15.6.1",
+    "query-string": "^6.2.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-ga": "^2.5.3",

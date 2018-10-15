@@ -30,7 +30,7 @@ export default function Routes() {
             <Route path="/task/:year/:name" component={Task} />
             <Route path="/regions" component={Regions} />
             <Route path="/region/:id" component={Region} />
-            <Route path="/search/:q" component={Search} />
+            <Route path="/search" component={Search} />
             <Route path="/contribute" component={Contribute} />
             <Route path="/about" component={About} />
             <Route path="/" component={Home} />

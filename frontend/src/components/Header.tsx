@@ -24,7 +24,7 @@ class Header extends Component<Props, State> {
 
   handleSubmit(event: any) {
     event.preventDefault();
-    this.props.history.push(`/search/${encodeURI(this.state.value)}`);
+    this.props.history.push(`/search?q=${encodeURIComponent(this.state.value)}`);
   }
 
   toggle() {
@@ -36,13 +36,15 @@ class Header extends Component<Props, State> {
   render() {
     return (
       <div className="row" style={{ marginTop: "15px" }}>
-        <div className="col-12">
+        <div className="col-9">
           <Link to="/" className="logo-header">
             <img src="/static/oiistats.png" height="50" alt="logo" />
           </Link>
         </div>
+        <div className="navbar-light col-3 d-lg-none">
+          <NavbarToggler className="float-right" onClick={this.toggle} />
+        </div>
         <Navbar color="white" light expand="lg">
-          <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar className="">
             <Nav className="" navbar>
               <NavItem>
@@ -80,8 +82,8 @@ class Header extends Component<Props, State> {
                   About
                 </Link>
               </NavItem>
-              <NavItem style={{ marginLeft: "25px" }}>
-                <form className="form-inline my-2 my-lg-0 float-right" onSubmit={this.handleSubmit}>
+              <NavItem className="ml-lg-4">
+                <form className="form-inline my-lg-0 float-right" onSubmit={this.handleSubmit}>
                   <input
                     className="form-control mr-sm-2"
                     value={this.state.value}
