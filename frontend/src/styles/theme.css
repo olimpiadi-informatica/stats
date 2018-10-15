@@ -69,7 +69,23 @@ a:hover {
   }
 }
 
-svg path {
+.region path {
   vector-effect: non-scaling-stroke;
   stroke-width: 1;
+}
+
+.region-container {
+  width: 150px;
+  height: 150px;
+  margin-right: 10px;
+}
+
+.region {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
 }

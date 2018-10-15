@@ -25,10 +25,6 @@ export default class RegionListItem extends Component<Props> {
     };
 
     const SVG = RegionsSVG[region.id];
-    const origWidth = SVG({}).props.width;
-    const width = 50;
-    const scale = width / origWidth;
-    console.log(scale);
 
     return (
       <li className="RegionListItemContainer list-group-item">
@@ -42,19 +38,13 @@ export default class RegionListItem extends Component<Props> {
         <div className="row align-items-center">
           <div className="col-12 col-md-7">
             <div className="media">
-              <Link
-                to={`/region/${region.id}`}
-                style={{
-                  width: "100px",
-                  marginRight: "10px"
-                }}
-              >
-                <SVG
-                  className="mr-3 align-self-start img-fluid"
-                  width="100%"
-                  height="100%"
-                  preserveAspectRatio="xMaxYMax meet"
-                />
+              <Link to={`/region/${region.id}`}>
+                <div className="region-container">
+                  <SVG
+                    className="mr-3 align-self-start img-fluid region"
+                    preserveAspectRatio="xMidYMid"
+                  />
+                </div>
               </Link>
               <div className="media-body">
                 <dl className="row">

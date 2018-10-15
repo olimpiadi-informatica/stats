@@ -16,6 +16,7 @@ import MedalIcon from "./MedalIcon";
 import ContestantLink from "./ContestantLink";
 import ScoreBadge from "./ScoreBadge";
 import { round } from "../utils/math";
+import RegionsSVG from "./regions/Regions";
 
 type Props = RouteComponentProps<any>;
 type State = {
@@ -199,21 +200,20 @@ export default class RegionContainer extends Component<Props, State> {
     if (!this.state.region || !this.state.results) return <Loading />;
     const { region } = this.state;
 
+    const SVG = RegionsSVG[region.navigation.current];
+
     return (
       <div>
         <div className="row p-2">
           <div className="col-12 text-center">
             <h2 className="text-danger">{region.name}</h2>
             {this.renderHosted(region.hosted)}
-            <img
-              className="mr-3 align-self-start img-fluid"
-              src={`/static/regions/${region.navigation.current}.svg`}
-              alt="Region"
-              onError={(event: any) => {
-                event.target.src = "/static/placeholder.jpg";
-              }}
-              width="125"
-            />
+            <div className="region-container mx-auto">
+              <SVG
+                className="mr-3 align-self-start img-fluid region"
+                preserveAspectRatio="xMidYMid"
+              />
+            </div>
           </div>
         </div>
         <Nav tabs className="mt-4">
