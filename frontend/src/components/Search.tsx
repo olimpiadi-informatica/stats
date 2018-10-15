@@ -10,6 +10,7 @@ import {
   loadSearchResults,
 } from "../remote/search";
 import Loading from "./Loading";
+import Error from "./Error";
 import RegionListItem from "./RegionListItem";
 import ContestantListItem from "./ContestantListItem";
 import ContestListItem from "./ContestListItem";
@@ -18,28 +19,35 @@ import TaskListItem from "./TaskListItem";
 type Props = RouteComponentProps<any>;
 type State = {
   results: SearchResult[] | null;
+  error: XMLHttpRequest | null;
 };
 
 export default class Search extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { results: null };
+    this.state = { results: null, error: null };
+  }
+
+  async doSearch(q: string) {
+    this.setState({ results: null });
+    try {
+      this.setState({
+        results: await loadSearchResults(q),
+        error: null,
+      });
+    } catch (error) {
+      this.setState({ results: null, error: error.request });
+    }
   }
 
   async componentDidMount() {
-    this.setState({ results: null });
-    this.setState({
-      results: await loadSearchResults(this.props.match.params.q),
-    });
+    this.doSearch(this.props.match.params.q);
   }
 
   async componentDidUpdate(prevProps: Props) {
     const q = this.props.match.params.q;
     if (q !== prevProps.match.params.q) {
-      this.setState({ results: null });
-      this.setState({
-        results: await loadSearchResults(this.props.match.params.q),
-      });
+      this.doSearch(this.props.match.params.q);
     }
   }
 
@@ -57,12 +65,14 @@ export default class Search extends Component<Props, State> {
       const { year, task } = (result as SearchResultTask).task;
       return <TaskListItem key={`${task.name}-${year}`} task={task} year={year} />;
     } else {
-      throw Error(`Invalid search result ${result}`);
+      throw `Invalid search result ${result}`;
     }
   }
 
   render() {
+    if (this.state.error) return <Error error={this.state.error} />;
     if (!this.state.results) return <Loading />;
+
     const { q } = this.props.match.params;
     const num_result = this.state.results.length;
     const results = this.state.results.map(res => this.renderResult(res));

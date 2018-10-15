@@ -3,25 +3,32 @@ import _ from "lodash";
 
 import { TaskYear, loadTasksList } from "../remote/task";
 import Loading from "./Loading";
+import Error from "./Error";
 import TaskListItem from "./TaskListItem";
 
 type Props = {};
 type State = {
   tasks: TaskYear[] | null;
+  error: XMLHttpRequest | null;
 };
 
 export default class Tasks extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { tasks: null };
+    this.state = { tasks: null, error: null };
   }
 
   async componentDidMount() {
     this.setState({ tasks: null });
-    this.setState({ tasks: await loadTasksList() });
+    try {
+      this.setState({ tasks: await loadTasksList(), error: null });
+    } catch (error) {
+      this.setState({ tasks: null, error: error.request });
+    }
   }
 
   render() {
+    if (this.state.error) return <Error error={this.state.error} />;
     if (!this.state.tasks) return <Loading />;
 
     const tasks = _.orderBy(this.state.tasks, ["year"], ["desc"]).map(({ year, tasks }) => {

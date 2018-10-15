@@ -4,24 +4,30 @@ import { RouteComponentProps } from "react-router-dom";
 
 import { TaskDetail, loadTaskDetail } from "../remote/task";
 import Loading from "./Loading";
+import Error from "./Error";
 import ContestantLink from "./ContestantLink";
 import { round } from "../utils/math";
 
 type Props = RouteComponentProps<any>;
 type State = {
   task: TaskDetail | null;
+  error: XMLHttpRequest | null;
 };
 
 export default class Task extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { task: null };
+    this.state = { task: null, error: null };
   }
 
   async componentDidMount() {
     const { year, name } = this.props.match.params;
     this.setState({ task: null });
-    this.setState({ task: await loadTaskDetail(year, name) });
+    try {
+      this.setState({ task: await loadTaskDetail(year, name), error: null });
+    } catch (error) {
+      this.setState({ task: null, error: error.request });
+    }
   }
 
   renderRanking(task: TaskDetail) {
@@ -55,7 +61,9 @@ export default class Task extends Component<Props, State> {
   }
 
   render() {
+    if (this.state.error) return <Error error={this.state.error} />;
     if (!this.state.task) return <Loading />;
+
     const { task } = this.state;
     const { year, name } = task.navigation.current;
 

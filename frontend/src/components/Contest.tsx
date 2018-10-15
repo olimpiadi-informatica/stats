@@ -5,6 +5,7 @@ import _ from "lodash";
 import { ContestDetail, ContestResults, loadContestDetail, loadContestResults } from "../remote/contest";
 import ContestantLink from "./ContestantLink";
 import Loading from "./Loading";
+import Error from "./Error";
 import TaskListItem from "./TaskListItem";
 import Medals from "./Medals";
 import ScoreBadge from "./ScoreBadge";
@@ -15,20 +16,26 @@ type Props = RouteComponentProps<any>;
 type State = {
   contest: ContestDetail | null;
   results: ContestResults | null;
+  error: XMLHttpRequest | null;
 };
 
 export default class Contest extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { contest: null, results: null };
+    this.state = { contest: null, results: null, error: null };
   }
 
   async componentDidMount() {
-    this.setState({ contest: null, results: null });
-    this.setState({
-      contest: await loadContestDetail(this.props.match.params.year),
-      results: await loadContestResults(this.props.match.params.year),
-    });
+    this.setState({ contest: null, results: null, error: null });
+    try {
+      this.setState({
+        contest: await loadContestDetail(this.props.match.params.year),
+        results: await loadContestResults(this.props.match.params.year),
+        error: null,
+      });
+    } catch (error) {
+      this.setState({ contest: null, results: null, error: error.request });
+    }
   }
 
   renderInfo(contest: ContestDetail) {
@@ -136,6 +143,7 @@ export default class Contest extends Component<Props, State> {
   }
 
   render() {
+    if (this.state.error) return <Error error={this.state.error} />;
     if (!this.state.contest || !this.state.results) return <Loading />;
 
     const { contest, results } = this.state;

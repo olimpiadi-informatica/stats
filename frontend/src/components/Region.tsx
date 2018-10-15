@@ -5,6 +5,7 @@ import _ from "lodash";
 
 import { RegionDetail, RegionResults, RegionResultsYear, loadRegionDetail, loadRegionResults } from "../remote/region";
 import Loading from "./Loading";
+import Error from "./Error";
 import Medals from "./Medals";
 import MedalIcon from "./MedalIcon";
 import ContestantLink from "./ContestantLink";
@@ -17,21 +18,27 @@ type State = {
   region: RegionDetail | null;
   results: RegionResults | null;
   activeTab: "detail" | "results";
+  error: XMLHttpRequest | null;
 };
 
 export default class Region extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { region: null, results: null, activeTab: "detail" };
+    this.state = { region: null, results: null, activeTab: "detail", error: null };
   }
 
   async componentDidMount() {
-    this.setState({ ...this.state, region: null, results: null });
-    this.setState({
-      ...this.state,
-      region: await loadRegionDetail(this.props.match.params.id),
-      results: await loadRegionResults(this.props.match.params.id),
-    });
+    this.setState({ ...this.state, region: null, results: null, error: null });
+    try {
+      this.setState({
+        ...this.state,
+        region: await loadRegionDetail(this.props.match.params.id),
+        results: await loadRegionResults(this.props.match.params.id),
+        error: null,
+      });
+    } catch (error) {
+      this.setState({ ...this.state, region: null, results: null, error: error.request });
+    }
   }
 
   changeTab(newTab: "detail" | "results") {
@@ -170,9 +177,10 @@ export default class Region extends Component<Props, State> {
   }
 
   render() {
+    if (this.state.error) return <Error error={this.state.error} />;
     if (!this.state.region || !this.state.results) return <Loading />;
-    const { region } = this.state;
 
+    const { region } = this.state;
     const SVG = RegionsSVG[region.navigation.current];
 
     return (

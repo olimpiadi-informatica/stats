@@ -3,6 +3,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import _ from "lodash";
 
 import Loading from "./Loading";
+import Error from "./Error";
 import { ContestantDetail, loadContestant } from "../remote/user";
 import Medals from "./Medals";
 import MedalIcon from "./MedalIcon";
@@ -13,19 +14,25 @@ import { round } from "../utils/math";
 type Props = RouteComponentProps<any>;
 type State = {
   contestant: ContestantDetail | null;
+  error: XMLHttpRequest | null;
 };
 
 export default class Contestant extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { contestant: null };
+    this.state = { contestant: null, error: null };
   }
 
   async componentDidMount() {
-    this.setState({ contestant: null });
-    this.setState({
-      contestant: await loadContestant(this.props.match.params.id),
-    });
+    this.setState({ contestant: null, error: null });
+    try {
+      this.setState({
+        contestant: await loadContestant(this.props.match.params.id),
+        error: null,
+      });
+    } catch (error) {
+      this.setState({ contestant: null, error: error.request });
+    }
   }
 
   renderParticipations(contestant: ContestantDetail) {
@@ -86,6 +93,7 @@ export default class Contestant extends Component<Props, State> {
   }
 
   render() {
+    if (this.state.error) return <Error error={this.state.error} />;
     if (!this.state.contestant) return <Loading />;
 
     const { contestant } = this.state;

@@ -7,10 +7,12 @@ import RegionTile from "./home/RegionTile";
 import UserTile from "./home/UserTile";
 import TaskTile from "./home/TaskTile";
 import ContestTile from "./home/ContestTile";
+import Error from "./Error";
 
 type Props = {};
 type State = {
   stats: Stats | null;
+  error: XMLHttpRequest | null;
 };
 
 const NUM_CARDS = {
@@ -23,12 +25,16 @@ const NUM_CARDS = {
 export default class Home extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { stats: null };
+    this.state = { stats: null, error: null };
   }
 
   async componentDidMount() {
-    this.setState({ stats: null });
-    this.setState({ stats: await loadHome() });
+    this.setState({ stats: null, error: null });
+    try {
+      this.setState({ stats: await loadHome(), error: null });
+    } catch (error) {
+      this.setState({ stats: null, error: error.request });
+    }
   }
 
   renderRegion(stats: StatsRegion[]) {
@@ -48,6 +54,7 @@ export default class Home extends Component<Props, State> {
   }
 
   render() {
+    if (this.state.error) return <Error error={this.state.error} />;
     if (!this.state.stats) return <Loading />;
     return (
       <div className="HomeContainer p-2">

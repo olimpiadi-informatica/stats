@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import _ from "lodash";
 
 import Loading from "./Loading";
+import Error from "./Error";
 import { ContestantItem, loadContestantsList } from "../remote/user";
 import ContestantListItem from "./ContestantListItem";
 
@@ -9,24 +10,30 @@ type Props = {};
 type State = {
   users: ContestantItem[] | null;
   cutoff: number;
+  error: XMLHttpRequest | null;
 };
 
 export default class Contestants extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { users: null, cutoff: 50 };
+    this.state = { users: null, cutoff: 50, error: null };
   }
 
   async componentDidMount() {
-    this.setState({ users: null, cutoff: 50 });
-    this.setState({
-      ...this.state,
-      users: _.orderBy(
-        await loadContestantsList(),
-        ["num_medals.gold", "num_medals.silver", "num_medals.bronze"],
-        ["desc", "desc", "desc"]
-      ),
-    });
+    this.setState({ users: null, cutoff: 50, error: null });
+    try {
+      this.setState({
+        ...this.state,
+        users: _.orderBy(
+          await loadContestantsList(),
+          ["num_medals.gold", "num_medals.silver", "num_medals.bronze"],
+          ["desc", "desc", "desc"]
+        ),
+        error: null,
+      });
+    } catch (error) {
+      this.setState({ ...this.state, users: null, error: error.request });
+    }
   }
 
   moreContestants() {
@@ -34,7 +41,9 @@ export default class Contestants extends Component<Props, State> {
   }
 
   render() {
+    if (this.state.error) return <Error error={this.state.error} />;
     if (!this.state.users) return <Loading />;
+
     const show_more_contestants =
       this.state.cutoff < this.state.users.length ? (
         <button onClick={this.moreContestants.bind(this)} className="btn btn-outline-success mt-2 ">
