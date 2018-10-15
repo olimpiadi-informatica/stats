@@ -49,12 +49,9 @@
   "scripts": {
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
-    "prettier": "prettier --single-quote --print-width=120 --trailing-comma es5 --no-semi",
-    "format": "npm run prettier --write 'src/**/*.{js,jsx,json,css}'",
-    "precommit": "pretty-quick --staged",
-    "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
-    "lint": "eslint **/*.js --quiet",
-    "lint-fix": "eslint --fix"
+    "prettier": "prettier",
+    "format": "npm run prettier --write 'src/**/*.{js,jsx,tsx,ts,json,css}'",
+    "precommit": "pretty-quick --staged"
   },
   "lint-staged": {
     "gitDir": "../",

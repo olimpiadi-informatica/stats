@@ -25,25 +25,12 @@ class SearchResultRegion {
   region!: RegionItem;
 }
 
-type SearchResult =
-  | SearchResultUser
-  | SearchResultTask
-  | SearchResultContest
-  | SearchResultRegion;
+type SearchResult = SearchResultUser | SearchResultTask | SearchResultContest | SearchResultRegion;
 
 async function loadSearchResults(q: string): Promise<SearchResult[]> {
-  return axios
-    .get(`${ROOT_URL}/search?q=${encodeURIComponent(q)}`)
-    .then(res => {
-      return res.data.results;
-    });
+  return axios.get(`${ROOT_URL}/search?q=${encodeURIComponent(q)}`).then(res => {
+    return res.data.results;
+  });
 }
 
-export {
-  SearchResult,
-  SearchResultTask,
-  SearchResultUser,
-  SearchResultContest,
-  SearchResultRegion,
-  loadSearchResults
-};
+export { SearchResult, SearchResultTask, SearchResultUser, SearchResultContest, SearchResultRegion, loadSearchResults };

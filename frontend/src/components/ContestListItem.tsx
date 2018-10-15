@@ -21,6 +21,12 @@ export default class ContestListItem extends Component<Props> {
     const max_score = contest.max_score || "N/a";
     const avg_score = contest.avg_score ? round(contest.avg_score, 2) : "N/a";
 
+    const medals = {
+      gold: contest.medals.gold.number,
+      silver: contest.medals.silver.number,
+      bronze: contest.medals.bronze.number,
+    };
+
     return (
       <li className="list-group-item ">
         <div className="row ">
@@ -60,7 +66,7 @@ export default class ContestListItem extends Component<Props> {
             </div>
           </div>
           <div className="col-12 col-md-5 align-items-center text-center">
-            <Medals medals={contest.medals} cutoffs={false} />
+            <Medals medals={medals} />
           </div>
         </div>
       </li>

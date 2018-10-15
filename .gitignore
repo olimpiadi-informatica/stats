@@ -27,3 +27,5 @@ backend/target
 
 *.sqlite3*
 *.xlsx
+
+.vscode

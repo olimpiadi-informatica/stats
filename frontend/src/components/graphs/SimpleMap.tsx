@@ -1,16 +1,9 @@
 import React, { Component } from "react";
-import {
-  ComposableMap,
-  ZoomableGroup,
-  Geographies,
-  Geography,
-  Markers,
-  Marker
-} from "react-simple-maps";
+import { ComposableMap, ZoomableGroup, Geographies, Geography, Markers, Marker } from "react-simple-maps";
 
 const MAP_STYLE = {
   fill: "#ECEFF1",
-  stroke: "#607D8B"
+  stroke: "#607D8B",
 };
 
 type Props = {
@@ -29,26 +22,23 @@ export default class SimpleMap extends Component<Props> {
     width: 350,
     height: 350,
     center: [41, 14],
-    markers: []
+    markers: [],
   };
 
   render() {
     return (
       <ComposableMap
         projectionConfig={{
-          scale: this.props.scale
+          scale: this.props.scale,
         }}
         width={this.props.width}
         height={this.props.height}
         style={{
           width: "100%",
-          height: "auto"
+          height: "auto",
         }}
       >
-        <ZoomableGroup
-          center={[this.props.center[1], this.props.center[0]]}
-          disablePanning
-        >
+        <ZoomableGroup center={[this.props.center[1], this.props.center[0]]} disablePanning>
           <Geographies geography={this.props.map}>
             {(geographies: any, projection: any) =>
               geographies.map(
@@ -61,7 +51,7 @@ export default class SimpleMap extends Component<Props> {
                       style={{
                         default: MAP_STYLE,
                         hover: MAP_STYLE,
-                        pressed: MAP_STYLE
+                        pressed: MAP_STYLE,
                       }}
                     />
                   )
@@ -73,12 +63,12 @@ export default class SimpleMap extends Component<Props> {
               <Marker
                 key={`${marker[1]}-${marker[0]}`}
                 marker={{
-                  coordinates: [marker[1], marker[0]]
+                  coordinates: [marker[1], marker[0]],
                 }}
                 style={{
                   default: { stroke: "#FF5722" },
                   hover: { stroke: "#FF5722" },
-                  pressed: { stroke: "#FF5722" }
+                  pressed: { stroke: "#FF5722" },
                 }}
               >
                 <g transform="translate(-12, -24)">

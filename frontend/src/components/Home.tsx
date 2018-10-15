@@ -1,14 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 
-import {
-  Stats,
-  StatsRegion,
-  StatsUser,
-  StatsTask,
-  StatsContest,
-  loadHome
-} from "../remote/home";
+import { Stats, StatsRegion, StatsUser, StatsTask, StatsContest, loadHome } from "../remote/home";
 import Loading from "./Loading";
 import RegionTile from "./home/RegionTile";
 import UserTile from "./home/UserTile";
@@ -24,7 +17,7 @@ const NUM_CARDS = {
   region: 2,
   user: 2,
   task: 2,
-  contest: 2
+  contest: 2,
 };
 
 export default class Home extends Component<Props, State> {
@@ -39,27 +32,19 @@ export default class Home extends Component<Props, State> {
   }
 
   renderRegion(stats: StatsRegion[]) {
-    return _.sampleSize(stats, NUM_CARDS.region).map((stat, i) => (
-      <RegionTile key={`region-${i}`} stat={stat} />
-    ));
+    return _.sampleSize(stats, NUM_CARDS.region).map((stat, i) => <RegionTile key={`region-${i}`} stat={stat} />);
   }
 
   renderUser(stats: StatsUser[]) {
-    return _.sampleSize(stats, NUM_CARDS.user).map((stat, i) => (
-      <UserTile key={`user-${i}`} stat={stat} />
-    ));
+    return _.sampleSize(stats, NUM_CARDS.user).map((stat, i) => <UserTile key={`user-${i}`} stat={stat} />);
   }
 
   renderTask(stats: StatsTask[]) {
-    return _.sampleSize(stats, NUM_CARDS.task).map((stat, i) => (
-      <TaskTile key={`task-${i}`} stat={stat} />
-    ));
+    return _.sampleSize(stats, NUM_CARDS.task).map((stat, i) => <TaskTile key={`task-${i}`} stat={stat} />);
   }
 
   renderContest(stats: StatsContest[]) {
-    return _.sampleSize(stats, NUM_CARDS.contest).map((stat, i) => (
-      <ContestTile key={`contest-${i}`} stat={stat} />
-    ));
+    return _.sampleSize(stats, NUM_CARDS.contest).map((stat, i) => <ContestTile key={`contest-${i}`} stat={stat} />);
   }
 
   render() {

@@ -9,17 +9,10 @@ export default class About extends Component {
             <h2 className="text-center text-danger">About Us</h2>
           </div>
           <div className="col-12 mt-2">
-            <img
-              className="float-right p-3 img-fluid"
-              width="200"
-              src="/static/oiistats.png"
-              alt="Logo"
-            />
-            OII stats is a platform that was created to provide essential but
-            reliable statistics on the progress of the national competitions of
-            the Italian IT Olympics. The data are collected during the entire
-            duration of the various tenders and contain all the information
-            available to the staff of the Olympics tutors.
+            <img className="float-right p-3 img-fluid" width="200" src="/static/oiistats.png" alt="Logo" />
+            OII stats is a platform that was created to provide essential but reliable statistics on the progress of the
+            national competitions of the Italian IT Olympics. The data are collected during the entire duration of the
+            various tenders and contain all the information available to the staff of the Olympics tutors.
           </div>
         </div>
         <div className="row m-2">
@@ -27,32 +20,16 @@ export default class About extends Component {
             <h3 className="text-danger">Gallery</h3>
           </div>
           <div className="col-12 col-md-4 p-2">
-            <img
-              src="/static/gallery/gallery4.jpg"
-              className="img-fluid"
-              alt="Card cap"
-            />
+            <img src="/static/gallery/gallery4.jpg" className="img-fluid" alt="Card cap" />
           </div>
           <div className="col-12 col-md-4 p-2">
-            <img
-              src="/static/gallery/gallery2.png"
-              className="img-fluid"
-              alt="Card cap"
-            />
+            <img src="/static/gallery/gallery2.png" className="img-fluid" alt="Card cap" />
           </div>
           <div className="col-12 col-md-4 p-2">
-            <img
-              src="/static/gallery/gallery3.png"
-              className="img-fluid"
-              alt="Card cap"
-            />
+            <img src="/static/gallery/gallery3.png" className="img-fluid" alt="Card cap" />
           </div>
           <div className="col-12 col-md-4 p-2">
-            <img
-              src="/static/gallery/gallery1.png"
-              className="img-fluid"
-              alt="Card cap"
-            />
+            <img src="/static/gallery/gallery1.png" className="img-fluid" alt="Card cap" />
           </div>
         </div>
       </div>

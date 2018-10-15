@@ -2,12 +2,7 @@ import React, { Component } from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
 import _ from "lodash";
 
-import {
-  ContestDetail,
-  ContestResults,
-  loadContestDetail,
-  loadContestResults
-} from "../remote/contest";
+import { ContestDetail, ContestResults, loadContestDetail, loadContestResults } from "../remote/contest";
 import ContestantLink from "./ContestantLink";
 import Loading from "./Loading";
 import TaskListItem from "./TaskListItem";
@@ -32,7 +27,7 @@ export default class Contest extends Component<Props, State> {
     this.setState({ contest: null, results: null });
     this.setState({
       contest: await loadContestDetail(this.props.match.params.year),
-      results: await loadContestResults(this.props.match.params.year)
+      results: await loadContestResults(this.props.match.params.year),
     });
   }
 
@@ -94,12 +89,8 @@ export default class Contest extends Component<Props, State> {
       const scores = _.zip(tasks, res.scores).map(([task, score]) => {
         return (
           <td key={res.contestant.id + task!.name}>
-            <Link
-              to={`/task/${contest.navigation.current}/${task!.name}`}
-              className=""
-            >
-              <ScoreBadge score={score} max_score={task!.max_score_possible} />{" "}
-              {task!.name}
+            <Link to={`/task/${contest.navigation.current}/${task!.name}`} className="">
+              <ScoreBadge score={score} max_score={task!.max_score_possible} /> {task!.name}
             </Link>
           </td>
         );
@@ -148,6 +139,17 @@ export default class Contest extends Component<Props, State> {
     if (!this.state.contest || !this.state.results) return <Loading />;
 
     const { contest, results } = this.state;
+    const medals = {
+      gold: contest.medals.gold.number,
+      silver: contest.medals.silver.number,
+      bronze: contest.medals.bronze.number,
+    };
+    const cutoffs = {
+      gold: contest.medals.gold.cutoff,
+      silver: contest.medals.silver.cutoff,
+      bronze: contest.medals.bronze.cutoff,
+    };
+
     return (
       <div>
         <div className="row p-2">
@@ -159,7 +161,7 @@ export default class Contest extends Component<Props, State> {
         </div>
         <div className="row align-items-center">
           <div className="col-12 col-md-7">{this.renderInfo(contest)}</div>
-          <Medals medals={contest.medals} cutoffs={true} />
+          <Medals medals={medals} cutoffs={cutoffs} showCutoffs={true} />
           <div className="col-12">{this.renderTasks(contest)}</div>
           <div className="col-12">{this.renderResults(contest, results)}</div>
         </div>

@@ -39,7 +39,7 @@ const RegionsSVG: any = {
   TRE: TRE,
   UMB: UMB,
   VAL: VAL,
-  VEN: VEN
+  VEN: VEN,
 };
 
 export default RegionsSVG;

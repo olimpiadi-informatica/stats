@@ -25,7 +25,7 @@ export default class Contestants extends Component<Props, State> {
         await loadContestantsList(),
         ["num_medals.gold", "num_medals.silver", "num_medals.bronze"],
         ["desc", "desc", "desc"]
-      )
+      ),
     });
   }
 
@@ -37,10 +37,7 @@ export default class Contestants extends Component<Props, State> {
     if (!this.state.users) return <Loading />;
     const show_more_contestants =
       this.state.cutoff < this.state.users.length ? (
-        <button
-          onClick={this.moreContestants.bind(this)}
-          className="btn btn-outline-success mt-2 "
-        >
+        <button onClick={this.moreContestants.bind(this)} className="btn btn-outline-success mt-2 ">
           More contestants
         </button>
       ) : (
@@ -48,12 +45,7 @@ export default class Contestants extends Component<Props, State> {
       );
     const contestant_list = this.state.users
       .slice(0, this.state.cutoff)
-      .map(contestant => (
-        <ContestantListItem
-          key={contestant.contestant.id}
-          contestant={contestant}
-        />
-      ));
+      .map(contestant => <ContestantListItem key={contestant.contestant.id} contestant={contestant} />);
     return (
       <div className="row p-2">
         <div className="col-12">

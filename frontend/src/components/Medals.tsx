@@ -1,32 +1,34 @@
 import React, { Component } from "react";
 
-import { ContestMedalInfo } from "../remote/contest";
 import MedalIcon from "./MedalIcon";
 
 type Props = {
-  medals: ContestMedalInfo;
-  cutoffs: boolean;
+  medals: { gold: number | null; silver: number | null; bronze: number | null };
+  cutoffs: { gold: number | null; silver: number | null; bronze: number | null };
+  showCutoffs: boolean;
 };
 
 export default class Medals extends Component<Props> {
+  static defaultProps = { showCutoffs: false, cutoffs: { gold: null, silver: null, bronze: null } };
+
   render() {
-    const { cutoffs } = this.props;
+    const { medals, cutoffs, showCutoffs } = this.props;
     return (
       <div>
         <div className="text-center d-inline-block p-2">
           <MedalIcon color="gold" />
-          <div>{this.props.medals.gold.number}</div>
-          {cutoffs ? this.props.medals.gold.cutoff : ""}
+          <div>{medals.gold || 0}</div>
+          {showCutoffs ? cutoffs.gold : ""}
         </div>
         <div className="text-center d-inline-block p-2">
           <MedalIcon color="silver" />
-          <div>{this.props.medals.silver.number}</div>
-          {cutoffs ? this.props.medals.silver.cutoff : ""}
+          <div>{medals.silver || 0}</div>
+          {showCutoffs ? cutoffs.silver : ""}
         </div>
         <div className="text-center d-inline-block p-2">
           <MedalIcon color="bronze" />
-          <div>{this.props.medals.bronze.number}</div>
-          {cutoffs ? this.props.medals.bronze.cutoff : ""}
+          <div>{medals.bronze || 0}</div>
+          {showCutoffs ? cutoffs.bronze : ""}
         </div>
       </div>
     );

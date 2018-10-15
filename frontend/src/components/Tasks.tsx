@@ -24,13 +24,11 @@ export default class Tasks extends Component<Props, State> {
   render() {
     if (!this.state.tasks) return <Loading />;
 
-    const tasks = _.orderBy(this.state.tasks, ["year"], ["desc"]).map(
-      ({ year, tasks }) => {
-        return _.orderBy(tasks, ["index"], ["asc"]).map(task => (
-          <TaskListItem key={`${task.name}-${year}`} task={task} year={year} />
-        ));
-      }
-    );
+    const tasks = _.orderBy(this.state.tasks, ["year"], ["desc"]).map(({ year, tasks }) => {
+      return _.orderBy(tasks, ["index"], ["asc"]).map(task => (
+        <TaskListItem key={`${task.name}-${year}`} task={task} year={year} />
+      ));
+    });
 
     return (
       <div className="row p-2">

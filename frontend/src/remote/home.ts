@@ -75,11 +75,7 @@ export class IOIstWithWorstRank {
   };
 }
 
-export type StatsUser =
-  | BestStudent
-  | WinAtFirstParticipation
-  | StudentWithMostParticipations
-  | IOIstWithWorstRank;
+export type StatsUser = BestStudent | WinAtFirstParticipation | StudentWithMostParticipations | IOIstWithWorstRank;
 
 export class TaskWithLowestAvgScore {
   task_with_lowest_avg_score!: {

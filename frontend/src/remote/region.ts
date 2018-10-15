@@ -81,5 +81,5 @@ export {
   RegionResultsYear,
   loadRegionsList,
   loadRegionDetail,
-  loadRegionResults
+  loadRegionResults,
 };

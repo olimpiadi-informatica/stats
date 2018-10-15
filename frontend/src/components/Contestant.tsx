@@ -24,19 +24,13 @@ export default class Contestant extends Component<Props, State> {
   async componentDidMount() {
     this.setState({ contestant: null });
     this.setState({
-      contestant: await loadContestant(this.props.match.params.id)
+      contestant: await loadContestant(this.props.match.params.id),
     });
   }
 
   renderParticipations(contestant: ContestantDetail) {
-    const num_cols = Math.max(
-      ...contestant.participations.map(part => part.scores.length)
-    );
-    const participations_list = _.orderBy(
-      contestant.participations,
-      ["year"],
-      ["desc"]
-    ).map(part => {
+    const num_cols = Math.max(...contestant.participations.map(part => part.scores.length));
+    const participations_list = _.orderBy(contestant.participations, ["year"], ["desc"]).map(part => {
       const { scores } = part;
       let problems = [];
       let final_score = null;
@@ -49,23 +43,17 @@ export default class Contestant extends Component<Props, State> {
         problems.push(
           <td key={`/task/${part.year}/${score.task}`}>
             <Link to={`/task/${part.year}/${score.task}`}>
-              <ScoreBadge
-                score={score.score}
-                max_score={score.max_score_possible}
-              />{" "}
-              {score.task}
+              <ScoreBadge score={score.score} max_score={score.max_score_possible} /> {score.task}
             </Link>
           </td>
         );
       }
-      while (problems.length < num_cols)
-        problems.push(<td key={part.year + problems.length} />);
+      while (problems.length < num_cols) problems.push(<td key={part.year + problems.length} />);
       final_score = final_score === null ? "N/a" : round(final_score, 2);
       return (
         <tr key={part.year}>
           <th>
-            <Link to={`/contest/${part.year}`}>{part.year}</Link>{" "}
-            <IOIBadge ioi={part.ioi} />
+            <Link to={`/contest/${part.year}`}>{part.year}</Link> <IOIBadge ioi={part.ioi} />
           </th>
           <td>{part.rank || "N/a"}</td>
           <td>
@@ -106,18 +94,11 @@ export default class Contestant extends Component<Props, State> {
     const best_rank =
       contestant.participations
         .map(part => part.rank)
-        .reduce(
-          (prev: number | null, curr) =>
-            !prev ? curr : curr ? (prev < curr ? prev : curr) : prev,
-          null
-        ) || "N/a";
-    let raw_medals = _.countBy(contestant.participations, "medal");
-    const medals: any = {};
+        .reduce((prev: number | null, curr) => (!prev ? curr : curr ? (prev < curr ? prev : curr) : prev), null) ||
+      "N/a";
+    let raw_medals: any = _.countBy(contestant.participations, "medal");
     let total_medals = 0;
     for (const color of ["gold", "silver", "bronze"]) {
-      medals[color] = {
-        number: raw_medals[color] || 0
-      };
       total_medals += raw_medals[color] || 0;
     }
 
@@ -149,19 +130,15 @@ export default class Contestant extends Component<Props, State> {
                   <dt className="col-sm-6">Total Medals</dt>
                   <dd className="col-sm-6">{total_medals}</dd>
                   <dt className="col-sm-6">Participations</dt>
-                  <dd className="col-sm-6">
-                    {contestant.participations.length}
-                  </dd>
+                  <dd className="col-sm-6">{contestant.participations.length}</dd>
                 </dl>
               </div>
             </div>
           </div>
           <div className="col-12 col-md-5 text-center">
-            <Medals medals={medals} cutoffs={false} />
+            <Medals medals={raw_medals} />
           </div>
-          <div className="col-12 p-2">
-            {this.renderParticipations(contestant)}
-          </div>
+          <div className="col-12 p-2">{this.renderParticipations(contestant)}</div>
         </div>
       </div>
     );

@@ -23,9 +23,7 @@ export default class Regions extends Component<Props, State> {
   render() {
     if (!this.state.regions) return <Loading />;
 
-    const regions = this.state.regions.map(region => (
-      <RegionListItem region={region} key={region.id} />
-    ));
+    const regions = this.state.regions.map(region => <RegionListItem region={region} key={region.id} />);
 
     return (
       <div className="row p-2">

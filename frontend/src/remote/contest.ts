@@ -115,5 +115,5 @@ export {
   ContestLocation,
   loadContestList,
   loadContestDetail,
-  loadContestResults
+  loadContestResults,
 };

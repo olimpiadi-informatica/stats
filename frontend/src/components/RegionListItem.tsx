@@ -18,12 +18,6 @@ export default class RegionListItem extends Component<Props> {
       ? round(region.avg_contestants_per_year, 2)
       : "N/a";
 
-    const medals = {
-      gold: { number: region.medals.gold, cutoff: 0 },
-      silver: { number: region.medals.silver, cutoff: 0 },
-      bronze: { number: region.medals.bronze, cutoff: 0 }
-    };
-
     const SVG = RegionsSVG[region.id];
 
     return (
@@ -40,10 +34,7 @@ export default class RegionListItem extends Component<Props> {
             <div className="media">
               <Link to={`/region/${region.id}`}>
                 <div className="region-container">
-                  <SVG
-                    className="mr-3 align-self-start img-fluid region"
-                    preserveAspectRatio="xMidYMid"
-                  />
+                  <SVG className="mr-3 align-self-start img-fluid region" preserveAspectRatio="xMidYMid" />
                 </div>
               </Link>
               <div className="media-body">
@@ -51,15 +42,13 @@ export default class RegionListItem extends Component<Props> {
                   <dt className="col-sm-6">Avg Contestants per Year</dt>
                   <dd className="col-sm-6">{avg_contestants_per_year}</dd>
                   <dt className="col-sm-6">Number of Contestants</dt>
-                  <dd className="col-sm-6">
-                    {region.num_contestants || "N/a"}
-                  </dd>
+                  <dd className="col-sm-6">{region.num_contestants || "N/a"}</dd>
                 </dl>
               </div>
             </div>
           </div>
           <div className="col-12 col-md-5 align-items-center text-center">
-            <Medals medals={medals} cutoffs={false} />
+            <Medals medals={region.medals} />
           </div>
         </div>
       </li>

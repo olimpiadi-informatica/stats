@@ -3,13 +3,7 @@ import { RouteComponentProps, Link } from "react-router-dom";
 import { TabContent, TabPane, Nav, NavItem, NavLink } from "reactstrap";
 import _ from "lodash";
 
-import {
-  RegionDetail,
-  RegionResults,
-  RegionResultsYear,
-  loadRegionDetail,
-  loadRegionResults
-} from "../remote/region";
+import { RegionDetail, RegionResults, RegionResultsYear, loadRegionDetail, loadRegionResults } from "../remote/region";
 import Loading from "./Loading";
 import Medals from "./Medals";
 import MedalIcon from "./MedalIcon";
@@ -36,31 +30,22 @@ export default class Region extends Component<Props, State> {
     this.setState({
       ...this.state,
       region: await loadRegionDetail(this.props.match.params.id),
-      results: await loadRegionResults(this.props.match.params.id)
+      results: await loadRegionResults(this.props.match.params.id),
     });
   }
 
   changeTab(newTab: "detail" | "results") {
-    if (this.state.activeTab !== newTab)
-      this.setState({ ...this.state, activeTab: newTab });
+    if (this.state.activeTab !== newTab) this.setState({ ...this.state, activeTab: newTab });
   }
 
   renderHosted(years: number[]) {
     if (!years.length) return <span />;
-    const hostedin =
-      years.length === 1
-        ? years[0]
-        : years.slice(0, -1).join(", ") + " and " + years[years.length - 1];
+    const hostedin = years.length === 1 ? years[0] : years.slice(0, -1).join(", ") + " and " + years[years.length - 1];
     return <h5 className="text-center"> Host in {hostedin}</h5>;
   }
 
   renderDetail(region: RegionDetail) {
     const years = _.orderBy(region.years, ["year"], ["desc"]).map(year => {
-      const medals = {
-        gold: { number: year.num_medals.gold, cutoff: null },
-        silver: { number: year.num_medals.silver, cutoff: null },
-        bronze: { number: year.num_medals.bronze, cutoff: null }
-      };
       return (
         <li key={year.year} className="list-group-item">
           <div className="row">
@@ -95,7 +80,7 @@ export default class Region extends Component<Props, State> {
               </div>
             </div>
             <div className="col-12 col-md-5 align-items-center text-center">
-              <Medals medals={medals} cutoffs={false} />
+              <Medals medals={year.num_medals} />
             </div>
           </div>
         </li>
@@ -124,17 +109,12 @@ export default class Region extends Component<Props, State> {
         problems.push(
           <td key={`/task/${year}/${score.name}`}>
             <Link to={`/task/${year}/${score.name}`} className="">
-              <ScoreBadge
-                score={score.score}
-                max_score={score.max_score_possible}
-              />{" "}
-              {score.name}
+              <ScoreBadge score={score.score} max_score={score.max_score_possible} /> {score.name}
             </Link>
           </td>
         );
       }
-      while (problems.length < num_problems)
-        problems.push(<td key={problems.length} />);
+      while (problems.length < num_problems) problems.push(<td key={problems.length} />);
 
       final_score = final_score === null ? "N/a" : round(final_score, 4);
       return (
@@ -143,10 +123,7 @@ export default class Region extends Component<Props, State> {
             <Link to={`/contest/${year}`}>{year}</Link>
           </th>
           <td>
-            <ContestantLink
-              contestant={contestant.contestant}
-              ioi={contestant.ioi}
-            />
+            <ContestantLink contestant={contestant.contestant} ioi={contestant.ioi} />
           </td>
           <td className="text-center">
             <MedalIcon color={contestant.medal} />
@@ -161,16 +138,12 @@ export default class Region extends Component<Props, State> {
 
   renderResults(results: RegionResults) {
     const num_problems = Math.max(
-      ...results.results.map(res =>
-        Math.max(...res.contestants.map(cont => cont.task_scores.length))
-      )
+      ...results.results.map(res => Math.max(...res.contestants.map(cont => cont.task_scores.length)))
     );
 
-    const years = _.orderBy(
-      results.results,
-      ["year", "rank"],
-      ["desc", "asc"]
-    ).map(year => this.renderResultsOfYear(year, num_problems));
+    const years = _.orderBy(results.results, ["year", "rank"], ["desc", "asc"]).map(year =>
+      this.renderResultsOfYear(year, num_problems)
+    );
     return (
       <div className="row mt-4">
         <div className="col-12">
@@ -209,10 +182,7 @@ export default class Region extends Component<Props, State> {
             <h2 className="text-danger">{region.name}</h2>
             {this.renderHosted(region.hosted)}
             <div className="region-container mx-auto">
-              <SVG
-                className="mr-3 align-self-start img-fluid region"
-                preserveAspectRatio="xMidYMid"
-              />
+              <SVG className="mr-3 align-self-start img-fluid region" preserveAspectRatio="xMidYMid" />
             </div>
           </div>
         </div>
@@ -242,9 +212,7 @@ export default class Region extends Component<Props, State> {
         </Nav>
         <TabContent activeTab={this.state.activeTab} className="p-2">
           <TabPane tabId="detail">{this.renderDetail(region)}</TabPane>
-          <TabPane tabId="results">
-            {this.renderResults(this.state.results)}
-          </TabPane>
+          <TabPane tabId="results">{this.renderResults(this.state.results)}</TabPane>
         </TabContent>
       </div>
     );

@@ -29,7 +29,7 @@ class Header extends Component<Props, State> {
 
   toggle() {
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   }
 
@@ -81,10 +81,7 @@ class Header extends Component<Props, State> {
                 </Link>
               </NavItem>
               <NavItem style={{ marginLeft: "25px" }}>
-                <form
-                  className="form-inline my-2 my-lg-0 float-right"
-                  onSubmit={this.handleSubmit}
-                >
+                <form className="form-inline my-2 my-lg-0 float-right" onSubmit={this.handleSubmit}>
                   <input
                     className="form-control mr-sm-2"
                     value={this.state.value}
@@ -94,10 +91,7 @@ class Header extends Component<Props, State> {
                     aria-label="Search"
                     required
                   />
-                  <button
-                    className="btn btn-outline-success my-2 my-sm-0"
-                    type="submit"
-                  >
+                  <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
                     Search
                   </button>
                 </form>

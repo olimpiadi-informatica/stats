@@ -7,7 +7,7 @@ import {
   BestStudent,
   WinAtFirstParticipation,
   StudentWithMostParticipations,
-  IOIstWithWorstRank
+  IOIstWithWorstRank,
 } from "../../remote/home";
 import Medals from "../Medals";
 
@@ -41,18 +41,13 @@ export default class UserTile extends Component<Props> {
 
   renderBestStudent(stat: BestStudent) {
     const { contestant, num_medals } = stat.best_student;
-    const medals = {
-      gold: { number: num_medals.gold, cutoff: null },
-      silver: { number: num_medals.silver, cutoff: null },
-      bronze: { number: num_medals.bronze, cutoff: null }
-    };
     return (
       <div>
         {this.renderContestantImg(contestant)}
         The student that won the most is {this.renderContestant(contestant)}
         <div className="row text-center">
           <div className="col-12 align-items-center">
-            <Medals medals={medals} cutoffs={false} />
+            <Medals medals={num_medals} />
           </div>
         </div>
       </div>
@@ -64,22 +59,18 @@ export default class UserTile extends Component<Props> {
     return (
       <div>
         {this.renderContestantImg(contestant)}
-        {this.renderContestant(contestant)} won the {year} edition, at first
-        try!
+        {this.renderContestant(contestant)} won the {year} edition, at first try!
       </div>
     );
   }
 
   renderStudentWithMostParticipations(stat: StudentWithMostParticipations) {
-    const {
-      contestant,
-      num_participations
-    } = stat.student_with_most_participations;
+    const { contestant, num_participations } = stat.student_with_most_participations;
     return (
       <div>
         {this.renderContestantImg(contestant)}
-        {this.renderContestant(contestant)} is the student that did the highest
-        number of national competitions, {num_participations}!
+        {this.renderContestant(contestant)} is the student that did the highest number of national competitions,{" "}
+        {num_participations}!
       </div>
     );
   }
@@ -89,8 +80,8 @@ export default class UserTile extends Component<Props> {
     return (
       <div>
         {this.renderContestantImg(contestant)}
-        In {contest_year}, {this.renderContestant(contestant)} went to IOI even
-        if he arrived at {rank} place at the national competition.
+        In {contest_year}, {this.renderContestant(contestant)} went to IOI even if he arrived at {rank} place at the
+        national competition.
       </div>
     );
   }
@@ -99,18 +90,12 @@ export default class UserTile extends Component<Props> {
     const { stat } = this.props;
     const kind = Object.keys(stat)[0];
     let body = null;
-    if (kind == "best_student")
-      body = this.renderBestStudent(stat as BestStudent);
+    if (kind == "best_student") body = this.renderBestStudent(stat as BestStudent);
     if (kind == "win_at_first_participation")
-      body = this.renderWinAtFirstParticipation(
-        stat as WinAtFirstParticipation
-      );
+      body = this.renderWinAtFirstParticipation(stat as WinAtFirstParticipation);
     else if (kind == "student_with_most_participations")
-      body = this.renderStudentWithMostParticipations(
-        stat as StudentWithMostParticipations
-      );
-    else if (kind == "ioist_with_worst_rank")
-      body = this.renderIOIstWithWorstRank(stat as IOIstWithWorstRank);
+      body = this.renderStudentWithMostParticipations(stat as StudentWithMostParticipations);
+    else if (kind == "ioist_with_worst_rank") body = this.renderIOIstWithWorstRank(stat as IOIstWithWorstRank);
     else return null;
     return (
       <div className="card border-danger">

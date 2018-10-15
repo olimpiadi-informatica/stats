@@ -46,9 +46,4 @@ async function loadContestantsList(): Promise<ContestantItem[]> {
   });
 }
 
-export {
-  ContestantDetail,
-  ContestantItem,
-  loadContestant,
-  loadContestantsList
-};
+export { ContestantDetail, ContestantItem, loadContestant, loadContestantsList };

@@ -7,7 +7,7 @@ import {
   SearchResultUser,
   SearchResultContest,
   SearchResultTask,
-  loadSearchResults
+  loadSearchResults,
 } from "../remote/search";
 import Loading from "./Loading";
 import RegionListItem from "./RegionListItem";
@@ -29,7 +29,7 @@ export default class Search extends Component<Props, State> {
   async componentDidMount() {
     this.setState({ results: null });
     this.setState({
-      results: await loadSearchResults(this.props.match.params.q)
+      results: await loadSearchResults(this.props.match.params.q),
     });
   }
 
@@ -38,7 +38,7 @@ export default class Search extends Component<Props, State> {
     if (q !== prevProps.match.params.q) {
       this.setState({ results: null });
       this.setState({
-        results: await loadSearchResults(this.props.match.params.q)
+        results: await loadSearchResults(this.props.match.params.q),
       });
     }
   }
@@ -55,9 +55,7 @@ export default class Search extends Component<Props, State> {
       return <ContestListItem key={contest.year} contest={contest} />;
     } else if (result.hasOwnProperty("task")) {
       const { year, task } = (result as SearchResultTask).task;
-      return (
-        <TaskListItem key={`${task.name}-${year}`} task={task} year={year} />
-      );
+      return <TaskListItem key={`${task.name}-${year}`} task={task} year={year} />;
     } else {
       throw Error(`Invalid search result ${result}`);
     }
@@ -71,8 +69,7 @@ export default class Search extends Component<Props, State> {
     return (
       <div className="row p-2">
         <h2 className="col-12 text-center text-danger">
-          {num_result} {num_result === 1 ? "result" : "results"} for{" "}
-          <span className="text-success">{q}</span>
+          {num_result} {num_result === 1 ? "result" : "results"} for <span className="text-success">{q}</span>
         </h2>
         <div className="col-12">
           <ul className="list-group list-group-flush">{results}</ul>

@@ -2,15 +2,7 @@ import React, { Component } from "react";
 
 import { round } from "../utils/math";
 
-const COLORS = [
-  "#d53e4f",
-  "#f46d43",
-  "#fdae61",
-  "#FFCC00",
-  "#41ab5d",
-  "#66c2a5",
-  "#3288bd"
-];
+const COLORS = ["#d53e4f", "#f46d43", "#fdae61", "#FFCC00", "#41ab5d", "#66c2a5", "#3288bd"];
 
 type Props = {
   score: number | null | undefined;
@@ -30,7 +22,7 @@ export default class ScoreBadge extends Component<Props> {
         className="badge badge-pill score-badge"
         style={{
           border: "none",
-          color: COLORS[index]
+          color: COLORS[index],
         }}
       >
         {" "}

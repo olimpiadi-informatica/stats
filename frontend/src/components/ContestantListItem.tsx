@@ -19,23 +19,14 @@ export default class ContestantListItem extends Component<Props> {
         <Link to={`/contest/${part.year}`}>[{part.year}] </Link>
       </span>
     ));
-    const medals = {
-      gold: { number: contestant.num_medals.gold, cutoff: 0 },
-      silver: { number: contestant.num_medals.silver, cutoff: 0 },
-      bronze: { number: contestant.num_medals.bronze, cutoff: 0 }
-    };
 
     return (
       <li className="ContestantListItemContainer list-group-item ">
         <div className="row ">
           <div className="col-12">
-            <Link
-              className="text-success"
-              to={`/contestant/${contestant.contestant.id}`}
-            >
+            <Link className="text-success" to={`/contestant/${contestant.contestant.id}`}>
               <h6>
-                {contestant.contestant.first_name}{" "}
-                {contestant.contestant.last_name}
+                {contestant.contestant.first_name} {contestant.contestant.last_name}
               </h6>
             </Link>
           </div>
@@ -65,7 +56,7 @@ export default class ContestantListItem extends Component<Props> {
             </div>
           </div>
           <div className="col-12 col-md-5 align-self-center text-center">
-            <Medals medals={medals} cutoffs={false} />
+            <Medals medals={contestant.num_medals} />
           </div>
         </div>
       </li>
