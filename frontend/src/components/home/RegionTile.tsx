@@ -9,6 +9,7 @@ import {
   RegionWithMostFirstPlaces,
   RegionWithMostParticipants
 } from "../../remote/home";
+import RegionsSVG from "../regions/Regions";
 
 type Props = {
   stat: StatsRegion;
@@ -20,15 +21,12 @@ export default class RegionTile extends Component<Props> {
   }
 
   renderRegionImg(region: { id: string; name: string }) {
+    const SVG = RegionsSVG[region.id];
     return (
       <Link to={`/region/${region.id}`}>
-        <img
-          className="card-img-top"
-          src={`/static/regions/${region.id}.svg`}
-          alt={region.name}
-          onError={(event: any) => {
-            event.target.style = "display: none";
-          }}
+        <SVG
+          className="mr-3 align-self-start img-fluid region"
+          preserveAspectRatio="xMidYMid"
         />
       </Link>
     );
