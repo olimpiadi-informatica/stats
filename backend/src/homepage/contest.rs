@@ -149,6 +149,7 @@ fn get_most_northern_contest(conn: &DbConn, results: &mut Vec<ContestStat>) -> R
     let query = "SELECT
         year, location, gmaps, latitude, longitude
         FROM contests
+        WHERE latitude IS NOT NULL
         ORDER BY latitude DESC
         LIMIT 2";
     let contests: Vec<(
@@ -163,7 +164,8 @@ fn get_most_northern_contest(conn: &DbConn, results: &mut Vec<ContestStat>) -> R
         Nullable<Text>,
         Nullable<Float>,
         Nullable<Float>,
-    )>(query).load(&**conn)?;
+    )>(query)
+    .load(&**conn)?;
     if contests.len() != 2 {
         return Ok(());
     }
@@ -188,6 +190,7 @@ fn get_most_southern_contest(conn: &DbConn, results: &mut Vec<ContestStat>) -> R
     let query = "SELECT
         year, location, gmaps, latitude, longitude
         FROM contests
+        WHERE latitude IS NOT NULL
         ORDER BY latitude
         LIMIT 2";
     let contests: Vec<(
@@ -202,7 +205,8 @@ fn get_most_southern_contest(conn: &DbConn, results: &mut Vec<ContestStat>) -> R
         Nullable<Text>,
         Nullable<Float>,
         Nullable<Float>,
-    )>(query).load(&**conn)?;
+    )>(query)
+    .load(&**conn)?;
     if contests.len() != 2 {
         return Ok(());
     }
@@ -262,7 +266,8 @@ fn get_num_boys_girls(conn: &DbConn, results: &mut Vec<ContestStat>) -> Result<(
                 year: c.0,
                 num_boys: c.1 as usize,
                 num_girls: c.2 as usize,
-            }).collect(),
+            })
+            .collect(),
     }));
     Ok(())
 }
@@ -283,7 +288,8 @@ fn get_num_participants_per_year(
                 .map(|c| SingleContestNumParticipants {
                     year: c.0,
                     num_participants: c.1 as usize,
-                }).collect(),
+                })
+                .collect(),
         },
     ));
     Ok(())
@@ -308,7 +314,8 @@ fn get_most_used_location(conn: &DbConn, results: &mut Vec<ContestStat>) -> Resu
         Nullable<Float>,
         Nullable<Float>,
         Integer,
-    )>(query).load(&**conn)?;
+    )>(query)
+    .load(&**conn)?;
     if contests.len() != 2 {
         return Ok(());
     }
