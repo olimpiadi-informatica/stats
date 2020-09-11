@@ -9,18 +9,18 @@ use diesel::RunQueryDsl;
 use std::collections::HashMap;
 use std::f32::INFINITY;
 
-use controllers::{get_num_medals, NumMedals};
-use db::DbConn;
-use models::participation::{
+use crate::controllers::{get_num_medals, NumMedals};
+use crate::db::DbConn;
+use crate::models::participation::{
     get_contests_participations, get_participations, get_participations_per_regions_per_year,
     get_participations_with_user, get_past_contest_participations, PastParticipation,
 };
-use models::task::{get_scores_of_year, get_tasks_of_year};
-use models::task_score::{get_contest_task_scores, get_scores_of_task};
-use models::user::{contestant_from_user, Contestant};
-use schema;
-use types::{Contest, Participation, Task, TaskScore, User, Year};
-use utility::*;
+use crate::models::task::{get_scores_of_year, get_tasks_of_year};
+use crate::models::task_score::{get_contest_task_scores, get_scores_of_task};
+use crate::models::user::{contestant_from_user, Contestant};
+use crate::schema;
+use crate::types::{Contest, Participation, Task, TaskScore, User, Year};
+use crate::utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestInfoMedal {

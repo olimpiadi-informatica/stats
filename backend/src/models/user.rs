@@ -8,14 +8,14 @@ use diesel::RunQueryDsl;
 use std::collections::HashMap;
 use std::usize;
 
-use controllers::{get_num_medals, NumMedals};
-use db::DbConn;
-use models::participation::{get_user_participations, get_users_participations};
-use models::task::get_tasks_by_year;
-use models::task_score::get_user_task_scores;
-use schema;
-use types::{Task, User, Year};
-use utility::*;
+use crate::controllers::{get_num_medals, NumMedals};
+use crate::db::DbConn;
+use crate::models::participation::{get_user_participations, get_users_participations};
+use crate::models::task::get_tasks_by_year;
+use crate::models::task_score::get_user_task_scores;
+use crate::schema;
+use crate::types::{Task, User, Year};
+use crate::utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Contestant {

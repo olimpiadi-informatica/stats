@@ -7,10 +7,10 @@ use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::sql_types::{Float, Integer, Nullable, Text};
 
-use db::DbConn;
-use models::contest::ContestLocation;
-use schema;
-use types::Year;
+use crate::db::DbConn;
+use crate::models::contest::ContestLocation;
+use crate::schema;
+use crate::types::Year;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "snake_case")]

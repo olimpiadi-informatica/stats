@@ -7,13 +7,13 @@ use rocket::http::Status;
 use rocket_contrib::json::Json;
 use std::collections::HashSet;
 
-use db::DbConn;
-use error_status;
-use models::contest::{get_contest_short_detail_list, ContestShortDetail};
-use models::region::{get_regions_list, RegionShortDetail};
-use models::task::{get_task_list, TaskInfo, TaskInfoList};
-use models::user::{get_users_from_id, get_users_list, UserInfo};
-use types::Year;
+use crate::db::DbConn;
+use crate::error_status;
+use crate::models::contest::{get_contest_short_detail_list, ContestShortDetail};
+use crate::models::region::{get_regions_list, RegionShortDetail};
+use crate::models::task::{get_task_list, TaskInfo, TaskInfoList};
+use crate::models::user::{get_users_from_id, get_users_list, UserInfo};
+use crate::types::Year;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]

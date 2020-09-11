@@ -7,17 +7,12 @@
 
 #[macro_use]
 extern crate rocket;
-extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
-extern crate serde;
-extern crate serde_json;
 #[macro_use]
 extern crate diesel;
 #[macro_use]
 extern crate itertools;
-extern crate dotenv;
-extern crate num;
 #[macro_use]
 extern crate lazy_static;
 
@@ -35,14 +30,14 @@ mod schema;
 mod types;
 mod utility;
 
-use controllers::contest;
-use controllers::error::*;
-use controllers::home;
-use controllers::region;
-use controllers::search;
-use controllers::task;
-use controllers::user;
-use cors::CORS;
+use crate::controllers::contest;
+use crate::controllers::error::*;
+use crate::controllers::home;
+use crate::controllers::region;
+use crate::controllers::search;
+use crate::controllers::task;
+use crate::controllers::user;
+use crate::cors::CORS;
 
 pub fn error_status(error: Error) -> Status {
     match error {

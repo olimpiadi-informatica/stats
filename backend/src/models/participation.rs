@@ -8,11 +8,11 @@ use diesel::RunQueryDsl;
 use itertools::Itertools;
 use std::collections::HashMap;
 
-use db::DbConn;
-use schema;
+use crate::db::DbConn;
+use crate::schema;
 
-use types::{Contest, Participation, Region, User, Year};
-use utility::Medal;
+use crate::types::{Contest, Participation, Region, User, Year};
+use crate::utility::Medal;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PastParticipation {

@@ -5,10 +5,10 @@
 use rocket::http::Status;
 use rocket_contrib::json::Json;
 
-use cache::Cache;
-use db::DbConn;
-use error_status;
-use homepage::{get_homepage_stats, HomepageStats};
+use crate::cache::Cache;
+use crate::db::DbConn;
+use crate::error_status;
+use crate::homepage::{get_homepage_stats, HomepageStats};
 
 #[get("/home")]
 pub fn home(conn: DbConn, mut cache: Cache) -> Result<Json<HomepageStats>, Status> {

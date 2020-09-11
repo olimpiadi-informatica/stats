@@ -9,16 +9,16 @@ use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 
-use controllers::{get_num_medals, NumMedals};
-use db::DbConn;
-use models::contest::{get_contest_location, get_contests, ContestLocation};
-use models::participation::get_participations_per_regions;
-use models::task::get_tasks_by_year;
-use models::task_score::get_users_task_scores;
-use models::user::{contestant_from_user, Contestant};
-use schema;
-use types::{Contest, Participation, Region, Task, TaskScore, User, Year};
-use utility::*;
+use crate::controllers::{get_num_medals, NumMedals};
+use crate::db::DbConn;
+use crate::models::contest::{get_contest_location, get_contests, ContestLocation};
+use crate::models::participation::get_participations_per_regions;
+use crate::models::task::get_tasks_by_year;
+use crate::models::task_score::get_users_task_scores;
+use crate::models::user::{contestant_from_user, Contestant};
+use crate::schema;
+use crate::types::{Contest, Participation, Region, Task, TaskScore, User, Year};
+use crate::utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RegionNavigation {

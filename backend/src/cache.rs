@@ -5,7 +5,6 @@ use rocket::request::{self, FromRequest, Request};
 use rocket::response::{Responder, Result};
 use rocket::Response;
 use serde::Serialize;
-use serde_json;
 use std::collections::HashMap;
 use std::io::Cursor;
 use std::sync::Mutex;

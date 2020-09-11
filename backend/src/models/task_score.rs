@@ -6,9 +6,9 @@ use diesel::prelude::*;
 use diesel::result::Error;
 use itertools::Itertools;
 
-use db::DbConn;
-use schema;
-use types::{TaskScore, User, Year};
+use crate::db::DbConn;
+use crate::schema;
+use crate::types::{TaskScore, User, Year};
 
 pub fn get_contest_task_scores(
     conn: &DbConn,

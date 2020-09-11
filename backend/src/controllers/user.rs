@@ -1,10 +1,10 @@
 use rocket::http::Status;
 use rocket_contrib::json::Json;
 
-use cache::Cache;
-use db::DbConn;
-use error_status;
-use models::user::{get_all_users_list, get_user_detail, UserDetail, UserList};
+use crate::cache::Cache;
+use crate::db::DbConn;
+use crate::error_status;
+use crate::models::user::{get_all_users_list, get_user_detail, UserDetail, UserList};
 
 #[get("/users")]
 pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<UserList>, Status> {

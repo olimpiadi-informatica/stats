@@ -7,8 +7,9 @@ mod region;
 mod task;
 mod user;
 
-use db::DbConn;
 use diesel::result::Error;
+
+use crate::db::DbConn;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HomepageStats {

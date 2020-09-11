@@ -5,15 +5,15 @@
 use rocket::http::Status;
 use rocket_contrib::json::Json;
 
-use cache::Cache;
+use crate::cache::Cache;
 
-use db::DbConn;
-use error_status;
-use models::contest::{
+use crate::db::DbConn;
+use crate::error_status;
+use crate::models::contest::{
     get_contest_detail, get_contest_regions, get_contest_results, get_contest_short_detail_list,
     get_contest_tasks, ContestDetail, ContestRegions, ContestResults, ContestTasks, ContestsInfo,
 };
-use types::Year;
+use crate::types::Year;
 
 #[get("/contests")]
 pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<ContestsInfo>, Status> {

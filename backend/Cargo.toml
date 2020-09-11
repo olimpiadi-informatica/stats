@@ -2,6 +2,7 @@
 name = "oii-stats"
 version = "0.1.0"
 authors = ["Edoardo Morassutto <edoardo.morassutto@gmail.com>"]
+edition = "2018"
 
 [dependencies]
 rocket = "0.4"

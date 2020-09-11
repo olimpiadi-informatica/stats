@@ -10,13 +10,13 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::iter::FromIterator;
 
-use db::DbConn;
-use models::participation::get_participations;
-use models::task_score::{get_scores_of_task_with_user, get_task_scores};
-use models::user::{contestant_from_user, Contestant};
-use schema;
-use types::{Task, TaskScore, Year};
-use utility::*;
+use crate::db::DbConn;
+use crate::models::participation::get_participations;
+use crate::models::task_score::{get_scores_of_task_with_user, get_task_scores};
+use crate::models::user::{contestant_from_user, Contestant};
+use crate::schema;
+use crate::types::{Task, TaskScore, Year};
+use crate::utility::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskNavigationDirection {

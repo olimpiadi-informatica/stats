@@ -5,10 +5,10 @@
 use rocket::http::Status;
 use rocket_contrib::json::Json;
 
-use cache::Cache;
-use db::DbConn;
-use error_status;
-use models::region::{
+use crate::cache::Cache;
+use crate::db::DbConn;
+use crate::error_status;
+use crate::models::region::{
     get_region_details, get_region_results, get_regions_list, RegionDetail, RegionResults,
     RegionsShortDetail,
 };

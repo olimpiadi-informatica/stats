@@ -7,8 +7,8 @@ use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::sql_types::{Float, Integer, Text};
 
-use controllers::NumMedals;
-use db::DbConn;
+use crate::controllers::NumMedals;
+use crate::db::DbConn;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "snake_case")]

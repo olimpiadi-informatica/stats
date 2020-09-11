@@ -7,8 +7,8 @@ use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::sql_types::{Float, Integer, Text};
 
-use db::DbConn;
-use types::Year;
+use crate::db::DbConn;
+use crate::types::Year;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "snake_case")]

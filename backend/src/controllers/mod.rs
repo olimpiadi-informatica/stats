@@ -2,7 +2,15 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use types::Participation;
+use crate::types::Participation;
+
+pub mod contest;
+pub mod error;
+pub mod home;
+pub mod region;
+pub mod search;
+pub mod task;
+pub mod user;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct NumMedals {
@@ -31,11 +39,3 @@ pub fn get_num_medals(participations: &[Participation]) -> NumMedals {
         bronze: count_medals(&participations, "B"),
     }
 }
-
-pub mod contest;
-pub mod error;
-pub mod home;
-pub mod region;
-pub mod search;
-pub mod task;
-pub mod user;
