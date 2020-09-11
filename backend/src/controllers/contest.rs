@@ -2,8 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use rocket::response::Failure;
-use rocket_contrib::Json;
+use rocket::http::Status;
+use rocket_contrib::json::Json;
 
 use cache::Cache;
 
@@ -16,7 +16,7 @@ use models::contest::{
 use types::Year;
 
 #[get("/contests")]
-pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<ContestsInfo>, Failure> {
+pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<ContestsInfo>, Status> {
     match get_contest_short_detail_list(&conn) {
         Ok(contests) => Ok(Json(cache.set(contests))),
         Err(err) => Err(error_status(err)),
@@ -24,7 +24,7 @@ pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<ContestsInfo>, Failur
 }
 
 #[get("/contests/<year>")]
-pub fn search(year: Year, conn: DbConn, mut cache: Cache) -> Result<Json<ContestDetail>, Failure> {
+pub fn search(year: Year, conn: DbConn, mut cache: Cache) -> Result<Json<ContestDetail>, Status> {
     match get_contest_detail(conn, year) {
         Ok(contest) => Ok(Json(cache.set(contest))),
         Err(err) => Err(error_status(err)),
@@ -32,11 +32,7 @@ pub fn search(year: Year, conn: DbConn, mut cache: Cache) -> Result<Json<Contest
 }
 
 #[get("/contests/<year>/results")]
-pub fn results(
-    year: Year,
-    conn: DbConn,
-    mut cache: Cache,
-) -> Result<Json<ContestResults>, Failure> {
+pub fn results(year: Year, conn: DbConn, mut cache: Cache) -> Result<Json<ContestResults>, Status> {
     match get_contest_results(year, conn) {
         Ok(res) => Ok(Json(cache.set(res))),
         Err(err) => Err(error_status(err)),
@@ -44,11 +40,7 @@ pub fn results(
 }
 
 #[get("/contests/<year>/regions")]
-pub fn regions(
-    year: Year,
-    conn: DbConn,
-    mut cache: Cache,
-) -> Result<Json<ContestRegions>, Failure> {
+pub fn regions(year: Year, conn: DbConn, mut cache: Cache) -> Result<Json<ContestRegions>, Status> {
     match get_contest_regions(year, conn) {
         Ok(res) => Ok(Json(cache.set(res))),
         Err(err) => Err(error_status(err)),
@@ -56,7 +48,7 @@ pub fn regions(
 }
 
 #[get("/contests/<year>/tasks")]
-pub fn tasks(year: Year, conn: DbConn, mut cache: Cache) -> Result<Json<ContestTasks>, Failure> {
+pub fn tasks(year: Year, conn: DbConn, mut cache: Cache) -> Result<Json<ContestTasks>, Status> {
     match get_contest_tasks(year, conn) {
         Ok(res) => Ok(Json(cache.set(res))),
         Err(err) => Err(error_status(err)),

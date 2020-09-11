@@ -206,11 +206,13 @@ pub fn get_region_navigation(current: &str, conn: DbConn) -> Result<RegionNaviga
             None => None,
         },
         next: match index {
-            Some(i) => if i < regions.len() - 1 {
-                Some(regions.swap_remove(i + 1))
-            } else {
-                None
-            },
+            Some(i) => {
+                if i < regions.len() - 1 {
+                    Some(regions.swap_remove(i + 1))
+                } else {
+                    None
+                }
+            }
             None => None,
         },
     })
@@ -242,7 +244,8 @@ pub fn get_region_details(region: String, conn: DbConn) -> Result<RegionDetail, 
                 location: get_contest_location(contests.get(year).expect("Missing contest")),
                 num_contestants: parts.len(),
                 num_medals: get_num_medals(&parts),
-            }).collect(),
+            })
+            .collect(),
         hosted: hosted,
     })
 }
@@ -287,7 +290,8 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
                         .map(|(user_id, tss)| (user_id, tss.collect::<Vec<TaskScore>>())),
                 ),
             )
-        }).collect();
+        })
+        .collect();
     let tasks: HashMap<Year, Vec<Task>> = get_tasks_by_year(&conn)?.into_iter().collect();
 
     let mut result = Vec::new();
@@ -313,7 +317,8 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
                             .find(|t| t.name == s.task_name)
                             .expect("TaskScore without task")
                             .max_score,
-                    }).collect(),
+                    })
+                    .collect(),
             });
         }
 

@@ -110,12 +110,14 @@ pub fn get_task_navigation(year: Year, name: &str, conn: DbConn) -> Result<TaskN
             schema::tasks::columns::contest_year
                 .ge(year - 1)
                 .and(schema::tasks::columns::contest_year.le(year + 1)),
-        ).order(schema::tasks::columns::contest_year)
+        )
+        .order(schema::tasks::columns::contest_year)
         .then_order_by(schema::tasks::columns::index)
         .select((
             schema::tasks::columns::contest_year,
             schema::tasks::columns::name,
-        )).load::<(Year, String)>(&*conn)?;
+        ))
+        .load::<(Year, String)>(&*conn)?;
     let index = tasks
         .iter()
         .position(|(y, n)| *y == year && n.as_str() == name);
@@ -133,14 +135,16 @@ pub fn get_task_navigation(year: Year, name: &str, conn: DbConn) -> Result<TaskN
             None => None,
         },
         next: match index {
-            Some(i) => if i == tasks.len() - 1 {
-                None
-            } else {
-                Some(TaskNavigationDirection {
-                    year: tasks[i + 1].0,
-                    name: tasks[i + 1].1.clone(),
-                })
-            },
+            Some(i) => {
+                if i == tasks.len() - 1 {
+                    None
+                } else {
+                    Some(TaskNavigationDirection {
+                        year: tasks[i + 1].0,
+                        name: tasks[i + 1].1.clone(),
+                    })
+                }
+            }
             None => None,
         },
     })
@@ -167,7 +171,8 @@ pub fn get_task_list(conn: &DbConn) -> Result<TaskList, Error> {
                         .map(|(task_name, tss)| (task_name, tss.collect::<Vec<TaskScore>>())),
                 ),
             )
-        }).collect();
+        })
+        .collect();
     let tasks = get_tasks_by_year(&conn)?;
 
     let mut result: Vec<TaskInfoList> = Vec::new();

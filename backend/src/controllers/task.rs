@@ -1,5 +1,5 @@
-use rocket::response::Failure;
-use rocket_contrib::Json;
+use rocket::http::Status;
+use rocket_contrib::json::Json;
 
 use cache::Cache;
 use db::DbConn;
@@ -8,7 +8,7 @@ use models::task::{get_task_detail, get_task_list, TaskDetail, TaskList};
 use types::Year;
 
 #[get("/tasks")]
-pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<TaskList>, Failure> {
+pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<TaskList>, Status> {
     match get_task_list(&conn) {
         Ok(tasks) => Ok(Json(cache.set(tasks))),
         Err(err) => Err(error_status(err)),
@@ -21,7 +21,7 @@ pub fn search(
     task: String,
     conn: DbConn,
     mut cache: Cache,
-) -> Result<Json<TaskDetail>, Failure> {
+) -> Result<Json<TaskDetail>, Status> {
     match get_task_detail(year, task, conn) {
         Ok(task) => Ok(Json(cache.set(task))),
         Err(err) => Err(error_status(err)),

@@ -198,11 +198,13 @@ pub fn get_contest_navigation(year: Year, conn: DbConn) -> Result<ContestNavigat
             None => None,
         },
         next: match index {
-            Some(i) => if i == years.len() - 1 {
-                None
-            } else {
-                Some(years[i + 1])
-            },
+            Some(i) => {
+                if i == years.len() - 1 {
+                    None
+                } else {
+                    Some(years[i + 1])
+                }
+            }
             None => None,
         },
     })
@@ -253,7 +255,8 @@ pub fn get_contest_detail(conn: DbConn, year: Year) -> Result<ContestDetail, Err
             .map(|t| {
                 let scores = task_scores.get(&t.name);
                 get_contest_task(t, scores.unwrap_or(&vec![]))
-            }).collect(),
+            })
+            .collect(),
         medals: ContestInfoMedals {
             gold: get_contest_info_medal(&participations, "G"),
             silver: get_contest_info_medal(&participations, "S"),
@@ -299,7 +302,8 @@ pub fn get_contest_short_detail_list(conn: &DbConn) -> Result<ContestsInfo, Erro
                     link: t.link.clone(),
                     index: t.index as usize,
                     max_score_possible: t.max_score,
-                }).collect(),
+                })
+                .collect(),
             medals: ContestInfoMedals {
                 gold: get_contest_info_medal(&participations, "G"),
                 silver: get_contest_info_medal(&participations, "S"),
@@ -344,11 +348,13 @@ pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, E
         let old_parts = match old_participations.get(&user_id) {
             Some(v) => v,
             None => &empty_vec,
-        }.iter()
+        }
+        .iter()
         .map(|p| PastParticipation {
             year: p.contest_year,
             medal: medal_from_string(&p.medal),
-        }).collect();
+        })
+        .collect();
 
         results.push(ContestResult {
             rank: participation.position.map(|p| p as usize),
@@ -382,7 +388,7 @@ pub fn get_contest_regions(year: Year, conn: DbConn) -> Result<ContestRegions, E
         let sum_score = fold_with_none(Some(0.0), participations.iter(), |m, p| {
             add_option(m, p.score)
         });
-        let mut num_medals = get_num_medals(&participations);
+        let num_medals = get_num_medals(&participations);
         let avg_score = sum_score.map(|sum| sum / (participations.len() as f32));
 
         result.push(ContestRegion {

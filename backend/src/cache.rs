@@ -1,4 +1,3 @@
-use rocket;
 use rocket::http::ContentType;
 use rocket::http::Status;
 use rocket::outcome::Outcome::*;
@@ -45,8 +44,8 @@ impl<'a, 'r> FromRequest<'a, 'r> for Cache {
     }
 }
 
-pub fn handle_cache<'r>(_: rocket::Error, req: &'r Request) -> Result<'r> {
-    let uri = req.uri().as_str().to_string();
+pub fn handle_cache<'r>(req: &'r Request) -> Result<'r> {
+    let uri = req.uri().path().to_string();
     let cached = CACHE
         .lock()
         .unwrap()

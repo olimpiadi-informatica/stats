@@ -31,7 +31,8 @@ pub fn get_scores_of_task(conn: &DbConn, year: Year, name: &str) -> Result<Vec<T
             schema::task_scores::columns::contest_year
                 .eq(year)
                 .and(schema::task_scores::columns::task_name.eq(name)),
-        ).load(&**conn)
+        )
+        .load(&**conn)
 }
 
 pub fn get_scores_of_task_with_user(
@@ -44,7 +45,8 @@ pub fn get_scores_of_task_with_user(
             schema::task_scores::columns::contest_year
                 .eq(year)
                 .and(schema::task_scores::columns::task_name.eq(task_name)),
-        ).order(schema::task_scores::columns::user_id)
+        )
+        .order(schema::task_scores::columns::user_id)
         .left_join(schema::users::table)
         .load::<(TaskScore, Option<User>)>(&**conn)?
         .into_iter()

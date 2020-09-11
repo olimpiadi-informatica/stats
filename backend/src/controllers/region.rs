@@ -2,8 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-use rocket::response::Failure;
-use rocket_contrib::Json;
+use rocket::http::Status;
+use rocket_contrib::json::Json;
 
 use cache::Cache;
 use db::DbConn;
@@ -14,7 +14,7 @@ use models::region::{
 };
 
 #[get("/regions")]
-pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<RegionsShortDetail>, Failure> {
+pub fn list(conn: DbConn, mut cache: Cache) -> Result<Json<RegionsShortDetail>, Status> {
     match get_regions_list(&conn) {
         Ok(regions) => Ok(Json(cache.set(regions))),
         Err(err) => Err(error_status(err)),
@@ -26,7 +26,7 @@ pub fn search(
     region: String,
     conn: DbConn,
     mut cache: Cache,
-) -> Result<Json<RegionDetail>, Failure> {
+) -> Result<Json<RegionDetail>, Status> {
     match get_region_details(region, conn) {
         Ok(region) => Ok(Json(cache.set(region))),
         Err(err) => Err(error_status(err)),
@@ -38,7 +38,7 @@ pub fn results(
     region: String,
     conn: DbConn,
     mut cache: Cache,
-) -> Result<Json<RegionResults>, Failure> {
+) -> Result<Json<RegionResults>, Status> {
     match get_region_results(region, conn) {
         Ok(results) => Ok(Json(cache.set(results))),
         Err(err) => Err(error_status(err)),

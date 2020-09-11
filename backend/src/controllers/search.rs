@@ -2,8 +2,9 @@ use diesel::expression::sql_literal::sql;
 use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::sql_types::{Integer, Text};
-use rocket::response::Failure;
-use rocket_contrib::Json;
+use rocket::http::RawStr;
+use rocket::http::Status;
+use rocket_contrib::json::Json;
 use std::collections::HashSet;
 
 use db::DbConn;
@@ -28,17 +29,13 @@ pub struct SearchResults {
     results: Vec<SearchResult>,
 }
 
-#[derive(FromForm)]
-pub struct QueryString {
-    pub q: String,
-}
-
 fn search_user(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
-    let fts_users: Vec<(String)> = sql::<(Text)>(
+    let fts_users: Vec<String> = sql::<Text>(
         "SELECT id
         FROM users_fts4
         WHERE users_fts4 MATCH ",
-    ).bind::<Text, _>(q)
+    )
+    .bind::<Text, _>(q)
     .sql(" LIMIT 10")
     .load(&**conn)?;
     let users = get_users_from_id(&conn, &fts_users.iter().map(|u| u.clone()).collect())?;
@@ -54,7 +51,8 @@ fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
         "SELECT contest_year, name
              FROM tasks_fts4
              WHERE tasks_fts4 MATCH ",
-    ).bind::<Text, _>(q)
+    )
+    .bind::<Text, _>(q)
     .sql(" LIMIT 10")
     .load(&**conn)?
     .into_iter()
@@ -68,12 +66,14 @@ fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
                 year: year,
                 task: t,
             })
-        }).into_iter()
+        })
+        .into_iter()
         .flatten()
         .filter(|t| match t {
             SearchResult::Task { year, task } => fts_tasks.contains(&(task.name.clone(), *year)),
             _ => false,
-        }).collect())
+        })
+        .collect())
 }
 
 fn search_contest(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
@@ -81,7 +81,8 @@ fn search_contest(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error>
         "SELECT year
         FROM contests_fts4
         WHERE contests_fts4 MATCH ",
-    ).bind::<Text, _>(q)
+    )
+    .bind::<Text, _>(q)
     .sql(" LIMIT 10")
     .load(&**conn)?
     .into_iter()
@@ -100,7 +101,8 @@ fn search_region(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> 
         "SELECT id
         FROM regions_fts4
         WHERE regions_fts4 MATCH ",
-    ).bind::<Text, _>(q)
+    )
+    .bind::<Text, _>(q)
     .sql(" LIMIT 10")
     .load(&**conn)?
     .into_iter()
@@ -122,11 +124,11 @@ fn do_search(q: String, conn: DbConn) -> Result<SearchResults, Error> {
 }
 
 #[get("/search?<q>")]
-pub fn search(q: QueryString, conn: DbConn) -> Result<Json<SearchResults>, Failure> {
-    let q = if !q.q.contains("*") {
-        format!("*{}*", q.q)
+pub fn search(q: &RawStr, conn: DbConn) -> Result<Json<SearchResults>, Status> {
+    let q = if !q.contains("*") {
+        format!("*{}*", q)
     } else {
-        q.q
+        q.to_string()
     };
     match do_search(q, conn) {
         Ok(results) => Ok(Json(results)),

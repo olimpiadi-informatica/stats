@@ -3,15 +3,14 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #![allow(proc_macro_derive_resolution_fallback, non_snake_case)]
-#![feature(plugin, custom_derive)]
-#![plugin(rocket_codegen)]
+#![feature(proc_macro_hygiene, decl_macro)]
 
+#[macro_use]
 extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
-#[macro_use]
 extern crate serde_json;
 #[macro_use]
 extern crate diesel;
@@ -24,7 +23,6 @@ extern crate lazy_static;
 
 use diesel::result::Error;
 use rocket::http::Status;
-use rocket::response::Failure;
 use rocket::Catcher;
 
 mod cache;
@@ -46,14 +44,14 @@ use controllers::task;
 use controllers::user;
 use cors::CORS;
 
-pub fn error_status(error: Error) -> Failure {
-    Failure(match error {
+pub fn error_status(error: Error) -> Status {
+    match error {
         Error::NotFound => Status::NotFound,
         _ => {
             println!("{:?}", error);
             Status::InternalServerError
         }
-    })
+    }
 }
 
 fn main() {
@@ -79,8 +77,9 @@ fn main() {
                 search::search,
                 home::home
             ],
-        ).catch(vec![Catcher::new(200, cache::handle_cache)])
-        .catch(catchers![not_found])
+        )
+        .register(vec![Catcher::new(200, cache::handle_cache)])
+        .register(catchers![not_found])
         .attach(CORS())
         .launch();
 }
