@@ -5,6 +5,7 @@
   "author": "gixpix",
   "dependencies": {
     "@types/lodash": "^4.14.117",
+    "@types/node": "^14.10.0",
     "@types/query-string": "^6.1.1",
     "@types/react": "^16.4.16",
     "@types/react-dom": "^16.0.9",
