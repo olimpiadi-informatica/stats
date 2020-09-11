@@ -6,6 +6,7 @@ use diesel::expression::sql_literal::sql;
 use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::sql_types::{Float, Integer, Text};
+use float_cmp::ApproxEq;
 
 use crate::db::DbConn;
 use crate::types::Year;
@@ -79,7 +80,7 @@ fn get_task_with_lowest_avg_score(conn: &DbConn, results: &mut Vec<TaskStat>) ->
     }
     let first = &tasks[0];
     let second = &tasks[1];
-    if first.5 == second.5 {
+    if first.5.approx_eq(second.5, (0.0, 2)) {
         return Ok(());
     }
     results.push(TaskStat::TaskWithLowestAvgScore(TaskWithLowestAvgScore {
@@ -111,7 +112,7 @@ fn get_task_with_highest_avg_score(
     }
     let first = &tasks[0];
     let second = &tasks[1];
-    if first.5 == second.5 {
+    if first.5.approx_eq(second.5, (0.0, 2)) {
         return Ok(());
     }
     results.push(TaskStat::TaskWithHighestAvgScore(TaskWithHighestAvgScore {
@@ -140,7 +141,7 @@ fn get_task_with_lowest_max_score(conn: &DbConn, results: &mut Vec<TaskStat>) ->
     }
     let first = &tasks[0];
     let second = &tasks[1];
-    if first.5 == second.5 {
+    if first.5.approx_eq(second.5, (0.0, 2)) {
         return Ok(());
     }
     results.push(TaskStat::TaskWithLowestMaxScore(TaskWithLowestMaxScore {
