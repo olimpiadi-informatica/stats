@@ -147,7 +147,7 @@ pub fn get_participations_per_year_of_region(
 
 pub fn get_participations_of_region(
     conn: &DbConn,
-    region: &String,
+    region: &str,
 ) -> Result<Vec<(Participation, User)>, Error> {
     Ok(schema::participations::table
         .filter(schema::participations::columns::region.eq(region))
@@ -246,7 +246,7 @@ pub fn get_region_details(region: String, conn: DbConn) -> Result<RegionDetail, 
                 num_medals: get_num_medals(&parts),
             })
             .collect(),
-        hosted: hosted,
+        hosted,
     })
 }
 
@@ -256,7 +256,7 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
         .iter()
         .map(|p| p.0.contest_year)
         .collect::<Vec<Year>>();
-    contest_years.sort();
+    contest_years.sort_unstable();
     contest_years.dedup();
     let mut user_ids = participations
         .iter()
@@ -323,8 +323,8 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
         }
 
         result.push(RegionResult {
-            year: year,
-            contestants: contestants,
+            year,
+            contestants,
         });
     }
 

@@ -145,6 +145,7 @@ fn get_contest_with_most_ex_aequo(
     Ok(())
 }
 
+#[allow(clippy::type_complexity)]
 fn get_most_northern_contest(conn: &DbConn, results: &mut Vec<ContestStat>) -> Result<(), Error> {
     let query = "SELECT
         year, location, gmaps, latitude, longitude
@@ -186,6 +187,7 @@ fn get_most_northern_contest(conn: &DbConn, results: &mut Vec<ContestStat>) -> R
     Ok(())
 }
 
+#[allow(clippy::type_complexity)]
 fn get_most_southern_contest(conn: &DbConn, results: &mut Vec<ContestStat>) -> Result<(), Error> {
     let query = "SELECT
         year, location, gmaps, latitude, longitude
@@ -295,6 +297,7 @@ fn get_num_participants_per_year(
     Ok(())
 }
 
+#[allow(clippy::type_complexity)]
 fn get_most_used_location(conn: &DbConn, results: &mut Vec<ContestStat>) -> Result<(), Error> {
     let query = "SELECT
         location, gmaps, latitude, longitude, COUNT(*) AS num
@@ -335,7 +338,7 @@ fn get_most_used_location(conn: &DbConn, results: &mut Vec<ContestStat>) -> Resu
             latitude: first.2,
             longitude: first.3,
         },
-        years: years,
+        years,
     }));
     Ok(())
 }

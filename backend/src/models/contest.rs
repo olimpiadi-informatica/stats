@@ -160,7 +160,7 @@ pub fn get_num_contests(conn: &DbConn) -> Result<u64, Error> {
 }
 
 pub fn get_contest_info_medal(
-    participations: &Vec<Participation>,
+    participations: &[Participation],
     medal: &str,
 ) -> ContestInfoMedal {
     let medalist: Vec<&Participation> = participations
@@ -210,7 +210,7 @@ pub fn get_contest_navigation(year: Year, conn: DbConn) -> Result<ContestNavigat
     })
 }
 
-pub fn get_contest_task(task: &Task, task_scores: &Vec<TaskScore>) -> ContestTask {
+pub fn get_contest_task(task: &Task, task_scores: &[TaskScore]) -> ContestTask {
     let sum_score = fold_with_none(Some(0.0), task_scores.iter(), |m, s| add_option(m, s.score));
     let avg_score = sum_score.map(|sum| sum / (task_scores.len() as f32));
     ContestTask {
@@ -220,7 +220,7 @@ pub fn get_contest_task(task: &Task, task_scores: &Vec<TaskScore>) -> ContestTas
         index: task.index as usize,
         max_score_possible: task.max_score,
         max_score: fold_with_none(Some(0.0), task_scores.iter(), |m, s| max_option(m, s.score)),
-        avg_score: avg_score,
+        avg_score,
     }
 }
 
@@ -239,7 +239,7 @@ pub fn get_contest_detail(conn: DbConn, year: Year) -> Result<ContestDetail, Err
         navigation: get_contest_navigation(year, conn)?,
         location: get_contest_location(&contest),
         region: contest.region.clone(),
-        num_contestants: num_contestants,
+        num_contestants,
         max_score_possible: fold_with_none(Some(0.0), tasks.iter(), |sum, task| {
             add_option(sum, task.max_score)
         }),
@@ -283,7 +283,7 @@ pub fn get_contest_short_detail_list(conn: &DbConn) -> Result<ContestsInfo, Erro
             year: contest.year,
             location: get_contest_location(&contest),
             region: contest.region.clone(),
-            num_contestants: num_contestants,
+            num_contestants,
             max_score_possible: fold_with_none(Some(0.0), tasks.iter(), |sum, task| {
                 add_option(sum, task.max_score)
             }),
@@ -362,7 +362,7 @@ pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, E
             ioi: participation.IOI.unwrap_or(false),
             region: participation.region.clone(),
             score: participation.score,
-            scores: scores,
+            scores,
             medal: medal_from_string(&participation.medal),
             past_participations: old_parts,
         });
@@ -373,7 +373,7 @@ pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, E
     Ok(ContestResults {
         navigation: get_contest_navigation(year, conn)?,
         tasks: tasks.iter().map(|t| t.name.clone()).collect(),
-        results: results,
+        results,
     })
 }
 
@@ -394,11 +394,11 @@ pub fn get_contest_regions(year: Year, conn: DbConn) -> Result<ContestRegions, E
         result.push(ContestRegion {
             name: region,
             num_participants: zero_is_none(participations.len()),
-            num_medals: num_medals,
+            num_medals,
             max_score: fold_with_none(Some(0.0), participations.iter(), |m, p| {
                 max_option(m, p.score)
             }),
-            avg_score: avg_score,
+            avg_score,
         });
     }
 

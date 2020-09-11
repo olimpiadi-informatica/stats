@@ -39,7 +39,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for Cache {
         {
             Failure((Status::Ok, ()))
         } else {
-            Success(Cache { path: path })
+            Success(Cache { path })
         }
     }
 }

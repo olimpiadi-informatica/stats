@@ -77,13 +77,13 @@ pub fn get_users(conn: &DbConn) -> Result<Vec<User>, Error> {
     schema::users::table.load::<User>(&**conn)
 }
 
-pub fn get_users_from_id(conn: &DbConn, ids: &Vec<String>) -> Result<Vec<User>, Error> {
+pub fn get_users_from_id(conn: &DbConn, ids: &[String]) -> Result<Vec<User>, Error> {
     schema::users::table
         .filter(schema::users::columns::id.eq_any(ids))
         .load::<User>(&**conn)
 }
 
-pub fn get_users_list(conn: &DbConn, users: &Vec<User>) -> Result<UserList, Error> {
+pub fn get_users_list(conn: &DbConn, users: &[User]) -> Result<UserList, Error> {
     let participations = get_users_participations(conn, users)?;
     let mut result: Vec<UserInfo> = Vec::new();
     for (user, participations) in izip!(users, participations) {
@@ -122,7 +122,7 @@ pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Erro
             return Err(Error::NotFound);
         }
         result.push(UserDetailParticipation {
-            year: year,
+            year,
             ioi: participation.IOI.unwrap_or(false),
             medal: medal_from_string(&participation.medal),
             rank: participation.position.map(|p| p as usize),

@@ -11,7 +11,7 @@ pub struct NumMedals {
     pub bronze: Option<usize>,
 }
 
-fn count_medals(participations: &Vec<Participation>, medal: &str) -> Option<usize> {
+fn count_medals(participations: &[Participation], medal: &str) -> Option<usize> {
     if participations.is_empty() {
         None
     } else {
@@ -24,7 +24,7 @@ fn count_medals(participations: &Vec<Participation>, medal: &str) -> Option<usiz
     }
 }
 
-pub fn get_num_medals(participations: &Vec<Participation>) -> NumMedals {
+pub fn get_num_medals(participations: &[Participation]) -> NumMedals {
     NumMedals {
         gold: count_medals(&participations, "G"),
         silver: count_medals(&participations, "S"),

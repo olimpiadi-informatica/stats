@@ -38,7 +38,7 @@ pub fn get_scores_of_task(conn: &DbConn, year: Year, name: &str) -> Result<Vec<T
 pub fn get_scores_of_task_with_user(
     conn: &DbConn,
     year: Year,
-    task_name: &String,
+    task_name: &str,
 ) -> Result<Vec<(TaskScore, User)>, Error> {
     Ok(schema::task_scores::table
         .filter(
@@ -56,7 +56,7 @@ pub fn get_scores_of_task_with_user(
 
 pub fn get_users_task_scores(
     conn: &DbConn,
-    user_ids: &Vec<String>,
+    user_ids: &[String],
 ) -> Result<Vec<TaskScore>, Error> {
     schema::task_scores::table
         .filter(schema::task_scores::columns::user_id.eq_any(user_ids))
@@ -67,7 +67,7 @@ pub fn get_users_task_scores(
 
 pub fn get_user_task_scores(
     conn: &DbConn,
-    user_id: &String,
+    user_id: &str,
 ) -> Result<Vec<(Year, Vec<TaskScore>)>, Error> {
     Ok(schema::task_scores::table
         .filter(schema::task_scores::columns::user_id.eq(&user_id))

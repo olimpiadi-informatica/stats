@@ -29,7 +29,7 @@ pub struct SearchResults {
     results: Vec<SearchResult>,
 }
 
-fn search_user(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
+fn search_user(q: &str, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
     let fts_users: Vec<String> = sql::<Text>(
         "SELECT id
         FROM users_fts4
@@ -38,15 +38,15 @@ fn search_user(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
     .bind::<Text, _>(q)
     .sql(" LIMIT 10")
     .load(&**conn)?;
-    let users = get_users_from_id(&conn, &fts_users.iter().map(|u| u.clone()).collect())?;
+    let users = get_users_from_id(&conn, &fts_users)?;
     Ok(get_users_list(conn, &users)?
         .users
         .into_iter()
-        .map(|u| SearchResult::User(u))
+        .map(SearchResult::User)
         .collect())
 }
 
-fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
+fn search_task(q: &str, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
     let fts_tasks: HashSet<(String, Year)> = sql::<(Text, Integer)>(
         "SELECT contest_year, name
              FROM tasks_fts4
@@ -63,7 +63,7 @@ fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
         .into_iter()
         .map(|TaskInfoList { year, tasks }| {
             tasks.into_iter().map(move |t| SearchResult::Task {
-                year: year,
+                year,
                 task: t,
             })
         })
@@ -76,7 +76,7 @@ fn search_task(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
         .collect())
 }
 
-fn search_contest(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
+fn search_contest(q: &str, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
     let contests: HashSet<Year> = sql::<Integer>(
         "SELECT year
         FROM contests_fts4
@@ -92,11 +92,11 @@ fn search_contest(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error>
         .contests
         .into_iter()
         .filter(|c| contests.contains(&c.year))
-        .map(|c| SearchResult::Contest(c))
+        .map(SearchResult::Contest)
         .collect())
 }
 
-fn search_region(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
+fn search_region(q: &str, conn: &DbConn) -> Result<Vec<SearchResult>, Error> {
     let regions: HashSet<String> = sql::<Text>(
         "SELECT id
         FROM regions_fts4
@@ -111,7 +111,7 @@ fn search_region(q: &String, conn: &DbConn) -> Result<Vec<SearchResult>, Error> 
         .regions
         .into_iter()
         .filter(|r| regions.contains(&r.id))
-        .map(|r| SearchResult::Region(r))
+        .map(SearchResult::Region)
         .collect())
 }
 
@@ -120,12 +120,12 @@ fn do_search(q: String, conn: DbConn) -> Result<SearchResults, Error> {
     results.extend(search_task(&q, &conn)?);
     results.extend(search_contest(&q, &conn)?);
     results.extend(search_region(&q, &conn)?);
-    Ok(SearchResults { results: results })
+    Ok(SearchResults { results })
 }
 
 #[get("/search?<q>")]
 pub fn search(q: &RawStr, conn: DbConn) -> Result<Json<SearchResults>, Status> {
-    let q = if !q.contains("*") {
+    let q = if !q.contains('*') {
         format!("*{}*", q)
     } else {
         q.to_string()

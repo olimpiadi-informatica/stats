@@ -72,9 +72,9 @@ pub struct TaskDetail {
 }
 
 pub fn get_tasks_of_year(conn: &DbConn, year: Year) -> Result<Vec<Task>, Error> {
-    return schema::tasks::table
+    schema::tasks::table
         .filter(schema::tasks::columns::contest_year.eq(year))
-        .load::<Task>(&**conn);
+        .load::<Task>(&**conn)
 }
 
 pub fn get_tasks_by_year(conn: &DbConn) -> Result<Vec<(Year, Vec<Task>)>, Error> {
@@ -123,7 +123,7 @@ pub fn get_task_navigation(year: Year, name: &str, conn: DbConn) -> Result<TaskN
         .position(|(y, n)| *y == year && n.as_str() == name);
     Ok(TaskNavigation {
         current: TaskNavigationDirection {
-            year: year,
+            year,
             name: name.to_string(),
         },
         previous: match index {
@@ -195,11 +195,11 @@ pub fn get_task_list(conn: &DbConn) -> Result<TaskList, Error> {
                 max_score: fold_with_none(Some(0.0), scores.iter().map(|ts| ts.score), |m, s| {
                     max_option(m, s)
                 }),
-                avg_score: avg_score,
+                avg_score,
             });
         }
         result.push(TaskInfoList {
-            year: year,
+            year,
             tasks: task_info,
         });
     }

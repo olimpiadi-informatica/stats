@@ -21,15 +21,15 @@ pub struct PastParticipation {
 }
 
 pub fn get_participations(conn: &DbConn, year: Year) -> Result<Vec<Participation>, Error> {
-    return schema::participations::table
+    schema::participations::table
         .filter(schema::participations::columns::contest_year.eq(year))
         .order(schema::participations::columns::user_id)
-        .load::<Participation>(&**conn);
+        .load::<Participation>(&**conn)
 }
 
 pub fn get_contests_participations(
     conn: &DbConn,
-    contests: &Vec<Contest>,
+    contests: &[Contest],
 ) -> Result<Vec<Vec<Participation>>, Error> {
     Ok(Participation::belonging_to(contests)
         .load::<Participation>(&**conn)?
@@ -38,7 +38,7 @@ pub fn get_contests_participations(
 
 pub fn get_users_participations(
     conn: &DbConn,
-    users: &Vec<User>,
+    users: &[User],
 ) -> Result<Vec<Vec<Participation>>, Error> {
     Ok(Participation::belonging_to(users)
         .order(schema::participations::columns::contest_year.desc())
@@ -48,7 +48,7 @@ pub fn get_users_participations(
 
 pub fn get_user_participations(
     conn: &DbConn,
-    user_id: &String,
+    user_id: &str,
 ) -> Result<Vec<Participation>, Error> {
     schema::participations::table
         .filter(schema::participations::columns::user_id.eq(user_id))
