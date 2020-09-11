@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ComposableMap, ZoomableGroup, Geographies, Geography, Markers, Marker } from "react-simple-maps";
+import { ComposableMap, ZoomableGroup, Geographies, Geography, Marker } from "react-simple-maps";
 
 const MAP_STYLE = {
   fill: "#ECEFF1",
@@ -12,7 +12,7 @@ type Props = {
   width: number;
   height: number;
   center: [number, number];
-  markers: ([number, number])[];
+  markers: [number, number][];
 };
 
 export default class SimpleMap extends Component<Props> {
@@ -38,16 +38,15 @@ export default class SimpleMap extends Component<Props> {
           height: "auto",
         }}
       >
-        <ZoomableGroup center={[this.props.center[1], this.props.center[0]]} disablePanning>
+        <ZoomableGroup center={[this.props.center[1], this.props.center[0]]} filterZoomEvent={(a: any) => false}>
           <Geographies geography={this.props.map}>
-            {(geographies: any, projection: any) =>
+            {({ geographies, projection }: any) =>
               geographies.map(
                 (geography: any, i: number) =>
                   geography.id !== "ATA" && (
                     <Geography
                       key={i}
                       geography={geography}
-                      projection={projection}
                       style={{
                         default: MAP_STYLE,
                         hover: MAP_STYLE,
@@ -58,42 +57,29 @@ export default class SimpleMap extends Component<Props> {
               )
             }
           </Geographies>
-          <Markers>
-            {this.props.markers.map(marker => (
-              <Marker
-                key={`${marker[1]}-${marker[0]}`}
-                marker={{
-                  coordinates: [marker[1], marker[0]],
-                }}
-                style={{
-                  default: { stroke: "#FF5722" },
-                  hover: { stroke: "#FF5722" },
-                  pressed: { stroke: "#FF5722" },
-                }}
+          {this.props.markers.map(marker => (
+            <Marker
+              key={`${marker[1]}-${marker[0]}`}
+              coordinates={[marker[1], marker[0]]}
+              style={{
+                default: { stroke: "#FF5722" },
+                hover: { stroke: "#FF5722" },
+                pressed: { stroke: "#FF5722" },
+              }}
+            >
+              <g
+                fill="none"
+                stroke="#FF5533"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                transform="translate(-12, -24)"
               >
-                <g transform="translate(-12, -24)">
-                  <path
-                    fill="none"
-                    strokeWidth="2"
-                    strokeLinecap="square"
-                    strokeMiterlimit="10"
-                    strokeLinejoin="miter"
-                    d="M20,9c0,4.9-8,13-8,13S4,13.9,4,9c0-5.1,4.1-8,8-8S20,3.9,20,9z"
-                  />
-                  <circle
-                    fill="none"
-                    strokeWidth="2"
-                    strokeLinecap="square"
-                    strokeMiterlimit="10"
-                    strokeLinejoin="miter"
-                    cx="12"
-                    cy="9"
-                    r="3"
-                  />
-                </g>
-              </Marker>
-            ))}
-          </Markers>
+                <circle cx="12" cy="10" r="3" />
+                <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
+              </g>
+            </Marker>
+          ))}
         </ZoomableGroup>
       </ComposableMap>
     );

@@ -79,12 +79,12 @@ export default class RegionTile extends Component<Props> {
     const { stat } = this.props;
     const kind = Object.keys(stat)[0];
     let body = null;
-    if (kind == "region_with_most_medals") body = this.renderRegionWithMostMedals(stat as RegionWithMostMedals);
-    else if (kind == "region_with_most_medals_per_participant")
+    if (kind === "region_with_most_medals") body = this.renderRegionWithMostMedals(stat as RegionWithMostMedals);
+    else if (kind === "region_with_most_medals_per_participant")
       body = this.renderRegionWithMostMedalsPerParticipant(stat as RegionWithMostMedalsPerParticipant);
-    else if (kind == "region_with_most_first_places")
+    else if (kind === "region_with_most_first_places")
       body = this.renderRegionWithMostFirstPlaces(stat as RegionWithMostFirstPlaces);
-    else if (kind == "region_with_most_participants")
+    else if (kind === "region_with_most_participants")
       body = this.renderRegionWithMostParticipants(stat as RegionWithMostParticipants);
     else return null;
     return (

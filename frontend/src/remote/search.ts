@@ -6,31 +6,29 @@ import { TaskItem } from "./task";
 import { ContestItem } from "./contest";
 import { RegionItem } from "./region";
 
-class SearchResultTask {
+export class SearchResultTask {
   task!: {
     year: number;
     task: TaskItem;
   };
 }
 
-class SearchResultUser {
+export class SearchResultUser {
   user!: ContestantItem;
 }
 
-class SearchResultContest {
+export class SearchResultContest {
   contest!: ContestItem;
 }
 
-class SearchResultRegion {
+export class SearchResultRegion {
   region!: RegionItem;
 }
 
-type SearchResult = SearchResultUser | SearchResultTask | SearchResultContest | SearchResultRegion;
+export type SearchResult = SearchResultUser | SearchResultTask | SearchResultContest | SearchResultRegion;
 
-async function loadSearchResults(q: string): Promise<SearchResult[]> {
+export async function loadSearchResults(q: string): Promise<SearchResult[]> {
   return axios.get(`${ROOT_URL}/search?q=${encodeURIComponent(q)}`).then(res => {
     return res.data.results;
   });
 }
-
-export { SearchResult, SearchResultTask, SearchResultUser, SearchResultContest, SearchResultRegion, loadSearchResults };

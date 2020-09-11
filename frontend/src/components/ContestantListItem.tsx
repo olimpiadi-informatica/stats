@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import _ from "lodash";
 
 import { ContestantItem } from "../remote/user";
 import Medals from "./Medals";

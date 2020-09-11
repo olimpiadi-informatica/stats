@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import _ from "lodash";
 import { RouteComponentProps } from "react-router-dom";
 
 import { TaskDetail, loadTaskDetail } from "../remote/task";
@@ -68,7 +67,7 @@ export default class Task extends Component<Props, State> {
     const { year, name } = task.navigation.current;
 
     const link = task.link ? (
-      <a target="_blank" href={task.link}>
+      <a target="_blank" rel="noopener noreferrer" href={task.link}>
         {task.link}
       </a>
     ) : (

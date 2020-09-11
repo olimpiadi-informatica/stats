@@ -1,3 +1,4 @@
+import React from "react";
 function _objectWithoutProperties(obj, keys) {
   var target = {};
   for (var i in obj) {
@@ -8,10 +9,8 @@ function _objectWithoutProperties(obj, keys) {
   return target;
 }
 
-import React from "react";
 export default _ref => {
-  let { styles = {} } = _ref,
-    props = _objectWithoutProperties(_ref, ["styles"]);
+  let props = _objectWithoutProperties(_ref, ["styles"]);
 
   return (
     <svg

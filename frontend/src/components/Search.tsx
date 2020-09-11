@@ -72,7 +72,7 @@ export default class Search extends Component<Props, State> {
       const { year, task } = (result as SearchResultTask).task;
       return <TaskListItem key={`${task.name}-${year}`} task={task} year={year} />;
     } else {
-      throw `Invalid search result ${result}`;
+      throw new TypeError(`Invalid search result ${result}`);
     }
   }
 

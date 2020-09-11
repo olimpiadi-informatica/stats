@@ -92,13 +92,13 @@ export default class TaskTile extends Component<Props> {
     const { stat } = this.props;
     const kind = Object.keys(stat)[0];
     let body = null;
-    if (kind == "task_with_lowest_avg_score") body = this.renderTaskWithLowestAvgScore(stat as TaskWithLowestAvgScore);
-    else if (kind == "task_with_highest_avg_score")
+    if (kind === "task_with_lowest_avg_score") body = this.renderTaskWithLowestAvgScore(stat as TaskWithLowestAvgScore);
+    else if (kind === "task_with_highest_avg_score")
       body = this.renderTaskWithHighestAvgScore(stat as TaskWithHighestAvgScore);
-    else if (kind == "task_with_lowest_max_score")
+    else if (kind === "task_with_lowest_max_score")
       body = this.renderTaskWithLowestMaxScore(stat as TaskWithLowestMaxScore);
-    else if (kind == "task_with_most_zeros") body = this.renderTaskWithMostZeros(stat as TaskWithMostZeros);
-    else if (kind == "task_with_most_fullscores")
+    else if (kind === "task_with_most_zeros") body = this.renderTaskWithMostZeros(stat as TaskWithMostZeros);
+    else if (kind === "task_with_most_fullscores")
       body = this.renderTaskWithMostFullscores(stat as TaskWithMostFullscores);
     else return null;
     return (

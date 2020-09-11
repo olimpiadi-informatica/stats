@@ -90,12 +90,12 @@ export default class UserTile extends Component<Props> {
     const { stat } = this.props;
     const kind = Object.keys(stat)[0];
     let body = null;
-    if (kind == "best_student") body = this.renderBestStudent(stat as BestStudent);
-    if (kind == "win_at_first_participation")
+    if (kind === "best_student") body = this.renderBestStudent(stat as BestStudent);
+    if (kind === "win_at_first_participation")
       body = this.renderWinAtFirstParticipation(stat as WinAtFirstParticipation);
-    else if (kind == "student_with_most_participations")
+    else if (kind === "student_with_most_participations")
       body = this.renderStudentWithMostParticipations(stat as StudentWithMostParticipations);
-    else if (kind == "ioist_with_worst_rank") body = this.renderIOIstWithWorstRank(stat as IOIstWithWorstRank);
+    else if (kind === "ioist_with_worst_rank") body = this.renderIOIstWithWorstRank(stat as IOIstWithWorstRank);
     else return null;
     return (
       <div className="card border-danger">

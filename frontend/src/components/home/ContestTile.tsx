@@ -140,16 +140,16 @@ export default class ContestTile extends Component<Props> {
     const { stat } = this.props;
     const kind = Object.keys(stat)[0];
     let body = null;
-    if (kind == "contest_with_most_participants")
+    if (kind === "contest_with_most_participants")
       body = this.renderContestWithMostParticipants(stat as ContestWithMostParticipants);
-    else if (kind == "contest_with_most_ex_aequo")
+    else if (kind === "contest_with_most_ex_aequo")
       body = this.renderContestWithMostExAequo(stat as ContestWithMostExAequo);
-    else if (kind == "most_northern_contest") body = this.renderMostNorthenContest(stat as MostNorthenContest);
-    else if (kind == "most_southern_contest") body = this.renderMostSouthernContest(stat as MostSouthernContest);
-    else if (kind == "num_boys_girls") body = this.renderNumBoysGirls(stat as NumBoysGirls);
-    else if (kind == "num_participants_per_year")
+    else if (kind === "most_northern_contest") body = this.renderMostNorthenContest(stat as MostNorthenContest);
+    else if (kind === "most_southern_contest") body = this.renderMostSouthernContest(stat as MostSouthernContest);
+    else if (kind === "num_boys_girls") body = this.renderNumBoysGirls(stat as NumBoysGirls);
+    else if (kind === "num_participants_per_year")
       body = this.renderNumParticipantsPerYear(stat as NumParticipantsPerYear);
-    else if (kind == "most_used_location") body = this.renderMostUsedLocation(stat as MostUsedLocation);
+    else if (kind === "most_used_location") body = this.renderMostUsedLocation(stat as MostUsedLocation);
     else return null;
     return (
       <div className="card border-success">

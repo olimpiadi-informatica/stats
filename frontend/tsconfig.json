@@ -1,45 +1,19 @@
 {
-  "include": ["src", "declarations"],
-  "exclude": ["node_modules", "**/*.test.js"],
   "compilerOptions": {
     "target": "es5",
-    "module": "esnext",
-    "lib": ["esnext", "dom"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "checkJs": false,
-    "jsx": "react",
-    "sourceMap": true,
-    "removeComments": true,
-    "noEmit": true,
-    "importHelpers": true,
-    "downlevelIteration": true,
-    "isolatedModules": false,
-
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-
-    "moduleResolution": "node",
-    "baseUrl": "./",
-    "paths": {},
-    "rootDirs": [],
-    "typeRoots": [],
-    "types": ["node"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
-    "sourceRoot": "./",
-    "mapRoot": "./",
-    "inlineSourceMap": false,
-    "inlineSources": true,
-
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  }
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react"
+  },
+  "include": ["src", "declarations"]
 }
