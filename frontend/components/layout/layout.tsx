@@ -2,15 +2,16 @@ import React from "react";
 import styles from "./layout.module.scss";
 import Image from "next/image";
 import Link from "next/link";
-import { Search } from "./search";
+import { Container } from "react-bootstrap";
+import { Navbar } from "./navbar";
 
 type Props = {
-  children: React.ReactFragment;
+  children: React.ReactNode;
 };
 
 export function Layout({ children }: Props) {
   return (
-    <div className={styles.container}>
+    <Container className={styles.container}>
       <div>
         <Link href={"/"}>
           <a>
@@ -23,33 +24,8 @@ export function Layout({ children }: Props) {
           </a>
         </Link>
       </div>
-      <nav className={styles.navbar}>
-        <div className={styles.navbarLink}>
-          <Link href="/">Home</Link>
-        </div>
-        <div className={styles.navbarLink}>
-          <Link href="/contests">Contests</Link>
-        </div>
-        <div className={styles.navbarLink}>
-          <Link href="/contestants">Hall of Fame</Link>
-        </div>
-        <div className={styles.navbarLink}>
-          <Link href="/regions">Regions</Link>
-        </div>
-        <div className={styles.navbarLink}>
-          <Link href="/tasks">Tasks</Link>
-        </div>
-        <div className={styles.navbarLink}>
-          <Link href="/contribute">Contribute</Link>
-        </div>
-        <div className={styles.navbarLink}>
-          <Link href="/about">About</Link>
-        </div>
-        <div>
-          <Search />
-        </div>
-      </nav>
+      <Navbar />
       {children}
-    </div>
+    </Container>
   );
 }
