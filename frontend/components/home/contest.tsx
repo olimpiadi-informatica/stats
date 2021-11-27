@@ -15,14 +15,14 @@ import Link from "next/link";
 import styles from "./tile.module.scss";
 import { ContestLocation } from "lib/remote/contest";
 import { SimpleMap } from "components/graphs/simpleMap";
-// import {
-//   AreaChart,
-//   Area,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-// } from "recharts";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 
 function ContestImage({ year }: { year: number }) {
   return (
@@ -108,36 +108,35 @@ function MostSouthernContestTile({ stat }: { stat: MostSouthernContest }) {
 }
 
 function NumBoysGirlsTile({ stat }: { stat: NumBoysGirls }) {
-  // return (
-  //   <AreaChart
-  //     width={300}
-  //     height={350}
-  //     data={stat.num_boys_girls.years}
-  //     className={styles.image}
-  //   >
-  //     <CartesianGrid strokeDasharray="3 3" />
-  //     <XAxis dataKey="year" />
-  //     <YAxis width={30} />
-  //     <Tooltip />
-  //     <Area
-  //       type="monotone"
-  //       dataKey="num_boys"
-  //       stackId="1"
-  //       stroke="#99ebff"
-  //       fill="#99ebff"
-  //       name="Boys"
-  //     />
-  //     <Area
-  //       type="monotone"
-  //       dataKey="num_girls"
-  //       stackId="1"
-  //       stroke="#ffb3cb"
-  //       fill="#ffb3cb"
-  //       name="Girls"
-  //     />
-  //   </AreaChart>
-  // );
-  return <p>github is down, cannot install package</p>;
+  return (
+    <AreaChart
+      width={300}
+      height={350}
+      data={stat.num_boys_girls.years}
+      className={styles.image}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="year" />
+      <YAxis width={30} />
+      <Tooltip />
+      <Area
+        type="monotone"
+        dataKey="num_boys"
+        stackId="1"
+        stroke="#99ebff"
+        fill="#99ebff"
+        name="Boys"
+      />
+      <Area
+        type="monotone"
+        dataKey="num_girls"
+        stackId="1"
+        stroke="#ffb3cb"
+        fill="#ffb3cb"
+        name="Girls"
+      />
+    </AreaChart>
+  );
 }
 
 function MostGirlsTile({ stat }: { stat: MostGirls }) {
@@ -156,28 +155,27 @@ function NumParticipantsPerYearTile({
 }: {
   stat: NumParticipantsPerYear;
 }) {
-  // return (
-  //   <AreaChart
-  //     width={300}
-  //     height={350}
-  //     data={stat.num_participants_per_year.years}
-  //     className={styles.image}
-  //   >
-  //     <CartesianGrid strokeDasharray="3 3" />
-  //     <XAxis dataKey="year" />
-  //     <YAxis width={30} />
-  //     <Tooltip />
-  //     <Area
-  //       type="monotone"
-  //       dataKey="num_participants"
-  //       stackId="1"
-  //       stroke="#226600"
-  //       fill="#4ce600"
-  //       name="Participants"
-  //     />
-  //   </AreaChart>
-  // );
-  return <p>github is down, cannot install package</p>;
+  return (
+    <AreaChart
+      width={300}
+      height={350}
+      data={stat.num_participants_per_year.years}
+      className={styles.image}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="year" />
+      <YAxis width={30} />
+      <Tooltip />
+      <Area
+        type="monotone"
+        dataKey="num_participants"
+        stackId="1"
+        stroke="#226600"
+        fill="#4ce600"
+        name="Participants"
+      />
+    </AreaChart>
+  );
 }
 
 function MostUsedLocationTile({ stat }: { stat: MostUsedLocation }) {

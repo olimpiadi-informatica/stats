@@ -14,6 +14,7 @@
     "react-bootstrap": "^2.0.2",
     "react-dom": "17.0.2",
     "react-simple-maps": "^2.3.0",
+    "recharts": "^2.1.6",
     "sass": "^1.43.5",
     "swr": "^1.0.1"
   },
