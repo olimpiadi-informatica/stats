@@ -302,6 +302,7 @@ fn get_most_used_location(conn: &DbConn, results: &mut Vec<ContestStat>) -> Resu
     let query = "SELECT
         location, gmaps, latitude, longitude, COUNT(*) AS num
         FROM contests
+        WHERE location IS NOT NULL
         GROUP BY latitude, longitude
         ORDER BY num DESC
         LIMIT 2";
