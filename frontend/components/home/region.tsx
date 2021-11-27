@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   RegionWithMostFirstPlaces,
   RegionWithMostMedals,
@@ -7,10 +8,24 @@ import {
 } from "lib/remote/home";
 import { Tile } from "./tile";
 import Link from "next/link";
+import styles from "./tile.module.scss";
 import { round } from "lib/round";
 
 function RegionImage({ id }: { id: string }) {
-  return <p>{id}</p>;
+  return (
+    <Link href={`/region/${id}`}>
+      <a>
+        <img
+          className={styles.image}
+          src={`/static/regions/${id}.svg`}
+          alt={id}
+          onError={(event: any) => {
+            event.target.style = "display: none";
+          }}
+        />
+      </a>
+    </Link>
+  );
 }
 
 function RegionLink({ id, name }: { id: string; name: string }) {
