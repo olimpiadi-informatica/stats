@@ -1,4 +1,5 @@
-import { ROOT_URL, Contestant } from "./common";
+import { ROOT_URL, Contestant, Loadable, fetcher } from "./common";
+import useSWR from "swr";
 
 export type ContestLocation = {
   location: string | null;
@@ -51,6 +52,10 @@ export type ContestItem = ContestBase & {
   tasks: ContestInfoTask[];
 };
 
+export type ContestList = {
+  contests: ContestItem[];
+};
+
 export type ContestDetail = ContestBase & {
   navigation: {
     current: number;
@@ -86,11 +91,15 @@ export type ContestResults = {
   results: ContestResultItem[];
 };
 
-// async function loadContestList(): Promise<ContestItem[]> = {
-//   return axios.get(`${ROOT_URL}/contests`).then(res => {
-//     return res.data.contests;
-//   });
-// }
+export function useContestList(): Loadable<ContestList> {
+  const { data, error } = useSWR(`${ROOT_URL}/contests`, fetcher);
+
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+}
 
 // async function loadContestDetail(year: number): Promise<ContestDetail> {
 //   return axios.get(`${ROOT_URL}/contests/${year}`).then(res => {
@@ -103,15 +112,3 @@ export type ContestResults = {
 //     return res.data;
 //   });
 // }
-
-// export {
-//   ContestItem,
-//   ContestDetail,
-//   ContestDetailTask,
-//   ContestMedalInfo,
-//   ContestResults,
-//   ContestLocation,
-//   loadContestList,
-//   loadContestDetail,
-//   loadContestResults,
-// };

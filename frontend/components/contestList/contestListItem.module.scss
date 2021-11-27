@@ -1,0 +1,72 @@
+@import "styles/bootstrap.module.scss";
+
+$image-width: 125px;
+$info-width: 400px;
+$image-height: 100px;
+
+.layout {
+  display: grid;
+
+  grid-template-areas:
+    "title"
+    "image"
+    "info"
+    "medals";
+  row-gap: 10px;
+  column-gap: 30px;
+
+  @include media-breakpoint-up(md) {
+    grid-template-columns: $image-width auto;
+    grid-template-areas:
+      "title title"
+      "image info"
+      "medals medals";
+    row-gap: 10px;
+    column-gap: 30px;
+  }
+
+  @include media-breakpoint-up(lg) {
+    grid-template-columns: $image-width $info-width auto;
+    grid-template-areas:
+      "title title title"
+      "image info medals";
+    row-gap: 10px;
+    column-gap: 30px;
+  }
+}
+
+.title {
+  grid-area: title;
+
+  h2 {
+    font-size: 1.1rem;
+    margin: 0;
+
+    @include media-breakpoint-down(md) {
+      text-align: center;
+    }
+  }
+}
+
+.image {
+  grid-area: image;
+
+  .imageWrapper {
+    position: relative;
+    display: block;
+    width: $image-width;
+    height: $image-height;
+
+    @include media-breakpoint-down(md) {
+      margin: 0 auto;
+    }
+  }
+}
+
+.info {
+  grid-area: info;
+}
+
+.medals {
+  grid-area: medals;
+}
