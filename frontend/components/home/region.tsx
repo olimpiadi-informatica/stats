@@ -82,11 +82,7 @@ function RegionWithMostParticipantsTile({
   );
 }
 
-type Props = {
-  stat: StatsRegion;
-};
-
-export function RegionTile({ stat }: Props) {
+export function RegionTile({ stat }: { stat: StatsRegion }) {
   let content = null;
   if ("region_with_most_medals" in stat) {
     content = <RegionWithMostMedalTile stat={stat} />;

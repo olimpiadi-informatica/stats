@@ -1,0 +1,11 @@
+.medals {
+  display: flex;
+  justify-content: center;
+}
+
+.medal {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  text-align: center;
+}

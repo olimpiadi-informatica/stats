@@ -1,9 +1,21 @@
 .tile {
   display: inline-block;
+  width: 100%;
   padding: 20px;
   margin-bottom: 0.75rem;
 }
 
+.image {
+  width: 100%;
+  border-top-left-radius: calc(0.25rem - 1px);
+  border-top-right-radius: calc(0.25rem - 1px);
+  margin-bottom: 10px;
+}
+
 .tileRegion {
   border-color: #007bff;
+}
+
+.tileUser {
+  border-color: #dc3545;
 }

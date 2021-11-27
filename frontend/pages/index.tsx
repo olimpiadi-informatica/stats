@@ -6,15 +6,22 @@ import { Loading } from "components/loading/loading";
 import { Error } from "components/error/error";
 import { RegionTile } from "components/home/region";
 import { TilesContainer } from "components/home/tilesContainer";
+import { sample, shuffle } from "lib/random";
+import { UserTile } from "components/home/user";
 
 const HomeInner = ({ data, isLoading, isError }: Loadable<Stats>) => {
   if (isError) return <Error error={isError} />;
   if (isLoading) return <Loading />;
 
   const tiles = [];
-  for (const stat of data.region) {
-    tiles.push(<RegionTile stat={stat} />);
+  for (const stat of sample(data.region, 2)) {
+    tiles.push(<RegionTile key={JSON.stringify(stat)} stat={stat} />);
   }
+  for (const stat of sample(data.user, 2)) {
+    tiles.push(<UserTile key={JSON.stringify(stat)} stat={stat} />);
+  }
+  shuffle(tiles);
+
   return (
     <>
       <TilesContainer tiles={tiles} />
