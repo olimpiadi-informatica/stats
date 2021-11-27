@@ -173,6 +173,13 @@ export type NumBoysGirls = {
   };
 };
 
+export type MostGirls = {
+  contest_with_most_girls: {
+    year: number;
+    num_girls: number;
+  };
+};
+
 export type NumParticipantsPerYear = {
   num_participants_per_year: {
     years: {
@@ -195,6 +202,7 @@ export type StatsContest =
   | MostNorthenContest
   | MostSouthernContest
   | NumBoysGirls
+  | MostGirls
   | NumParticipantsPerYear
   | MostUsedLocation;
 

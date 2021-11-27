@@ -5,6 +5,8 @@ import { Card } from "react-bootstrap";
 const variantStyles = {
   region: styles.tileRegion,
   user: styles.tileUser,
+  task: styles.tileTask,
+  contest: styles.tileContest,
 };
 
 type Props = {

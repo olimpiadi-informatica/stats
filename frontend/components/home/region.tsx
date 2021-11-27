@@ -22,7 +22,7 @@ function RegionWithMostMedalTile({ stat }: { stat: RegionWithMostMedals }) {
   return (
     <div>
       <RegionImage id={first.id} />
-      The region that wont the highest number of medals is{" "}
+      The region that won the highest number of medals is{" "}
       <RegionLink id={first.id} name={first.name} /> with{" "}
       {first.num_medals.gold} golds, {first.num_medals.silver} silvers and{" "}
       {first.num_medals.bronze} bronzes. At second place there is{" "}
