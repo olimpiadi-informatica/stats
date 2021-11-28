@@ -56,6 +56,7 @@ pub struct UserDetailParticipation {
     pub ioi: bool,
     pub medal: Option<Medal>,
     pub rank: Option<usize>,
+    pub region: Option<String>,
     pub scores: Vec<UserDetailScore>,
 }
 
@@ -129,6 +130,7 @@ pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Erro
             ioi: participation.IOI.unwrap_or(false),
             medal: medal_from_string(&participation.medal),
             rank: participation.position.map(|p| p as usize),
+            region: participation.region,
             scores: scores
                 .iter()
                 .map(|s| UserDetailScore {
@@ -143,6 +145,7 @@ pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Erro
                 .collect(),
         });
     }
+    result.sort_unstable_by_key(|c| -c.year);
     Ok(UserDetail {
         contestant: contestant_from_user(&user),
         participations: result,
