@@ -259,7 +259,7 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
         .iter()
         .map(|p| p.0.contest_year)
         .collect::<Vec<Year>>();
-    contest_years.sort_unstable();
+    contest_years.sort_unstable_by_key(|y| -y);
     contest_years.dedup();
     let mut user_ids = participations
         .iter()
