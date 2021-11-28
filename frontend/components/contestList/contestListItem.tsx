@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { ContestItem } from "lib/remote/contest";
 import { Row, Col } from "react-bootstrap";
 import Link from "next/link";
@@ -36,11 +37,12 @@ export function ContestListItem({ contest }: Props) {
       <div className={styles.image}>
         <Link href={`/contest/${contest.year}`}>
           <a className={styles.imageWrapper}>
-            <Image
+            <img
               src={`/static/contests/${contest.year}.jpg`}
               alt={`Contest ${contest.year}`}
-              layout="fill"
-              objectFit="contain"
+              onError={(event: any) => {
+                event.target.style = "display: none";
+              }}
             />
           </a>
         </Link>
