@@ -1,12 +1,20 @@
+@import "styles/bootstrap.module.scss";
+
 .wrapper {
-  display: block;
-  width: 100%;
+  // hack: this makes sure that with small screens the table will not grow the wrapper
+  @include media-breakpoint-down(sm) {
+    max-width: calc(100vw - 4 * var(--bs-gutter-x, 0.75rem));
+  }
+  @include media-breakpoint-only(sm) {
+    max-width: calc(540px - 4 * var(--bs-gutter-x, 0.75rem));
+  }
+  padding: 0;
   overflow-x: auto;
 }
 
 .table {
-  min-width: 600px;
   width: 100%;
+  min-width: 700px;
 
   & > thead {
     background-color: #28a745;

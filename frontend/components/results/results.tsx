@@ -52,7 +52,7 @@ export function Results({ results, contest }: Props) {
     return rankA - rankB;
   });
   return (
-    <div className={styles.wrapper}>
+    <div className={`container ${styles.wrapper}`}>
       <Table className={styles.table}>
         <thead>
           <tr>

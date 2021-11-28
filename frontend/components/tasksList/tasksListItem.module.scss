@@ -1,14 +1,23 @@
+@import "styles/bootstrap.module.scss";
 @import "styles/variables.module.scss";
 
 .layout {
   display: grid;
-
-  grid-template-columns: $task-image-width $task-info-width;
-  grid-template-areas:
-    "title title"
-    "image info";
   row-gap: $row-gap;
   column-gap: $column-gap;
+
+  grid-template-areas:
+    "title"
+    "image"
+    "info";
+  grid-template-columns: auto;
+
+  @include media-breakpoint-up(md) {
+    grid-template-columns: $task-image-width $task-info-width;
+    grid-template-areas:
+      "title title"
+      "image info";
+  }
 }
 
 .title {
@@ -23,6 +32,10 @@
     width: $task-image-width;
     height: $task-image-height;
     object-fit: contain;
+
+    @include media-breakpoint-down(md) {
+      margin: 0 auto;
+    }
   }
 }
 

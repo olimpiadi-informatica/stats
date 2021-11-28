@@ -1,3 +1,5 @@
+@import "styles/bootstrap.module.scss";
+
 .score {
   display: inline-block;
   min-width: 3.5em;
@@ -5,4 +7,9 @@
   text-align: center;
   font-weight: 700;
   font-size: 75%;
+
+  @include media-breakpoint-down(lg) {
+    display: block;
+    margin: 0 auto;
+  }
 }
