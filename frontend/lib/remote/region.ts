@@ -1,5 +1,13 @@
 import { ContestLocation } from "./contest";
-import { ROOT_URL, Contestant, NumMedals, Medal } from "./common";
+import {
+  ROOT_URL,
+  Contestant,
+  NumMedals,
+  Medal,
+  Loadable,
+  fetcher,
+} from "./common";
+import useSWR from "swr";
 
 export type RegionItem = {
   id: string;
@@ -54,11 +62,19 @@ export type RegionResults = {
   results: RegionResultsYear[];
 };
 
-// async function loadRegionsList(): Promise<RegionItem[]> {
-//   return axios.get(`${ROOT_URL}/regions`).then(res => {
-//     return res.data.regions;
-//   });
-// }
+export type RegionList = {
+  regions: RegionItem[];
+};
+
+export function useRegionList(): Loadable<RegionList> {
+  const { data, error } = useSWR(`${ROOT_URL}/regions`, fetcher);
+
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+}
 
 // async function loadRegionDetail(id: string): Promise<RegionDetail> {
 //   return axios.get(`${ROOT_URL}/regions/${id}`).then(res => {
@@ -71,13 +87,3 @@ export type RegionResults = {
 //     return res.data;
 //   });
 // }
-
-// export {
-//   RegionItem,
-//   RegionDetail,
-//   RegionResults,
-//   RegionResultsYear,
-//   loadRegionsList,
-//   loadRegionDetail,
-//   loadRegionResults,
-// };

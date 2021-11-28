@@ -1,0 +1,69 @@
+@import "styles/bootstrap.module.scss";
+@import "styles/variables.module.scss";
+
+.layout {
+  display: grid;
+
+  grid-template-areas:
+    "title"
+    "image"
+    "info"
+    "medals";
+  row-gap: $row-gap;
+  column-gap: $column-gap;
+
+  @include media-breakpoint-up(md) {
+    grid-template-columns: $region-image-width auto;
+    grid-template-areas:
+      "title title"
+      "image info"
+      "medals medals";
+    row-gap: $row-gap;
+    column-gap: $column-gap;
+  }
+
+  @include media-breakpoint-up(lg) {
+    grid-template-columns: $region-image-width $region-info-width auto;
+    grid-template-areas:
+      "title title title"
+      "image info medals";
+    row-gap: $row-gap;
+    column-gap: $column-gap;
+  }
+}
+
+.title {
+  grid-area: title;
+
+  h2 {
+    font-size: 1.1rem;
+    margin: 0;
+
+    @include media-breakpoint-down(md) {
+      text-align: center;
+    }
+  }
+}
+
+.image {
+  grid-area: image;
+
+  img {
+    display: block;
+    width: $region-image-width;
+    height: $region-image-height;
+    object-fit: contain;
+
+    @include media-breakpoint-down(md) {
+      margin: 0 auto;
+    }
+  }
+}
+
+.info {
+  grid-area: info;
+}
+
+.medals {
+  grid-area: medals;
+}
