@@ -6,6 +6,7 @@ import { ContestInfo } from "./contestInfo";
 import { Medals } from "components/medals/medals";
 import { TasksList } from "components/tasksList/tasksList";
 import { Results } from "components/results/results";
+import { useState } from "react";
 
 type Props = {
   contest: ContestDetail;
@@ -14,6 +15,8 @@ type Props = {
 };
 
 export function Contest({ contest, year, results }: Props) {
+  const [imgOk, setImgOk] = useState<boolean>(true);
+
   const medals = {
     gold: contest.medals.gold.number,
     silver: contest.medals.silver.number,
@@ -30,13 +33,15 @@ export function Contest({ contest, year, results }: Props) {
         {contest.location.location} {year}
       </h1>
       <div className={styles.logo}>
-        <img
-          src={`/static/contests/${year}.jpg`}
-          alt={`Contest ${year}`}
-          onError={(event: any) => {
-            event.target.style = "display: none";
-          }}
-        />
+        {imgOk && (
+          <img
+            src={`/static/contests/${year}.jpg`}
+            alt={`Contest ${year}`}
+            onError={(event: any) => {
+              setImgOk(false);
+            }}
+          />
+        )}
       </div>
       <div className={styles.info}>
         <ContestInfo contest={contest} />
