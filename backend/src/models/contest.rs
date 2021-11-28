@@ -45,6 +45,7 @@ pub struct ContestNavigation {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestTask {
+    pub contest_year: Year,
     pub name: String,
     pub title: String,
     pub link: Option<String>,
@@ -63,6 +64,7 @@ pub struct ContestInfoMedals {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestDetail {
+    pub year: Year,
     pub navigation: ContestNavigation,
     pub location: ContestLocation,
     pub region: Option<String>,
@@ -76,6 +78,7 @@ pub struct ContestDetail {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ContestTaskShortDetail {
+    pub contest_year: Year,
     pub name: String,
     pub title: String,
     pub link: Option<String>,
@@ -159,10 +162,7 @@ pub fn get_num_contests(conn: &DbConn) -> Result<u64, Error> {
         .map(|c| c as u64)
 }
 
-pub fn get_contest_info_medal(
-    participations: &[Participation],
-    medal: &str,
-) -> ContestInfoMedal {
+pub fn get_contest_info_medal(participations: &[Participation], medal: &str) -> ContestInfoMedal {
     let medalist: Vec<&Participation> = participations
         .iter()
         .filter(|part| part.medal.as_ref().map_or(false, |m| m.as_str() == medal))
@@ -214,6 +214,7 @@ pub fn get_contest_task(task: &Task, task_scores: &[TaskScore]) -> ContestTask {
     let sum_score = fold_with_none(Some(0.0), task_scores.iter(), |m, s| add_option(m, s.score));
     let avg_score = sum_score.map(|sum| sum / (task_scores.len() as f32));
     ContestTask {
+        contest_year: task.contest_year,
         name: task.name.clone(),
         title: task.title.clone(),
         link: task.link.clone(),
@@ -236,6 +237,7 @@ pub fn get_contest_detail(conn: DbConn, year: Year) -> Result<ContestDetail, Err
     let num_contestants = zero_is_none(participations.len());
 
     Ok(ContestDetail {
+        year,
         navigation: get_contest_navigation(year, conn)?,
         location: get_contest_location(&contest),
         region: contest.region.clone(),
@@ -297,6 +299,7 @@ pub fn get_contest_short_detail_list(conn: &DbConn) -> Result<ContestsInfo, Erro
             tasks: tasks
                 .iter()
                 .map(|t| ContestTaskShortDetail {
+                    contest_year: contest.year,
                     name: t.name.clone(),
                     title: t.title.clone(),
                     link: t.link.clone(),

@@ -33,6 +33,7 @@ pub struct TaskNavigation {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskInfo {
+    pub contest_year: Year,
     pub name: String,
     pub title: String,
     pub link: Option<String>,
@@ -63,6 +64,7 @@ pub struct TaskDetailScore {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskDetail {
+    contest_year: Year,
     title: String,
     link: Option<String>,
     index: usize,
@@ -187,6 +189,7 @@ pub fn get_task_list(conn: &DbConn) -> Result<TaskList, Error> {
             });
             let avg_score = sum_score.map(|sum| sum / (scores.len() as f32));
             task_info.push(TaskInfo {
+                contest_year: year,
                 name: task.name.clone(),
                 title: task.title.clone(),
                 link: task.link.clone(),
@@ -232,6 +235,7 @@ pub fn get_task_detail(year: Year, task_name: String, conn: DbConn) -> Result<Ta
             .unwrap_or(Ordering::Equal)
     });
     Ok(TaskDetail {
+        contest_year: year,
         title: task.title.clone(),
         link: task.link.clone(),
         index: task.index as usize,
