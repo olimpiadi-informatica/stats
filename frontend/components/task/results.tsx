@@ -42,39 +42,37 @@ function Scores({ year, scores, numTasks }: ScoresProps) {
 
 export function Results({ task }: { task: TaskDetail }) {
   return (
-    <div className={`container ${styles.wrapper}`}>
-      <Table className={styles.table}>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Contestant</th>
-            <th>Score</th>
+    <Table className={styles.table} style={{ minWidth: 0 }}>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Contestant</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {task.scores.map((cont) => (
+          <tr key={cont.contestant.id}>
+            <td>{cont.rank ?? "?"}</td>
+            <td>
+              <Link href={`/contestant/${cont.contestant.id}`}>
+                <a>
+                  {cont.contestant.first_name} {cont.contestant.last_name}
+                </a>
+              </Link>
+              {cont.ioi && (
+                <>
+                  {" "}
+                  <Badge pill bg="success">
+                    IOI
+                  </Badge>
+                </>
+              )}
+            </td>
+            <td>{round(cont.score, 2)}</td>
           </tr>
-        </thead>
-        <tbody>
-          {task.scores.map((cont) => (
-            <tr key={cont.contestant.id}>
-              <td>{cont.rank ?? "?"}</td>
-              <td>
-                <Link href={`/contestant/${cont.contestant.id}`}>
-                  <a>
-                    {cont.contestant.first_name} {cont.contestant.last_name}
-                  </a>
-                </Link>
-                {cont.ioi && (
-                  <>
-                    {" "}
-                    <Badge pill bg="success">
-                      IOI
-                    </Badge>
-                  </>
-                )}
-              </td>
-              <td>{round(cont.score, 2)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
+        ))}
+      </tbody>
+    </Table>
   );
 }
