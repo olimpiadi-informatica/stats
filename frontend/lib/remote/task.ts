@@ -1,4 +1,5 @@
-import { ROOT_URL, Contestant } from "./common";
+import { ROOT_URL, Contestant, Loadable, fetcher, Error } from "./common";
+import useSWR from "swr";
 
 export type TaskItem = {
   contest_year: number;
@@ -30,6 +31,7 @@ type TaskDetailScore = {
 
 export type TaskDetail = {
   contest_year: number;
+  name: string;
   title: string;
   link: string | null;
   index: number;
@@ -42,16 +44,24 @@ export type TaskDetail = {
   scores: TaskDetailScore[];
 };
 
-// async function loadTasksList(): Promise<TaskYear[]> {
-//   return axios.get(`${ROOT_URL}/tasks`).then(res => {
-//     return res.data.tasks;
-//   });
-// }
+export type TaskList = {
+  tasks: TaskYear[];
+};
 
-// async function loadTaskDetail(year: number, name: string): Promise<TaskDetail> {
-//   return axios.get(`${ROOT_URL}/tasks/${year}/${name}`).then(res => {
-//     return res.data;
-//   });
-// }
+export function useTaskList(): Loadable<TaskList> {
+  const { data, error } = useSWR(`${ROOT_URL}/tasks`, fetcher);
 
-// export { TaskYear, TaskItem, TaskDetail, loadTasksList, loadTaskDetail };
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+}
+
+export async function loadTask(
+  year: number,
+  name: string
+): Promise<TaskDetail | Error> {
+  const res = await fetch(`${ROOT_URL}/tasks/${year}/${name}`);
+  return await res.json();
+}

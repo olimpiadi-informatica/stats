@@ -1,15 +1,18 @@
 import { ContestInfoTask } from "lib/remote/contest";
 import { Row, Col } from "react-bootstrap";
 import Link from "next/link";
+import { TaskDetail } from "lib/remote/task";
 
-export function TaskInfo({ task }: { task: ContestInfoTask }) {
+export function TaskInfo({ task }: { task: ContestInfoTask | TaskDetail }) {
   return (
     <Row as="dl">
       <Col xs="9" sm="6" lg="3" as="dt">
         Year
       </Col>
       <Col xs="3" as="dd">
-        {task.contest_year}
+        <Link href={`/contest/${task.contest_year}`}>
+          <a>{task.contest_year}</a>
+        </Link>
       </Col>
       <Col xs="9" sm="6" lg="3" as="dt">
         Try this problem
@@ -33,7 +36,7 @@ export function TaskInfo({ task }: { task: ContestInfoTask }) {
           </Col>
         </>
       )}
-      {task.max_score && (
+      {"max_score" in task && task.max_score && (
         <>
           <Col xs="9" sm="6" lg="3" as="dt">
             Maximum score

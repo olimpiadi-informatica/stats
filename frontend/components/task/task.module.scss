@@ -1,0 +1,57 @@
+@import "styles/bootstrap.module.scss";
+@import "styles/variables.module.scss";
+
+.contest {
+  display: grid;
+
+  grid-template-areas:
+    "title"
+    "logo"
+    "info"
+    "results";
+  row-gap: $row-gap;
+  column-gap: $column-gap;
+
+  @include media-breakpoint-up(sm) {
+    grid-template-areas:
+      "title title"
+      "logo info"
+      "results results";
+    grid-template-columns: $task-image-width auto;
+  }
+  @include media-breakpoint-up(lg) {
+    grid-template-areas:
+      "title title"
+      "logo info"
+      "tasks tasks"
+      "results results results";
+    grid-template-columns: $task-image-width $task-info-width;
+  }
+}
+
+.title {
+  grid-area: title;
+}
+
+.logo {
+  grid-area: logo;
+
+  img {
+    display: block;
+    width: $task-image-width;
+    height: $task-image-height;
+    object-fit: contain;
+
+    @include media-breakpoint-down(md) {
+      margin: 0 auto;
+    }
+  }
+}
+
+.info {
+  grid-area: info;
+}
+
+.results {
+  grid-area: results;
+}
