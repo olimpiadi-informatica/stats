@@ -12,7 +12,7 @@ pub mod search;
 pub mod task;
 pub mod user;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct NumMedals {
     pub gold: Option<usize>,
     pub silver: Option<usize>,

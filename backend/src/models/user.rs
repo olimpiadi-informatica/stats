@@ -108,7 +108,10 @@ pub fn get_users_list(conn: &DbConn, users: &[User]) -> Result<UserList, Error> 
 
 pub fn get_all_users_list(conn: DbConn) -> Result<UserList, Error> {
     let users = get_users(&conn)?;
-    get_users_list(&conn, &users)
+    let mut users = get_users_list(&conn, &users)?;
+    users.users.sort_unstable_by_key(|u| u.num_medals);
+    users.users.reverse();
+    Ok(users)
 }
 
 pub fn get_user_detail(user_id: String, conn: DbConn) -> Result<UserDetail, Error> {

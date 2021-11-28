@@ -371,7 +371,13 @@ pub fn get_contest_results(year: Year, conn: DbConn) -> Result<ContestResults, E
         });
     }
 
-    results.sort_by_key(|r| r.rank);
+    results.sort_by_key(|r| {
+        (
+            r.rank.unwrap_or(usize::MAX),
+            r.contestant.first_name.clone(),
+            r.contestant.last_name.clone(),
+        )
+    });
 
     Ok(ContestResults {
         navigation: get_contest_navigation(year, conn)?,
