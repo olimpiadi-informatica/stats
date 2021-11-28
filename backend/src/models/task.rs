@@ -81,7 +81,7 @@ pub fn get_tasks_of_year(conn: &DbConn, year: Year) -> Result<Vec<Task>, Error> 
 
 pub fn get_tasks_by_year(conn: &DbConn) -> Result<Vec<(Year, Vec<Task>)>, Error> {
     Ok(schema::tasks::table
-        .order(schema::tasks::columns::contest_year)
+        .order(schema::tasks::columns::contest_year.desc())
         .then_order_by(schema::tasks::columns::index)
         .load::<Task>(&**conn)?
         .into_iter()
