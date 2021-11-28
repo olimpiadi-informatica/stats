@@ -1,0 +1,27 @@
+@import "styles/bootstrap.module.scss";
+@import "styles/variables.module.scss";
+
+.title {
+  margin-bottom: $row-gap;
+}
+
+.logo {
+  margin-bottom: $row-gap;
+  img {
+    display: block;
+    width: $region-image-width;
+    height: $region-image-height;
+    object-fit: contain;
+
+    margin: 0 auto;
+  }
+}
+
+.nav {
+  li:first-of-type {
+    margin-left: auto;
+  }
+  li:last-of-type {
+    margin-right: auto;
+  }
+}

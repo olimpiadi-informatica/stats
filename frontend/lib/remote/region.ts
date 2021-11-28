@@ -2,6 +2,7 @@ import { ContestLocation } from "./contest";
 import {
   ROOT_URL,
   Contestant,
+  Error,
   NumMedals,
   Medal,
   Loadable,
@@ -18,7 +19,7 @@ export type RegionItem = {
   hosted: number[];
 };
 
-type RegionDetailYear = {
+export type RegionDetailYear = {
   year: number;
   location: ContestLocation;
   num_contestants: number;
@@ -38,7 +39,7 @@ export type RegionDetail = {
   hosted: number[];
 };
 
-type RegionResultsYearContestantTask = {
+export type RegionResultsYearContestantTask = {
   name: string;
   score: number | null;
   max_score_possible: number | null;
@@ -76,14 +77,14 @@ export function useRegionList(): Loadable<RegionList> {
   };
 }
 
-// async function loadRegionDetail(id: string): Promise<RegionDetail> {
-//   return axios.get(`${ROOT_URL}/regions/${id}`).then(res => {
-//     return res.data;
-//   });
-// }
+export async function loadRegion(id: string): Promise<RegionDetail | Error> {
+  const res = await fetch(`${ROOT_URL}/regions/${id}`);
+  return await res.json();
+}
 
-// async function loadRegionResults(id: string): Promise<RegionResults> {
-//   return axios.get(`${ROOT_URL}/regions/${id}/results`).then(res => {
-//     return res.data;
-//   });
-// }
+export async function loadRegionResults(
+  id: string
+): Promise<RegionResults | Error> {
+  const res = await fetch(`${ROOT_URL}/regions/${id}/results`);
+  return await res.json();
+}
