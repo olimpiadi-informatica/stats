@@ -1,4 +1,11 @@
-import { ROOT_URL, Contestant, Loadable, fetcher, Error } from "./common";
+import {
+  ROOT_URL,
+  Contestant,
+  Loadable,
+  fetcher,
+  Error,
+  Medal,
+} from "./common";
 import useSWR from "swr";
 
 export type ContestLocation = {
@@ -80,7 +87,7 @@ type ContestResultItem = {
   score: number | null;
   ioi: boolean;
   scores: (number | null)[];
-  medal: string | null;
+  medal: Medal;
   past_participations: PastParticipation[];
 };
 

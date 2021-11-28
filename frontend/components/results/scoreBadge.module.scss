@@ -13,3 +13,12 @@
     margin: 0 auto;
   }
 }
+
+.task {
+  @include media-breakpoint-down(lg) {
+    display: inline-block;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+  }
+}

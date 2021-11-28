@@ -1,7 +1,15 @@
-import { ROOT_URL, Contestant, NumMedals, Loadable, fetcher } from "./common";
+import {
+  ROOT_URL,
+  Contestant,
+  NumMedals,
+  Loadable,
+  fetcher,
+  Error,
+  Medal,
+} from "./common";
 import useSWR from "swr";
 
-type ContestantParticipationScore = {
+export type ContestantParticipationScore = {
   task: string;
   score: number | null;
   max_score_possible: number | null;
@@ -10,8 +18,9 @@ type ContestantParticipationScore = {
 type ContestantParticipation = {
   year: number;
   ioi: boolean;
-  medal: string | null;
+  medal: Medal;
   rank: number | null;
+  region: string | null;
   scores: ContestantParticipationScore[];
 };
 
@@ -23,7 +32,7 @@ export type ContestantDetail = {
 type ContestantItemParticipation = {
   year: number;
   ioi: boolean;
-  medal: string | null;
+  medal: Medal;
 };
 
 export type ContestantItem = {
@@ -47,16 +56,9 @@ export function useContestantList(): Loadable<ContestantList> {
   };
 }
 
-// async function loadContestant(id: string): Promise<ContestantDetail> {
-//   return axios.get(`${ROOT_URL}/users/${id}`).then(res => {
-//     return res.data;
-//   });
-// }
-
-// async function loadContestantsList(): Promise<ContestantItem[]> {
-//   return axios.get(`${ROOT_URL}/users`).then(res => {
-//     return res.data.users;
-//   });
-// }
-
-// export { ContestantDetail, ContestantItem, loadContestant, loadContestantsList };
+export async function loadContestant(
+  id: string
+): Promise<ContestantDetail | Error> {
+  const res = await fetch(`${ROOT_URL}/users/${id}`);
+  return await res.json();
+}

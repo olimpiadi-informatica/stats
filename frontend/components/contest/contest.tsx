@@ -17,16 +17,6 @@ type Props = {
 export function Contest({ contest, year, results }: Props) {
   const [imgOk, setImgOk] = useState<boolean>(true);
 
-  const medals = {
-    gold: contest.medals.gold.number,
-    silver: contest.medals.silver.number,
-    bronze: contest.medals.bronze.number,
-  };
-  const cutoffs = {
-    gold: contest.medals.gold.cutoff,
-    silver: contest.medals.silver.cutoff,
-    bronze: contest.medals.bronze.cutoff,
-  };
   return (
     <div className={styles.contest}>
       <h1 className={`${commonStyles.pageHeader} ${styles.title}`}>
@@ -37,9 +27,7 @@ export function Contest({ contest, year, results }: Props) {
           <img
             src={`/static/contests/${year}.jpg`}
             alt={`Contest ${year}`}
-            onError={(event: any) => {
-              setImgOk(false);
-            }}
+            onError={() => setImgOk(false)}
           />
         )}
       </div>

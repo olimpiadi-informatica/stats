@@ -14,6 +14,8 @@ export type NumMedals = {
   bronze: number;
 };
 
+export type Medal = "gold" | "silver" | "bronze" | null;
+
 export const ROOT_URL =
   process.env.NEXT_PUBLIC_API_BASE_URI || "https://stats.olinfo.it/api";
 

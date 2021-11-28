@@ -34,7 +34,7 @@ export function ScoreBadge({ score, maxScore, year, task }: Props) {
         <span className={styles.score} style={{ color }}>
           {score === null ? "?" : round(score, 2)}
         </span>
-        {task}
+        <span className={styles.task}>{task}</span>
       </a>
     </Link>
   );

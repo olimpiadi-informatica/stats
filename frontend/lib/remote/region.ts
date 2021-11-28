@@ -1,5 +1,5 @@
 import { ContestLocation } from "./contest";
-import { ROOT_URL, Contestant, NumMedals } from "./common";
+import { ROOT_URL, Contestant, NumMedals, Medal } from "./common";
 
 export type RegionItem = {
   id: string;
@@ -40,7 +40,7 @@ type RegionResultsYearContestant = {
   contestant: Contestant;
   ioi: boolean;
   rank: number | null;
-  medal: "gold" | "silver" | "bronze" | null;
+  medal: Medal;
   task_scores: RegionResultsYearContestantTask[];
 };
 

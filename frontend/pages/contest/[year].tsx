@@ -17,16 +17,20 @@ type Props = {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = [];
+  for (let year = 2001; year <= 2021; year++) {
+    paths.push({ params: { year: "2021" } });
+  }
   return {
-    paths: [{ params: { year: "2021" } }],
+    paths,
     fallback: "blocking",
   };
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  if (!params) return { notFound: true, props: {} };
+  if (!params) return { notFound: true };
   const contestYear = parseInt(params.year as string, 10);
-  if (Number.isNaN(contestYear)) return { notFound: true, props: {} };
+  if (Number.isNaN(contestYear)) return { notFound: true };
 
   const contest = await loadContest(contestYear);
   const results = await loadContestResults(contestYear);
