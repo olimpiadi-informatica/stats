@@ -1,0 +1,43 @@
+.wrapper {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 600px;
+  width: 100%;
+
+  & > thead {
+    background-color: #28a745;
+    color: white;
+
+    & > tr > th {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+  }
+
+  & > tbody {
+    border-top: none !important;
+
+    tr {
+      height: 52px;
+
+      td {
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.medal {
+  text-align: center;
+  & > * {
+    margin: 0 auto;
+  }
+}
+
+.region {
+  text-align: center;
+}

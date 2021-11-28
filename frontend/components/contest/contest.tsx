@@ -1,17 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
-import { ContestDetail } from "lib/remote/contest";
+import { ContestDetail, ContestResults } from "lib/remote/contest";
 import styles from "./contest.module.scss";
 import commonStyles from "styles/common.module.scss";
 import { ContestInfo } from "./contestInfo";
 import { Medals } from "components/medals/medals";
 import { TasksList } from "components/tasksList/tasksList";
+import { Results } from "components/results/results";
 
 type Props = {
   contest: ContestDetail;
+  results: ContestResults;
   year: number;
 };
 
-export function Contest({ contest, year }: Props) {
+export function Contest({ contest, year, results }: Props) {
   const medals = {
     gold: contest.medals.gold.number,
     silver: contest.medals.silver.number,
@@ -46,7 +48,10 @@ export function Contest({ contest, year }: Props) {
         <h2 className={commonStyles.h2}>Tasks</h2>
         <TasksList tasks={contest.tasks} />
       </div>
-      <div className={styles.results}></div>
+      <div className={styles.results}>
+        <h2 className={commonStyles.h2}>Results</h2>
+        <Results contest={contest} results={results} />
+      </div>
     </div>
   );
 }

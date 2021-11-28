@@ -80,7 +80,7 @@ type ContestResultItem = {
   score: number | null;
   ioi: boolean;
   scores: (number | null)[];
-  medal: string;
+  medal: string | null;
   past_participations: PastParticipation[];
 };
 
@@ -111,14 +111,9 @@ export async function loadContest(
   return await res.json();
 }
 
-// async function loadContestDetail(year: number): Promise<ContestDetail> {
-//   return axios.get(`${ROOT_URL}/contests/${year}`).then(res => {
-//     return res.data;
-//   });
-// }
-
-// async function loadContestResults(year: number): Promise<ContestResults> {
-//   return axios.get(`${ROOT_URL}/contests/${year}/results`).then(res => {
-//     return res.data;
-//   });
-// }
+export async function loadContestResults(
+  year: number
+): Promise<ContestResults | Error> {
+  const res = await fetch(`${ROOT_URL}/contests/${year}/results`);
+  return await res.json();
+}
