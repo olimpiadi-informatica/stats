@@ -1,14 +1,13 @@
-import { ROOT_URL } from "./common";
+import { fetcher, Loadable, ROOT_URL } from "./common";
 import { ContestantItem } from "./user";
 import { TaskItem } from "./task";
 import { ContestItem } from "./contest";
 import { RegionItem } from "./region";
+import useSWR from "swr";
 
 export type SearchResultTask = {
-  task: {
-    year: number;
-    task: TaskItem;
-  };
+  year: number;
+  task: TaskItem;
 };
 
 export type SearchResultUser = {
@@ -25,12 +24,23 @@ export type SearchResultRegion = {
 
 export type SearchResult =
   | SearchResultUser
-  | SearchResultTask
+  | { task: SearchResultTask }
   | SearchResultContest
   | SearchResultRegion;
 
-// export async function loadSearchResults(q: string): Promise<SearchResult[]> {
-//   return axios.get(`${ROOT_URL}/search?q=${encodeURIComponent(q)}`).then(res => {
-//     return res.data.results;
-//   });
-// }
+export type SearchResultList = {
+  results: SearchResult[];
+};
+
+export function useSearchResults(q: string): Loadable<SearchResultList> {
+  const { data, error } = useSWR(
+    `${ROOT_URL}/search?q=${encodeURIComponent(q)}`,
+    fetcher
+  );
+
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+}
