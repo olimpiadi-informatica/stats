@@ -65,6 +65,7 @@ pub struct TaskDetailScore {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TaskDetail {
     contest_year: Year,
+    name: String,
     title: String,
     link: Option<String>,
     index: usize,
@@ -236,6 +237,7 @@ pub fn get_task_detail(year: Year, task_name: String, conn: DbConn) -> Result<Ta
     });
     Ok(TaskDetail {
         contest_year: year,
+        name: task_name.clone(),
         title: task.title.clone(),
         link: task.link.clone(),
         index: task.index as usize,
