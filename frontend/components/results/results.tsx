@@ -7,7 +7,7 @@ import {
 import Link from "next/link";
 import styles from "./results.module.scss";
 import { ScoreBadge } from "./scoreBadge";
-import { Table } from "react-bootstrap";
+import { Badge, Table } from "react-bootstrap";
 import { round } from "lib/round";
 
 type ScoresProps = {
@@ -74,6 +74,14 @@ export function Results({ results, contest }: Props) {
                     {user.contestant.first_name} {user.contestant.last_name}
                   </a>
                 </Link>
+                {user.ioi && (
+                  <>
+                    {" "}
+                    <Badge pill bg="success">
+                      IOI
+                    </Badge>
+                  </>
+                )}
               </td>
               <td>{user.score === null ? "?" : round(user.score, 2)}</td>
               <Scores
