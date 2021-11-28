@@ -324,6 +324,7 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
                     .collect(),
             });
         }
+        contestants.sort_unstable_by_key(|c| c.rank);
 
         result.push(RegionResult { year, contestants });
     }
