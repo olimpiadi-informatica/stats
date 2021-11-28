@@ -1,6 +1,7 @@
 import { ROOT_URL, Contestant } from "./common";
 
 export type TaskItem = {
+  contest_year: number;
   name: string;
   title: string;
   link: string | null;
@@ -28,6 +29,7 @@ type TaskDetailScore = {
 };
 
 export type TaskDetail = {
+  contest_year: number;
   title: string;
   link: string | null;
   index: number;

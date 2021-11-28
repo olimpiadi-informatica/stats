@@ -1,4 +1,4 @@
-import { ROOT_URL, Contestant, Loadable, fetcher } from "./common";
+import { ROOT_URL, Contestant, Loadable, fetcher, Error } from "./common";
 import useSWR from "swr";
 
 export type ContestLocation = {
@@ -8,11 +8,13 @@ export type ContestLocation = {
   longitude: number | null;
 };
 
-type ContestInfoTask = {
+export type ContestInfoTask = {
+  contest_year: number;
   name: string;
   title: string;
   link: string | null;
   index: number;
+  max_score: number | null;
   max_score_possible: number | null;
 };
 
@@ -28,6 +30,7 @@ export type ContestMedalInfo = {
 };
 
 export type ContestDetailTask = {
+  contest_year: number;
   name: string;
   title: string;
   link: string | null;
@@ -37,7 +40,7 @@ export type ContestDetailTask = {
   avg_score: number | null;
 };
 
-type ContestBase = {
+export type ContestBase = {
   location: ContestLocation;
   region: string | null;
   num_contestants: number | null;
@@ -99,6 +102,13 @@ export function useContestList(): Loadable<ContestList> {
     isLoading: !error && !data,
     isError: error,
   };
+}
+
+export async function loadContest(
+  year: number
+): Promise<ContestDetail | Error> {
+  const res = await fetch(`${ROOT_URL}/contests/${year}`);
+  return await res.json();
 }
 
 // async function loadContestDetail(year: number): Promise<ContestDetail> {

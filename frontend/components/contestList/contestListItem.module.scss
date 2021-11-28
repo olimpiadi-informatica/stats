@@ -1,8 +1,5 @@
 @import "styles/bootstrap.module.scss";
-
-$image-width: 125px;
-$info-width: 400px;
-$image-height: 100px;
+@import "styles/variables.module.scss";
 
 .layout {
   display: grid;
@@ -12,26 +9,26 @@ $image-height: 100px;
     "image"
     "info"
     "medals";
-  row-gap: 10px;
-  column-gap: 30px;
+  row-gap: $row-gap;
+  column-gap: $column-gap;
 
   @include media-breakpoint-up(md) {
-    grid-template-columns: $image-width auto;
+    grid-template-columns: $contest-image-width auto;
     grid-template-areas:
       "title title"
       "image info"
       "medals medals";
-    row-gap: 10px;
-    column-gap: 30px;
+    row-gap: $row-gap;
+    column-gap: $column-gap;
   }
 
   @include media-breakpoint-up(lg) {
-    grid-template-columns: $image-width $info-width auto;
+    grid-template-columns: $contest-image-width $contest-info-width auto;
     grid-template-areas:
       "title title title"
       "image info medals";
-    row-gap: 10px;
-    column-gap: 30px;
+    row-gap: $row-gap;
+    column-gap: $column-gap;
   }
 }
 
@@ -51,17 +48,11 @@ $image-height: 100px;
 .image {
   grid-area: image;
 
-  .imageWrapper {
-    position: relative;
+  img {
     display: block;
-    width: $image-width;
-    height: $image-height;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+    width: $contest-image-width;
+    height: $contest-image-height;
+    object-fit: contain;
 
     @include media-breakpoint-down(md) {
       margin: 0 auto;

@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { Layout } from "components/layout/layout";
 import { Stats, useStats } from "lib/remote/home";
 import { Loadable } from "lib/remote/common";
@@ -42,14 +41,6 @@ export default function Home() {
 
   return (
     <Layout>
-      <Head>
-        <title>OII Stats</title>
-        <meta
-          name="description"
-          content="OII stats is a platform that was created to provide essential but reliable statistics on the progress of the national competitions of the Italian IT Olympics."
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <HomeInner data={data} isLoading={isLoading} isError={isError} />
     </Layout>
   );

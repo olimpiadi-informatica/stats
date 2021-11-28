@@ -1,0 +1,45 @@
+@import "styles/variables.module.scss";
+
+.contest {
+  display: grid;
+
+  grid-template-areas:
+    "title title title"
+    "logo info medals"
+    "tasks tasks tasks"
+    "results results results";
+  grid-template-columns: $contest-image-width $contest-info-width auto;
+  row-gap: $row-gap;
+  column-gap: $column-gap;
+}
+
+.title {
+  grid-area: title;
+}
+
+.logo {
+  grid-area: logo;
+
+  img {
+    display: block;
+    width: $contest-image-width;
+    height: $contest-image-height;
+    object-fit: contain;
+  }
+}
+
+.info {
+  grid-area: info;
+}
+
+.medals {
+  grid-area: medals;
+}
+
+.tasks {
+  grid-area: tasks;
+}
+
+.results {
+  grid-area: results;
+}

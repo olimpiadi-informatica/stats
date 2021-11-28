@@ -1,3 +1,4 @@
+import Head from "next/head";
 import React from "react";
 import styles from "./layout.module.scss";
 import Image from "next/image";
@@ -12,6 +13,14 @@ type Props = {
 export function Layout({ children }: Props) {
   return (
     <Container className={styles.container}>
+      <Head>
+        <title>OII Stats</title>
+        <meta
+          name="description"
+          content="OII stats is a platform that was created to provide essential but reliable statistics on the progress of the national competitions of the Italian IT Olympics."
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div>
         <Link href={"/"}>
           <a>

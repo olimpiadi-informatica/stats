@@ -1,3 +1,7 @@
+export type Error = {
+  error: string;
+};
+
 export type Contestant = {
   id: string;
   first_name: string | null;

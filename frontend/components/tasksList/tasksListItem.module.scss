@@ -1,0 +1,31 @@
+@import "styles/variables.module.scss";
+
+.layout {
+  display: grid;
+
+  grid-template-columns: $task-image-width $task-info-width;
+  grid-template-areas:
+    "title title"
+    "image info";
+  row-gap: $row-gap;
+  column-gap: $column-gap;
+}
+
+.title {
+  grid-area: title;
+}
+
+.image {
+  grid-area: image;
+
+  img {
+    display: block;
+    width: $task-image-width;
+    height: $task-image-height;
+    object-fit: contain;
+  }
+}
+
+.info {
+  grid-area: info;
+}
