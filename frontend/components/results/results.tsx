@@ -39,7 +39,18 @@ type Props = {
 };
 
 export function Results({ results, contest }: Props) {
-  // FIXME: sort users by rank
+  results.results.sort((a, b) => {
+    // put null at the end
+    const rankA = a.rank ?? 1e9;
+    const rankB = b.rank ?? 1e9;
+    // if tied, sort by name
+    if (rankA === rankB) {
+      const nameA = `${a.contestant.first_name} ${a.contestant.last_name}`;
+      const nameB = `${b.contestant.first_name} ${b.contestant.last_name}`;
+      return nameA.localeCompare(nameB);
+    }
+    return rankA - rankB;
+  });
   return (
     <div className={styles.wrapper}>
       <Table className={styles.table}>
