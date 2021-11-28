@@ -233,19 +233,22 @@ pub fn get_region_details(region: String, conn: DbConn) -> Result<RegionDetail, 
 
     let hosted = get_hosts_of_region(&conn, &region)?;
 
+    let mut years: Vec<_> = participations
+        .iter()
+        .filter(|(year, _parts)| !invalid_contests.contains(year))
+        .map(|(year, parts)| RegionDetailYear {
+            year: *year,
+            location: get_contest_location(contests.get(year).expect("Missing contest")),
+            num_contestants: parts.len(),
+            num_medals: get_num_medals(&parts),
+        })
+        .collect();
+    years.sort_unstable_by_key(|c| -c.year);
+
     Ok(RegionDetail {
         name: region.name.clone(),
         navigation: get_region_navigation(region.id.as_str(), conn)?,
-        years: participations
-            .iter()
-            .filter(|(year, _parts)| !invalid_contests.contains(year))
-            .map(|(year, parts)| RegionDetailYear {
-                year: *year,
-                location: get_contest_location(contests.get(year).expect("Missing contest")),
-                num_contestants: parts.len(),
-                num_medals: get_num_medals(&parts),
-            })
-            .collect(),
+        years,
         hosted,
     })
 }
@@ -322,10 +325,7 @@ pub fn get_region_results(region: String, conn: DbConn) -> Result<RegionResults,
             });
         }
 
-        result.push(RegionResult {
-            year,
-            contestants,
-        });
+        result.push(RegionResult { year, contestants });
     }
 
     Ok(RegionResults {
