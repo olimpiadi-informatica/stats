@@ -15,10 +15,21 @@ import hashlib
 import openpyxl
 import string
 import sqlite3
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Set
 import numpy as np
 
-STATIC_COLUMNS = {"position", "name", "surname", "birth", "school", "medal", "gender", "venue", "IOI", "score"}
+STATIC_COLUMNS = {
+    "position",
+    "name",
+    "surname",
+    "birth",
+    "school",
+    "medal",
+    "gender",
+    "venue",
+    "IOI",
+    "score",
+}
 REGION_NAMES = {
     "ABR": "Abruzzo",
     "BAS": "Basilicata",
@@ -39,7 +50,7 @@ REGION_NAMES = {
     "TRE": "Trentino-Alto Adige",
     "UMB": "Umbria",
     "VAL": "Valle d'Aosta",
-    "VEN": "Veneto"
+    "VEN": "Veneto",
 }
 
 DB_SCHEMA = """
@@ -107,8 +118,16 @@ CREATE TABLE task_scores (
 );
 """
 
+
 class User:
-    def __init__(self, name: str, surname: str, birth: Optional[datetime.datetime], gender: str, **kwargs):
+    def __init__(
+        self,
+        name: str,
+        surname: str,
+        birth: Optional[datetime.datetime],
+        gender: str,
+        **kwargs
+    ):
         self.name = name
         self.surname = surname
         self.birth = None  # type: Optional[datetime.date]
@@ -128,17 +147,33 @@ class User:
         return self.birth == other.birth
 
     def id(self) -> str:
-        return hashlib.md5(("%s:%s:%s" % (self.name, self.surname, self.birth)).encode()).hexdigest()
+        return hashlib.md5(
+            ("%s:%s:%s" % (self.name, self.surname, self.birth)).encode()
+        ).hexdigest()
 
     def add_to_db(self, cursor: sqlite3.Cursor):
-        query = "INSERT INTO users (id, name, surname, birth, gender) VALUES " \
-                "(:id, :name, :surname, :birth, :gender)"
-        query_fts = "INSERT INTO users_fts4 (id, name, surname) VALUES " \
-                    "(:id, :name, :surname)"
+        query = (
+            "INSERT INTO users (id, name, surname, birth, gender) VALUES "
+            "(:id, :name, :surname, :birth, :gender)"
+        )
+        query_fts = (
+            "INSERT INTO users_fts4 (id, name, surname) VALUES "
+            "(:id, :name, :surname)"
+        )
         try:
-            cursor.execute(query, {"id": self.id(), "name": self.name, "surname": self.surname, "birth": self.birth,
-                                   "gender": self.gender})
-            cursor.execute(query_fts, {"id": self.id(), "name": self.name, "surname": self.surname})
+            cursor.execute(
+                query,
+                {
+                    "id": self.id(),
+                    "name": self.name,
+                    "surname": self.surname,
+                    "birth": self.birth,
+                    "gender": self.gender,
+                },
+            )
+            cursor.execute(
+                query_fts, {"id": self.id(), "name": self.name, "surname": self.surname}
+            )
         except Exception as e:
             print("Failed to insert user", self)
             print(e)
@@ -147,11 +182,24 @@ class User:
         return hash(self.name) ^ hash(self.surname)
 
     def __repr__(self):
-        return "<User %s %s -- %s id=%s>" % (self.name, self.surname, str(self.birth), self.id())
+        return "<User %s %s -- %s id=%s>" % (
+            self.name,
+            self.surname,
+            str(self.birth),
+            self.id(),
+        )
 
 
 class Contest:
-    def __init__(self, year: int, location: Optional[str], region: Optional[str], gmaps: Optional[str], latitude: Optional[float], longitude: Optional[float]):
+    def __init__(
+        self,
+        year: int,
+        location: Optional[str],
+        region: Optional[str],
+        gmaps: Optional[str],
+        latitude: Optional[float],
+        longitude: Optional[float],
+    ):
         self.year = year
         self.location = location
         self.region = region
@@ -163,15 +211,35 @@ class Contest:
         return str(self.year)
 
     def add_to_db(self, cursor: sqlite3.Cursor):
-        query = "INSERT INTO contests (year, location, region, gmaps, latitude, longitude) VALUES " \
-                "(:year, :location, :region, :gmaps, :latitude, :longitude)"
-        query_fts = "INSERT INTO contests_fts4 (year, location, region, full_region) VALUES " \
-                "(:year, :location, :region, :full_region)"
+        query = (
+            "INSERT INTO contests (year, location, region, gmaps, latitude, longitude) VALUES "
+            "(:year, :location, :region, :gmaps, :latitude, :longitude)"
+        )
+        query_fts = (
+            "INSERT INTO contests_fts4 (year, location, region, full_region) VALUES "
+            "(:year, :location, :region, :full_region)"
+        )
         try:
-            cursor.execute(query, {"year": self.year, "location": self.location, "region": self.region,
-                                   "gmaps": self.gmaps, "latitude": self.latitude, "longitude": self.longitude})
-            cursor.execute(query_fts, {"year": self.year, "location": self.location, "region": self.region,
-                                       "full_region": REGION_NAMES.get(self.region, None)})
+            cursor.execute(
+                query,
+                {
+                    "year": self.year,
+                    "location": self.location,
+                    "region": self.region,
+                    "gmaps": self.gmaps,
+                    "latitude": self.latitude,
+                    "longitude": self.longitude,
+                },
+            )
+            cursor.execute(
+                query_fts,
+                {
+                    "year": self.year,
+                    "location": self.location,
+                    "region": self.region,
+                    "full_region": REGION_NAMES.get(self.region, None),
+                },
+            )
         except Exception as e:
             print("Failed to insert contest", self)
             print(e)
@@ -181,7 +249,15 @@ class Contest:
 
 
 class Task:
-    def __init__(self, name: str, contest: Contest, index: int, max_score: float, title: str, link: Optional[str]):
+    def __init__(
+        self,
+        name: str,
+        contest: Contest,
+        index: int,
+        max_score: float,
+        title: str,
+        link: Optional[str],
+    ):
         self.name = name
         self.contest = contest
         self.index = index
@@ -193,26 +269,60 @@ class Task:
         return "%s-%s" % (self.contest.id(), self.name)
 
     def add_to_db(self, cursor: sqlite3.Cursor):
-        query = "INSERT INTO tasks (name, contest_year, \"index\", max_score, title, link) VALUES " \
-                "(:name, :contest_year, :index, :max_score, :title, :link)"
-        query_fts = "INSERT INTO tasks_fts4 (contest_year, name, title, link) VALUES " \
-                "(:name, :contest_year, :title, :link)"
+        query = (
+            'INSERT INTO tasks (name, contest_year, "index", max_score, title, link) VALUES '
+            "(:name, :contest_year, :index, :max_score, :title, :link)"
+        )
+        query_fts = (
+            "INSERT INTO tasks_fts4 (contest_year, name, title, link) VALUES "
+            "(:name, :contest_year, :title, :link)"
+        )
         try:
-            cursor.execute(query, {"name": self.name, "contest_year": self.contest.year, "index": self.index,
-                                   "max_score": self.max_score, "title": self.title, "link": self.link})
-            cursor.execute(query_fts, {"name": self.name, "contest_year": self.contest.year,
-                                       "title": self.title, "link": self.link})
+            cursor.execute(
+                query,
+                {
+                    "name": self.name,
+                    "contest_year": self.contest.year,
+                    "index": self.index,
+                    "max_score": self.max_score,
+                    "title": self.title,
+                    "link": self.link,
+                },
+            )
+            cursor.execute(
+                query_fts,
+                {
+                    "name": self.name,
+                    "contest_year": self.contest.year,
+                    "title": self.title,
+                    "link": self.link,
+                },
+            )
         except Exception as e:
             print("Failed to insert task", self)
             print(e)
 
     def __repr__(self):
-        return "<Task name=%s contest=%s index=%d>" % (self.name, self.contest, self.index)
+        return "<Task name=%s contest=%s index=%d>" % (
+            self.name,
+            self.contest,
+            self.index,
+        )
 
 
 class Participation:
-    def __init__(self, user: User, contest: Contest, position: Optional[int], school: Optional[str],
-                 venue: Optional[str], medal: Optional[str], IOI: Optional[bool], score: Optional[float], **kwargs):
+    def __init__(
+        self,
+        user: User,
+        contest: Contest,
+        position: Optional[int],
+        school: Optional[str],
+        venue: Optional[str],
+        medal: Optional[str],
+        IOI: Optional[bool],
+        score: Optional[float],
+        **kwargs
+    ):
         self.user = user
         self.contest = contest
         self.position = position
@@ -226,14 +336,27 @@ class Participation:
         return "%s-%s" % (self.contest.id(), self.user.id())
 
     def add_to_db(self, cursor: sqlite3.Cursor):
-        query = "INSERT INTO participations (user_id, contest_year, position, school, venue, region, medal, IOI, " \
-                "score) " \
-                "VALUES (:user_id, :contest_year, :position, :school, :venue, :region, :medal, :IOI, :score)"
+        query = (
+            "INSERT INTO participations (user_id, contest_year, position, school, venue, region, medal, IOI, "
+            "score) "
+            "VALUES (:user_id, :contest_year, :position, :school, :venue, :region, :medal, :IOI, :score)"
+        )
         try:
             region = self.venue[:3] if self.venue else None
-            cursor.execute(query, {"user_id": self.user.id(), "contest_year": self.contest.year,
-                                   "position": self.position, "school": self.school, "venue": self.venue,
-                                   "region": region, "medal": self.medal, "IOI": self.IOI, "score": self.score})
+            cursor.execute(
+                query,
+                {
+                    "user_id": self.user.id(),
+                    "contest_year": self.contest.year,
+                    "position": self.position,
+                    "school": self.school,
+                    "venue": self.venue,
+                    "region": region,
+                    "medal": self.medal,
+                    "IOI": self.IOI,
+                    "score": self.score,
+                },
+            )
         except Exception as e:
             print("Failed to insert participation", self)
             print(e)
@@ -243,7 +366,9 @@ class Participation:
 
 
 class TaskScore:
-    def __init__(self, task: Task, participation: Participation, score: Optional[float]):
+    def __init__(
+        self, task: Task, participation: Participation, score: Optional[float]
+    ):
         self.task = task
         self.participation = participation
         self.score = score
@@ -253,17 +378,30 @@ class TaskScore:
         return "%s-%s" % (self.task.id(), self.participation.user.id())
 
     def add_to_db(self, cursor: sqlite3.Cursor):
-        query = "INSERT INTO task_scores (task_name, contest_year, user_id, score) VALUES " \
-                "(:task_name, :contest_year, :user_id, :score)"
+        query = (
+            "INSERT INTO task_scores (task_name, contest_year, user_id, score) VALUES "
+            "(:task_name, :contest_year, :user_id, :score)"
+        )
         try:
-            cursor.execute(query, {"task_name": self.task.name, "contest_year": self.task.contest.year,
-                                   "user_id": self.participation.user.id(), "score": self.score})
+            cursor.execute(
+                query,
+                {
+                    "task_name": self.task.name,
+                    "contest_year": self.task.contest.year,
+                    "user_id": self.participation.user.id(),
+                    "score": self.score,
+                },
+            )
         except Exception as e:
             print("Failed to insert task_score", self)
             print(e)
 
     def __repr__(self):
-        return "<TaskScore task=%s participation=%s score=%s>" % (self.task, self.participation, self.score)
+        return "<TaskScore task=%s participation=%s score=%s>" % (
+            self.task,
+            self.participation,
+            self.score,
+        )
 
 
 def dictify(sheet):
@@ -274,7 +412,12 @@ def dictify(sheet):
     row_index = 2
     data = []
     while True:
-        line = [x.value for x in sheet[columns[0][0] + str(row_index):columns[-1][0] + str(row_index)][0]]
+        line = [
+            x.value
+            for x in sheet[
+                columns[0][0] + str(row_index) : columns[-1][0] + str(row_index)
+            ][0]
+        ]
         if not any(line):
             break
         row_index += 1
@@ -296,6 +439,7 @@ def add_regions(cursor: sqlite3.Cursor, regions: Dict[str, str]):
         except Exception as e:
             print("Failed to insert region", (id, name))
             print(e)
+
 
 def add_users(cursor: sqlite3.Cursor, users: Dict[User, User]):
     for user in users:
@@ -323,19 +467,24 @@ def add_task_scores(cursor: sqlite3.Cursor, task_scores: List[TaskScore]):
 
 
 def get_task_coefficients(raw_participations: List[OrderedDict], task_names: List[str]):
-    if raw_participations[0]["score"] is None or raw_participations[0][task_names[0]] is None:
-        return [1]*len(task_names)
+    if (
+        raw_participations[0]["score"] is None
+        or raw_participations[0][task_names[0]] is None
+    ):
+        return [1] * len(task_names)
     try:
-        for index in range(len(raw_participations)-len(task_names)):
-            participations = raw_participations[index:index+len(task_names)]
-            A = np.array([[p[task_name] for task_name in task_names] for p in participations])
+        for index in range(len(raw_participations) - len(task_names)):
+            participations = raw_participations[index : index + len(task_names)]
+            A = np.array(
+                [[p[task_name] for task_name in task_names] for p in participations]
+            )
             b = np.array([p["score"] for p in participations])
             if np.linalg.matrix_rank(A) == len(task_names) and np.all(A) and np.all(b):
                 break
         x = np.linalg.solve(A, b)
         return list(map(lambda x: int(round(x)), x))
     except:
-        return [1]*len(task_names)
+        return [1] * len(task_names)
 
 
 def main(args):
@@ -352,7 +501,9 @@ def main(args):
     task_meta = dict((task["task_name"], dict(task)) for task in dictify(task_sheet))
 
     contests_sheet = wb["contests"]
-    locations = dict((int(contest["year"]), contest) for contest in dictify(contests_sheet))
+    locations = dict(
+        (int(contest["year"]), contest) for contest in dictify(contests_sheet)
+    )
 
     missing_venue = set()  # type: Set[str]
     known_venue = dict()  # type: Dict[str, str]
@@ -361,12 +512,21 @@ def main(args):
         if not sheet_name.isdigit():
             continue
         year = int(sheet_name)
-        contest = Contest(year, locations[year]["location"], locations[year]["region"], locations[year]["gmaps"], locations[year]["latitude"], locations[year]["longitude"])
+        contest = Contest(
+            year,
+            locations[year]["location"],
+            locations[year]["region"],
+            locations[year]["gmaps"],
+            locations[year]["latitude"],
+            locations[year]["longitude"],
+        )
         contests[year] = contest
 
         raw_participations = dictify(wb[sheet_name])
-        task_names = list(raw_participations[0].keys())[len(STATIC_COLUMNS):]
-        task_coefficients = dict(zip(task_names, get_task_coefficients(raw_participations, task_names)))
+        task_names = list(raw_participations[0].keys())[len(STATIC_COLUMNS) :]
+        task_coefficients = dict(
+            zip(task_names, get_task_coefficients(raw_participations, task_names))
+        )
 
         for index, task_name in enumerate(task_names):
             meta = task_meta.get(task_name, dict())
@@ -403,10 +563,12 @@ def main(args):
 
     if args.drop and os.path.exists(args.db):
         os.unlink(args.db)
-    database = sqlite3.connect(args.db,
-                               check_same_thread=False,
-                               isolation_level=None,
-                               detect_types=sqlite3.PARSE_DECLTYPES)
+    database = sqlite3.connect(
+        args.db,
+        check_same_thread=False,
+        isolation_level=None,
+        detect_types=sqlite3.PARSE_DECLTYPES,
+    )
     cursor = database.cursor()
     create_schema(cursor)
 
@@ -420,7 +582,7 @@ def main(args):
     database.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument("file", help="XLSX export from Google Drive")
     args.add_argument("db", help="SQLite3 file for the db")
