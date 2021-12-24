@@ -6,6 +6,7 @@ use crate::types::Participation;
 
 pub mod contest;
 pub mod error;
+pub mod health_check;
 pub mod home;
 pub mod region;
 pub mod search;

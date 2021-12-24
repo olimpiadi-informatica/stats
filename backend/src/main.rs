@@ -32,6 +32,7 @@ mod utility;
 
 use crate::controllers::contest;
 use crate::controllers::error::*;
+use crate::controllers::health_check;
 use crate::controllers::home;
 use crate::controllers::region;
 use crate::controllers::search;
@@ -57,6 +58,7 @@ fn main() {
         .mount(
             "/",
             routes![
+                health_check::health_check,
                 contest::list,
                 contest::search,
                 contest::results,
