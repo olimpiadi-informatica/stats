@@ -1,0 +1,38 @@
+name: CI
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  CI:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache database
+        id: database-cache
+        uses: actions/cache@v2
+        with:
+          path: utils/make_db/db.sqlite3
+          # Update this key to force database rebuilding
+          key: "2021-12-24-v1"
+      - name: Build database
+        if: steps.database-cache.outputs.cache-hit != 'true'
+        working-directory: utils/make_db
+        env:
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+          TOKEN_PICKLE: ${{ secrets.TOKEN_PICKLE }}
+        run: |
+          pip install -r requirements.txt
+          echo "$TOKEN_PICKLE" | base64 -d > token.pickle
+          ./run.py $SPREADSHEET_ID db.sqlite3 --drop
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build docker images
+        run: |
+          ./utils/docker_build.sh -p -t $(./utils/get_next_tag.sh)
