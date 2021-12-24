@@ -5,6 +5,12 @@ use std::io::Cursor;
 
 pub struct CORS();
 
+impl CORS {
+    fn is_origin_allowed(&self, origin: &str) -> bool {
+        origin == "http://localhost:3000" || origin.ends_with(".olinfo.it")
+    }
+}
+
 impl Fairing for CORS {
     fn info(&self) -> Info {
         Info {
@@ -14,11 +20,15 @@ impl Fairing for CORS {
     }
 
     fn on_response(&self, request: &Request, response: &mut Response) {
-        if request.method() == Method::Options || response.content_type() == Some(ContentType::JSON)
-        {
+        let origin = request.headers().get_one("Origin").unwrap_or("");
+        if !self.is_origin_allowed(origin) {
+            return;
+        }
+
+        if response.content_type() == Some(ContentType::JSON) {
             response.set_header(Header::new(
                 "Access-Control-Allow-Origin",
-                "http://localhost:3000",
+                origin.to_string(),
             ));
             response.set_header(Header::new(
                 "Access-Control-Allow-Methods",

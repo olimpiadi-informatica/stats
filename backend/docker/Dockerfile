@@ -33,5 +33,7 @@ COPY --from=build /oii-stats/target/release/oii-stats /
 
 ADD docker/docker-entrypoint.sh /
 
+EXPOSE 8000
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/oii-stats"]
