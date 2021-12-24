@@ -13,3 +13,8 @@ docker build \
   -t "ghcr.io/algorithm-ninja/oii-stats-backend:$TAG" \
   -f backend/docker/Dockerfile \
   backend
+
+docker build \
+  -t "ghcr.io/algorithm-ninja/oii-stats-frontend:$TAG" \
+  -f frontend/docker/Dockerfile \
+  frontend
