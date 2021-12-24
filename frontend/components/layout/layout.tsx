@@ -1,7 +1,6 @@
 import Head from "next/head";
 import React from "react";
 import styles from "./layout.module.scss";
-import Image from "next/image";
 import Link from "next/link";
 import { Container } from "react-bootstrap";
 import { Navbar } from "./navbar";
@@ -25,7 +24,7 @@ export function Layout({ children }: Props) {
       <div>
         <Link href={"/"}>
           <a>
-            <Image
+            <img
               src={"/images/oiistats.png"}
               alt="OII Stats"
               width={190}

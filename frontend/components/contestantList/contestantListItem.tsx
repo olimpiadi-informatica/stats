@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { ContestantInfo } from "components/contestant/contestantInfo";
 import { Medals } from "components/medals/medals";
 import { ContestantItem } from "lib/remote/user";

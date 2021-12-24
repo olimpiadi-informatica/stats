@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { RegionDetail, RegionDetailYear } from "lib/remote/region";
 import { ListGroup } from "react-bootstrap";
 import Link from "next/link";

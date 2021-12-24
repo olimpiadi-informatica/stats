@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { ContestDetail, ContestResults } from "lib/remote/contest";
 import styles from "./contest.module.scss";
 import commonStyles from "styles/common.module.scss";

@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { RegionItem } from "lib/remote/region";
 import styles from "./regionListItem.module.scss";
 import Link from "next/link";

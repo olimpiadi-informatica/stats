@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { ContestItem } from "lib/remote/contest";
 import Link from "next/link";
 import styles from "./contestListItem.module.scss";

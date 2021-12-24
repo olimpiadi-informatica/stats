@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { RegionDetail, RegionResults } from "lib/remote/region";
 import { useState } from "react";
 import styles from "./region.module.scss";

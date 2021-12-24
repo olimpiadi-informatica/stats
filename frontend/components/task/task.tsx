@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { TaskDetail } from "lib/remote/task";
 import styles from "./task.module.scss";
 import commonStyles from "styles/common.module.scss";

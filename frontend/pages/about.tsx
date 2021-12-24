@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { Layout } from "components/layout/layout";
 import Head from "next/head";
 import commonStyles from "styles/common.module.scss";

@@ -1,7 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 import { TaskInfo } from "components/task/taskInfo";
 import { ContestInfoTask } from "lib/remote/contest";
-import { SearchResultTask } from "lib/remote/search";
 import Link from "next/link";
 import { useState } from "react";
 import styles from "./tasksListItem.module.scss";
