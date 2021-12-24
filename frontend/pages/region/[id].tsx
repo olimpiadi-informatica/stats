@@ -15,36 +15,9 @@ type Props = {
   results: RegionResults | Error;
 };
 
-const REGIONS = [
-  "ABR",
-  "BAS",
-  "CAL",
-  "CAM",
-  "EMI",
-  "FRI",
-  "LAZ",
-  "LIG",
-  "LOM",
-  "MAR",
-  "MOL",
-  "PIE",
-  "PUG",
-  "SAR",
-  "SIC",
-  "TOS",
-  "TRE",
-  "UMB",
-  "VAL",
-  "VEN",
-];
-
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = [];
-  for (const region of REGIONS) {
-    paths.push({ params: { id: region } });
-  }
   return {
-    paths,
+    paths: [],
     fallback: "blocking",
   };
 };

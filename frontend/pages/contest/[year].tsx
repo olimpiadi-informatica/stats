@@ -17,12 +17,8 @@ type Props = {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = [];
-  for (let year = 2001; year <= 2021; year++) {
-    paths.push({ params: { year: "2021" } });
-  }
   return {
-    paths,
+    paths: [],
     fallback: "blocking",
   };
 };
