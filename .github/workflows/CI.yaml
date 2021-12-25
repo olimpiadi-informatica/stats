@@ -35,4 +35,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build docker images
         run: |
+          cp utils/make_db/db.sqlite3 backend/db.sqlite3
           ./utils/docker_build.sh -p -t $(./utils/get_next_tag.sh)
