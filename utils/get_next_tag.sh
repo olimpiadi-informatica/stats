@@ -8,7 +8,7 @@ DOCKER_CONFIG_JSON=${DOCKER_CONFIG:-~/.docker}/config.json
 default_tag=$(date +%Y%m%d)
 
 mycurl() {
-  curl --silent --fail "$@"
+  curl --silent --show-error --fail "$@"
 }
 
 info() {
@@ -17,7 +17,7 @@ info() {
 
 if [ ! -f "$DOCKER_CONFIG_JSON" ]; then
   info "Missing $DOCKER_CONFIG_JSON. Defaulting to current date"
-  echo "$default_tag"
+  echo "$default_tag-v1"
   exit 0
 fi
 
@@ -26,7 +26,7 @@ AUTH=$(jq -r '.auths["ghcr.io"].auth' < "$DOCKER_CONFIG_JSON" | base64 -d)
 
 if [ -z "$AUTH" ]; then
   info "Not logged in ghcr.io"
-  echo "$default_tag"
+  echo "$default_tag-v1"
   exit 0
 fi
 
@@ -35,22 +35,15 @@ TOKEN_JSON=$(mycurl -u "$AUTH" "https://ghcr.io/token?service=ghcr.io&scope=repo
 info "ghcr.io token obtained"
 
 TOKEN=$(echo "$TOKEN_JSON"| jq -r .token)
+info "Token is ${TOKEN:1:8}..."
 
 images=("algorithm-ninja/oii-stats-frontend" "algorithm-ninja/oii-stats-backend")
 tags=""
 
 for image in "${images[@]}"; do
-  new_tags=$(mycurl -H "Authorization: Bearer $TOKEN" https://ghcr.io/v2/$image/tags/list | jq -r '.tags[]' | grep "$default_tag")
+  new_tags=$(mycurl -H "Authorization: Bearer $TOKEN" https://ghcr.io/v2/$image/tags/list | jq -r '.tags[]' | grep "$default_tag" || true)
   tags=$(printf '%s\n%s' "$new_tags" "$tags")
 done
-
-if ! echo "$tags" | grep "$default_tag" >/dev/null; then
-  info "Default tag $default_tag is available, using it"
-  echo "$default_tag"
-  exit 0
-else
-  info "Default tag $default_tag is not available"
-fi
 
 for v in $(seq 1 20); do
   tag="$default_tag-v$v"
