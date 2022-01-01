@@ -1,3 +1,5 @@
+@import "styles/bootstrap.module.scss";
+
 .pageHeader {
   text-align: center;
   color: #dc3545;
@@ -10,4 +12,38 @@
   color: #dc3545;
   font-size: 1.75rem;
   font-weight: 500;
+}
+
+.navigation {
+  display: grid;
+  gap: 1rem;
+  align-items: center;
+
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "title title"
+    "previous next";
+
+  a {
+    text-decoration: none;
+  }
+
+  h1 {
+    grid-area: title;
+  }
+
+  .previous {
+    grid-area: previous;
+    text-align: left;
+  }
+
+  .next {
+    grid-area: next;
+    text-align: right;
+  }
+
+  @include media-breakpoint-up(md) {
+    grid-template-columns: 5rem 1fr 5rem;
+    grid-template-areas: "previous title next";
+  }
 }
