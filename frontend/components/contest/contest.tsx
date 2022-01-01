@@ -7,6 +7,7 @@ import { TasksList } from "components/tasksList/tasksList";
 import { Results } from "components/results/results";
 import { useState } from "react";
 import Link from "next/link";
+import { Navigation } from "components/navigation/navigation";
 
 type Props = {
   contest: ContestDetail;
@@ -19,24 +20,12 @@ export function Contest({ contest, year, results }: Props) {
 
   return (
     <div className={styles.contest}>
-      <div className={`${styles.title} ${commonStyles.navigation}`}>
-        <h1 className={commonStyles.pageHeader}>
-          {contest.location.location} {year}
-        </h1>
-        <div className={commonStyles.previous}>
-          {results.navigation.previous !== null && (
-            <Link href={`/contest/${results.navigation.previous}`}>
-              <a>← {results.navigation.previous}</a>
-            </Link>
-          )}
-        </div>
-        <div className={commonStyles.next}>
-          {results.navigation.next !== null && (
-            <Link href={`/contest/${results.navigation.next}`}>
-              <a>{results.navigation.next} →</a>
-            </Link>
-          )}
-        </div>
+      <div className={styles.title}>
+        <Navigation
+          navigation={results.navigation}
+          title={`${contest.location.location} ${year}`}
+          linkPrefix="/contest"
+        />
       </div>
       <div className={styles.logo}>
         {imgOk && (

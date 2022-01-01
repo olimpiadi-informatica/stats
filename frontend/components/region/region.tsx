@@ -5,6 +5,8 @@ import commonStyles from "styles/common.module.scss";
 import { Tab, Tabs } from "react-bootstrap";
 import { Participations } from "./participations";
 import { Results } from "./results";
+import Link from "next/link";
+import { Navigation } from "components/navigation/navigation";
 
 type Props = {
   region: RegionDetail;
@@ -16,9 +18,13 @@ export function Region({ region, results }: Props) {
 
   return (
     <div className={styles.layout}>
-      <h1 className={`${commonStyles.pageHeader} ${styles.title}`}>
-        {region.name}
-      </h1>
+      <div className={styles.title}>
+        <Navigation
+          navigation={results.navigation}
+          title={region.name}
+          linkPrefix="/region"
+        />
+      </div>
       <div className={styles.logo}>
         {imgOk && (
           <img
