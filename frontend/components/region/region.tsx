@@ -22,7 +22,7 @@ export function Region({ region, results }: Props) {
         <Navigation
           navigation={results.navigation}
           title={region.name}
-          linkPrefix="/region"
+          genLink={(region) => `/region/${region}`}
         />
       </div>
       <div className={styles.logo}>

@@ -4,15 +4,21 @@ import commonStyles from "styles/common.module.scss";
 import { useState } from "react";
 import { TaskInfo } from "./taskInfo";
 import { Results } from "./results";
+import { Navigation } from "components/navigation/navigation";
 
 export function Task({ task }: { task: TaskDetail }) {
   const [imgOk, setImgOk] = useState<boolean>(true);
 
   return (
     <div className={styles.contest}>
-      <h1 className={`${commonStyles.pageHeader} ${styles.title}`}>
-        {task.title}
-      </h1>
+      <div className={styles.title}>
+        <Navigation
+          navigation={task.navigation}
+          title={task.title}
+          genLink={(task) => `/task/${task.year}/${task.name}`}
+          genTitle={(task) => task.name}
+        />
+      </div>
       <div className={styles.logo}>
         {imgOk && (
           <img

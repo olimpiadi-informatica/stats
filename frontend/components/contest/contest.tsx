@@ -24,7 +24,7 @@ export function Contest({ contest, year, results }: Props) {
         <Navigation
           navigation={results.navigation}
           title={`${contest.location.location} ${year}`}
-          linkPrefix="/contest"
+          genLink={(year) => `/contest/${year}`}
         />
       </div>
       <div className={styles.logo}>

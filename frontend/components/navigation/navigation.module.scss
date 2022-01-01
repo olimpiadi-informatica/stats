@@ -1,6 +1,8 @@
 @import "styles/bootstrap.module.scss";
 
 .navigation {
+  $nav-size: 8rem;
+
   display: grid;
   gap: 1rem;
   align-items: center;
@@ -29,7 +31,7 @@
   }
 
   @include media-breakpoint-up(md) {
-    grid-template-columns: 5rem 1fr 5rem;
+    grid-template-columns: $nav-size 1fr $nav-size;
     grid-template-areas: "previous title next";
   }
 }
