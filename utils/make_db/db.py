@@ -8,8 +8,6 @@ from typing import Dict, List, Optional
 
 # TODO:
 # home.json
-# users.json
-# users/{id}.json
 
 MEDAL_NAMES = {
     "G": "gold",
@@ -50,6 +48,10 @@ def sum_with_none(a: List[Optional[float]]):
     return reduce(partial(fold_with_none, sum), a, None)
 
 
+def medals_key(medals):
+    return (medals["gold"], medals["silver"], medals["bronze"])
+
+
 class Storage:
     def __init__(self, storage_dir: str):
         self.storage_dir = storage_dir
@@ -71,6 +73,7 @@ class Storage:
         self.finish_contests()
         self.finish_regions()
         self.finish_tasks()
+        self.finish_users()
 
     def write(self, path: str, data):
         dest = self.path(path)
@@ -112,6 +115,14 @@ class Storage:
         for year, year_tasks in self.tasks.items():
             for task in year_tasks.values():
                 self.write(f"tasks/{year}/{task.name}.json", task.to_json_detail())
+
+    def finish_users(self):
+        users = [u.to_json() for u in self.users.values()]
+        users.sort(key=lambda u: medals_key(u["num_medals"]), reverse=True)
+        self.write("users.json", {"users": users})
+
+        for user in self.users.values():
+            self.write(f"users/{user.id()}.json", user.to_json_detail())
 
 
 class User:
@@ -164,6 +175,70 @@ class User:
             str(self.birth),
             self.id(),
         )
+
+    @property
+    def contestant(self):
+        return {
+            "id": self.id(),
+            "first_name": self.name,
+            "last_name": self.surname,
+        }
+
+    @cached_property
+    def num_medals(self):
+        medals = {"gold": 0, "silver": 0, "bronze": 0}
+        for participation in self.participations:
+            if participation.medal is not None:
+                medals[participation.medal] += 1
+        return medals
+
+    @cached_property
+    def best_rank(self):
+        return min_with_none([p.rank for p in self.participations])
+
+    def to_json(self):
+        return {
+            "contestant": self.contestant,
+            "num_medals": self.num_medals,
+            "best_rank": self.best_rank,
+            "participations": sorted(
+                [
+                    {
+                        "year": p.contest.year,
+                        "ioi": p.IOI,
+                        "medal": p.medal,
+                    }
+                    for p in self.participations
+                ],
+                key=lambda p: -p["year"],
+            ),
+        }
+
+    def to_json_detail(self):
+        return {
+            "contestant": self.contestant,
+            "participations": sorted(
+                [
+                    {
+                        "year": p.contest.year,
+                        "ioi": p.IOI,
+                        "medal": p.medal,
+                        "rank": p.rank,
+                        "region": venue_to_region(p.venue),
+                        "scores": [
+                            {
+                                "task": s.task.name,
+                                "score": s.score,
+                                "max_score_possible": s.task.max_score_possible,
+                            }
+                            for s in p.scores
+                        ],
+                    }
+                    for p in self.participations
+                ],
+                key=lambda p: -p["year"],
+            ),
+        }
 
 
 class Contest:
@@ -425,11 +500,7 @@ class Participation:
 
     @property
     def contestant(self):
-        return {
-            "id": self.user.id(),
-            "first_name": self.user.name,
-            "last_name": self.user.surname,
-        }
+        return self.user.contestant
 
     def to_json(self):
         past_participations = [
