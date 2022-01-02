@@ -8,8 +8,6 @@ from typing import Dict, List, Optional
 
 # TODO:
 # home.json
-# tasks.json
-# tasks/{year}/{name}.json
 # users.json
 # users/{id}.json
 
@@ -72,6 +70,7 @@ class Storage:
     def finish(self):
         self.finish_contests()
         self.finish_regions()
+        self.finish_tasks()
 
     def write(self, path: str, data):
         dest = self.path(path)
@@ -97,6 +96,22 @@ class Storage:
         for region in self.regions:
             self.write(f"regions/{region.id}.json", region.to_json_detail())
             self.write(f"regions/{region.id}/results.json", region.results_to_json())
+
+    def finish_tasks(self):
+        tasks = []
+        for year, year_tasks in self.tasks.items():
+            tasks.append(
+                {
+                    "year": year,
+                    "tasks": [t.to_json() for t in year_tasks.values()],
+                }
+            )
+        tasks.sort(key=lambda t: -t["year"])
+        self.write("tasks.json", {"tasks": tasks})
+
+        for year, year_tasks in self.tasks.items():
+            for task in year_tasks.values():
+                self.write(f"tasks/{year}/{task.name}.json", task.to_json_detail())
 
 
 class User:
@@ -179,6 +194,10 @@ class Contest:
     @property
     def tasks(self):
         return self.storage.tasks[self.year]
+
+    @property
+    def task_names(self):
+        return [t.name for t in self.tasks.values()]
 
     @property
     def participations(self):
@@ -295,6 +314,28 @@ class Task:
             self.index,
         )
 
+    @cached_property
+    def navigation(self):
+        year = self.contest.year
+        current = {"year": year, "name": self.name}
+        names = self.contest.task_names
+        if self.index > 0:
+            previous = {"year": year, "name": names[self.index - 1]}
+        elif year > min(self.storage.tasks.keys()):
+            prev_names = self.storage.contests[year - 1].task_names
+            previous = {"year": year - 1, "name": prev_names[-1]}
+        else:
+            previous = None
+
+        if self.index + 1 < len(names):
+            next = {"year": year, "name": names[self.index + 1]}
+        elif year < max(self.storage.tasks.keys()):
+            next_names = self.storage.contests[year + 1].task_names
+            next = {"year": year + 1, "name": next_names[0]}
+        else:
+            next = None
+        return {"current": current, "previous": previous, "next": next}
+
     @property
     def scores(self):
         return self.storage.task_scores[self.contest.year][self.name]
@@ -311,6 +352,42 @@ class Task:
         if any(s is None for s in scores):
             return None
         return sum(scores) / len(scores)
+
+    def to_json(self):
+        return {
+            "contest_year": self.contest.year,
+            "name": self.name,
+            "title": self.title,
+            "link": self.link,
+            "index": self.index,
+            "max_score_possible": self.max_score_possible,
+            "max_score": self.max_score,
+            "avg_score": self.avg_score,
+            "navigation": self.navigation,
+        }
+
+    def to_json_detail(self):
+        return {
+            "contest_year": self.contest.year,
+            "name": self.name,
+            "title": self.title,
+            "link": self.link,
+            "index": self.index,
+            "max_score_possible": self.max_score_possible,
+            "navigation": self.navigation,
+            "scores": sorted(
+                [
+                    {
+                        "contestant": s.participation.contestant,
+                        "ioi": s.participation.IOI,
+                        "rank": s.participation.rank,
+                        "score": s.score,
+                    }
+                    for s in self.scores
+                ],
+                key=lambda s: -(s["score"] or 0),
+            ),
+        }
 
 
 class Participation:
