@@ -3,12 +3,10 @@ import datetime
 import hashlib
 import os
 import json
-import sqlite3
 from functools import cache, cached_property, reduce, partial
 from typing import Dict, List, Optional
 
 # TODO:
-# contests/{year}/results.json
 # home.json
 # regions.json
 # regions/{region}.json
@@ -41,6 +39,12 @@ REGION_NAMES = {
     "VEN": "Veneto",
 }
 
+MEDAL_NAMES = {
+    "G": "gold",
+    "S": "silver",
+    "B": "bronze",
+}
+
 
 def fold_with_none(func, a, b):
     if a is None:
@@ -70,7 +74,7 @@ class Storage:
         self.users: Dict[User, User] = dict()
         self.contests: Dict[int, Contest] = dict()
         self.tasks: Dict[int, Dict[str, Task]] = defaultdict(dict)
-        self.participations: List[Participation] = list()
+        self.participations: Dict[int, List[Participation]] = defaultdict(list)
         self.task_scores: Dict[int, Dict[str, List[TaskScore]]] = defaultdict(
             lambda: defaultdict(list)
         )
@@ -82,6 +86,9 @@ class Storage:
         self.finish_contests()
 
     def write(self, path: str, data):
+        dest = self.path(path)
+        dirname = os.path.dirname(dest)
+        os.makedirs(dirname, exist_ok=True)
         with open(self.path(path), "w") as f:
             f.write(json.dumps(data, indent=2))
 
@@ -90,9 +97,9 @@ class Storage:
         contests.sort(key=lambda c: -c["year"])
         self.write("contests.json", {"contests": contests})
 
-        os.makedirs(self.path("contests"))
         for year, contest in self.contests.items():
             self.write(f"contests/{year}.json", contest.to_json())
+            self.write(f"contests/{year}/results.json", contest.results_to_json())
 
 
 class User:
@@ -116,6 +123,8 @@ class User:
                 day, month, year = map(int, birth.split("/"))
                 self.birth = datetime.date(year, month, day)
         self.gender = gender
+        # automatically added when a Participation is constructed
+        self.participations = []
 
     def __eq__(self, other: "User"):
         if self.name != other.name or self.surname != other.surname:
@@ -174,6 +183,10 @@ class Contest:
     def tasks(self):
         return self.storage.tasks[self.year]
 
+    @property
+    def participations(self):
+        return self.storage.participations[self.year]
+
     @cached_property
     def max_score_possible(self) -> float:
         return sum_with_none(t.max_score_possible for t in self.tasks.values())
@@ -186,15 +199,20 @@ class Contest:
     def avg_score(self) -> float:
         return sum_with_none(t.avg_score for t in self.tasks.values())
 
+    @property
+    def navigation(self):
+        get_year = lambda y: y if y in self.storage.contests else None
+        return {
+            "current": self.year,
+            "previous": get_year(self.year - 1),
+            "next": get_year(self.year + 1),
+        }
+
     @cache
     def to_json(self):
-        # FIXME: index participations by contest
-        num_contestants = sum(
-            1 for p in self.storage.participations if p.contest == self
-        )
-
         return {
             "year": self.year,
+            "navigation": self.navigation,
             "location": {
                 "location": self.location,
                 "gmaps": self.gmaps,
@@ -202,7 +220,7 @@ class Contest:
                 "longitude": self.longitude,
             },
             "region": self.region,
-            "num_contestants": num_contestants,
+            "num_contestants": len(self.participations),
             "max_score_possible": self.max_score_possible,
             "max_score": self.max_score,
             "avg_score": self.avg_score,
@@ -225,19 +243,21 @@ class Contest:
 
     def medal_to_json(self, medal: str):
         medal_code = medal[0].upper()
-        count = sum(
-            1
-            for p in self.storage.participations
-            if p.contest == self and p.medal == medal_code
-        )
+        count = sum(1 for p in self.participations if p.medal == medal_code)
         cutoff = min_with_none(
-            p.score
-            for p in self.storage.participations
-            if p.contest == self and p.medal == medal_code
+            p.score for p in self.participations if p.medal == medal_code
         )
         return {
             "count": count or None,  # assume the number of medals is positive
             "cutoff": cutoff,
+        }
+
+    def results_to_json(self):
+        participations = sorted(self.participations, key=lambda p: p.rank)
+        return {
+            "navigation": self.navigation,
+            "tasks": list(self.tasks.keys()),
+            "results": [p.to_json() for p in participations],
         }
 
 
@@ -305,20 +325,50 @@ class Participation:
         self.storage = storage
         self.user = user
         self.contest = contest
-        self.rank = rank
+        if rank:
+            self.rank = int(rank)
+        else:
+            self.rank = None
         self.school = school
         self.venue = venue
-        self.medal = medal
+        self.medal = MEDAL_NAMES[medal] if medal else None
         self.IOI = IOI
         self.score = score
         if self.score is not None:
             self.score = float(self.score)
+        user.participations.append(self)
+        # automatically added on TaskScore construction
+        self.scores = []
 
     def id(self) -> str:
         return "%s-%s" % (self.contest.id(), self.user.id())
 
     def __repr__(self):
         return "<Participation user=%s contest=%s>" % (self.user, self.contest)
+
+    def to_json(self):
+        past_participations = [
+            {"year": p.contest.year, "medal": p.medal}
+            for p in self.user.participations
+            if p.contest.year < self.contest.year
+        ]
+        scores = [s.score for s in self.scores]
+        return {
+            "rank": self.rank,
+            "contestant": {
+                "id": self.user.id(),
+                "first_name": self.user.name,
+                "last_name": self.user.surname,
+            },
+            "ioi": self.IOI or False,
+            "region": self.venue[:3] if self.venue else None,
+            "score": self.score,
+            "scores": scores,
+            "medal": self.medal,
+            "past_participations": sorted(
+                past_participations, key=lambda p: -p["year"]
+            ),
+        }
 
 
 class TaskScore:
@@ -334,6 +384,7 @@ class TaskScore:
         self.participation = participation
         self.score = score
         assert task.contest == participation.contest
+        participation.scores.append(self)
 
     def id(self) -> str:
         return "%s-%s" % (self.task.id(), self.participation.user.id())

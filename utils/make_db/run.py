@@ -101,7 +101,10 @@ def main(args):
 
         for raw_user in raw_participations:
             user = User(storage, **raw_user)
-            storage.users[user] = user
+            if user in storage.users:
+                user = storage.users[user]
+            else:
+                storage.users[user] = user
             participation = Participation(storage, user, contest, **raw_user)
             if participation.venue is None:
                 missing_venue.add(repr(user))
@@ -112,7 +115,7 @@ def main(args):
             if repr(user) in known_venue and participation.venue is None:
                 logger.debug("Deduced venue %s --> %s", user, known_venue[repr(user)])
                 participation.venue = known_venue[repr(user)]
-            storage.participations.append(participation)
+            storage.participations[year].append(participation)
             for task_name in task_names:
                 score = raw_user[task_name]
                 if score is not None:
