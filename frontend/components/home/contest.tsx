@@ -139,12 +139,12 @@ function NumBoysGirlsTile({ stat }: { stat: NumBoysGirls }) {
 }
 
 function MostGirlsTile({ stat }: { stat: MostGirls }) {
-  const { year, num_girls } = stat.contest_with_most_girls;
+  const { year, num_girls, num_participants } = stat.contest_with_most_girls;
   return (
     <div>
       <ContestImage year={year} />
       <ContestLink year={year} /> was the contest with the highest number of
-      girl, {num_girls}!
+      girl, {num_girls} out of {num_participants} participants!
     </div>
   );
 }

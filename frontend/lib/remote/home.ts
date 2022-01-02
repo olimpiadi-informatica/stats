@@ -116,6 +116,7 @@ export type TaskWithMostZeros = {
     name: string;
     title: string;
     num_zeros: number;
+    num_participants: number;
   };
 };
 
@@ -125,6 +126,7 @@ export type TaskWithMostFullscores = {
     name: string;
     title: string;
     num_fullscores: number;
+    num_participants: number;
   };
 };
 
@@ -177,6 +179,7 @@ export type MostGirls = {
   contest_with_most_girls: {
     year: number;
     num_girls: number;
+    num_participants: number;
   };
 };
 

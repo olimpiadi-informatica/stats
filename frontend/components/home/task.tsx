@@ -94,7 +94,8 @@ function TaskWithMostZerosTile({ stat }: { stat: TaskWithMostZeros }) {
     <div>
       <TaskImage task={task} />
       <TaskLink task={task} /> is one of the most challenging tasks,{" "}
-      {task.num_zeros} students scored zero points.
+      {task.num_zeros} out of {task.num_participants} students scored zero
+      points.
     </div>
   );
 }
@@ -109,7 +110,8 @@ function TaskWithMostFullscoresTile({
     <div>
       <TaskImage task={task} />
       <TaskLink task={task} /> is one of the easiest tasks,{" "}
-      {task.num_fullscores} students had full score.
+      {task.num_fullscores} out of {task.num_participants} students had full
+      score.
     </div>
   );
 }

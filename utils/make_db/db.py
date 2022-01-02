@@ -6,8 +6,7 @@ import json
 from functools import cache, cached_property, reduce, partial
 from typing import Dict, List, Optional
 
-# TODO:
-# home.json
+from homepage import homepage
 
 MEDAL_NAMES = {
     "G": "gold",
@@ -74,13 +73,14 @@ class Storage:
         self.finish_regions()
         self.finish_tasks()
         self.finish_users()
+        self.finish_homepage()
 
     def write(self, path: str, data):
         dest = self.path(path)
         dirname = os.path.dirname(dest)
         os.makedirs(dirname, exist_ok=True)
         with open(self.path(path), "w") as f:
-            f.write(json.dumps(data, indent=2))
+            f.write(json.dumps(data))
 
     def finish_contests(self):
         contests = [c.to_json() for c in self.contests.values()]
@@ -123,6 +123,9 @@ class Storage:
 
         for user in self.users.values():
             self.write(f"users/{user.id()}.json", user.to_json_detail())
+
+    def finish_homepage(self):
+        self.write("home.json", homepage(self))
 
 
 class User:
@@ -195,6 +198,11 @@ class User:
     @cached_property
     def best_rank(self):
         return min_with_none([p.rank for p in self.participations])
+
+    @cached_property
+    def win_at_first_participation(self):
+        first = min(self.participations, key=lambda p: p.contest.year)
+        return first.rank == 1
 
     def to_json(self):
         return {
@@ -294,6 +302,21 @@ class Contest:
     def avg_score(self) -> float:
         return sum_with_none(t.avg_score for t in self.tasks.values())
 
+    @cached_property
+    def num_ex_aequo(self):
+        max_score = self.max_score
+        if max_score is None:
+            return None
+        return sum(1 for p in self.participations if p.score == max_score)
+
+    @cached_property
+    def num_girls(self):
+        return sum(1 for p in self.participations if p.user.gender == "F")
+
+    @cached_property
+    def num_boys(self):
+        return sum(1 for p in self.participations if p.user.gender == "M")
+
     @property
     def navigation(self):
         get_year = lambda y: y if y in self.storage.contests else None
@@ -375,7 +398,7 @@ class Task:
         self.name = name
         self.contest = contest
         self.index = cast_or_none(int, index)
-        self.max_score_possible = max_score_possible
+        self.max_score_possible = cast_or_none(float, max_score_possible)
         self.title = title
         self.link = link
 
@@ -427,6 +450,18 @@ class Task:
         if any(s is None for s in scores):
             return None
         return sum(scores) / len(scores)
+
+    @cached_property
+    def num_zeros(self):
+        if self.max_score_possible is None:
+            return None
+        return sum(1 for s in self.scores if s.score == 0)
+
+    @cached_property
+    def num_full_scores(self):
+        if self.max_score_possible is None:
+            return None
+        return sum(1 for s in self.scores if s.score == self.max_score_possible)
 
     def to_json(self):
         return {
@@ -592,6 +627,10 @@ class Region:
             if p.medal:
                 medals[p.medal] += 1
         return medals
+
+    @cached_property
+    def num_first_places(self):
+        return sum(1 for p in self.participations if p.rank == 1)
 
     @cached_property
     def avg_contestants_per_year(self):
