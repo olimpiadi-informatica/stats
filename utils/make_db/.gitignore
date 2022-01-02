@@ -1,3 +1,4 @@
 credentials.json
 token.pickle
 __pycache__
+*.json

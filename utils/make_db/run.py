@@ -3,9 +3,9 @@
 import argparse
 import logging
 import argparse
-import sqlite3
 from typing import Dict, List, OrderedDict, Set
 import numpy as np
+import shutil
 
 from db import *
 from gdrive import *
@@ -13,7 +13,7 @@ from gdrive import *
 logger = logging.getLogger("make_db")
 
 STATIC_COLUMNS = {
-    "position",
+    "rank",
     "name",
     "surname",
     "birth",
@@ -24,43 +24,6 @@ STATIC_COLUMNS = {
     "IOI",
     "score",
 }
-
-
-def add_regions(cursor: sqlite3.Cursor, regions: Dict[str, str]):
-    query = "INSERT INTO regions (id, name) VALUES (:id, :name)"
-    query_fts = "INSERT INTO regions_fts4 (id, name) VALUES (:id, :name)"
-    for id, name in regions.items():
-        try:
-            cursor.execute(query, {"id": id, "name": name})
-            cursor.execute(query_fts, {"id": id, "name": name})
-        except Exception as e:
-            print("Failed to insert region", (id, name))
-            print(e)
-
-
-def add_users(cursor: sqlite3.Cursor, users: Dict[User, User]):
-    for user in users:
-        user.add_to_db(cursor)
-
-
-def add_contests(cursor: sqlite3.Cursor, contests: Dict[int, Contest]):
-    for contest in contests.values():
-        contest.add_to_db(cursor)
-
-
-def add_participations(cursor: sqlite3.Cursor, participations: List[Participation]):
-    for participation in participations:
-        participation.add_to_db(cursor)
-
-
-def add_tasks(cursor: sqlite3.Cursor, tasks: Dict[str, Task]):
-    for task in tasks.values():
-        task.add_to_db(cursor)
-
-
-def add_task_scores(cursor: sqlite3.Cursor, task_scores: List[TaskScore]):
-    for task_score in task_scores:
-        task_score.add_to_db(cursor)
 
 
 def get_task_coefficients(raw_participations: List[OrderedDict], task_names: List[str]):
@@ -89,19 +52,15 @@ def get_task_coefficients(raw_participations: List[OrderedDict], task_names: Lis
 
 
 def main(args):
-    if os.path.exists(args.db):
+    if os.path.exists(args.storage_dir):
         if args.drop:
-            os.unlink(args.db)
+            shutil.rmtree(args.storage_dir)
         else:
             raise RuntimeError("Pass --drop to overwrite the database")
 
     drive = Drive(args.spreadsheet_id, args.request_credentials)
 
-    users = dict()
-    contests = dict()
-    tasks = dict()
-    participations = list()
-    task_scores = list()
+    storage = Storage(args.storage_dir)
 
     task_meta = {task["task_name"]: task for task in drive.get_table("tasks")}
     locations = {int(c["year"]): c for c in drive.get_table("contests")}
@@ -109,9 +68,10 @@ def main(args):
     missing_venue = set()  # type: Set[str]
     known_venue = dict()  # type: Dict[str, str]
 
-    for year, location in locations.items():
+    for year, location in list(locations.items())[-3:]:  # FIXME: remove slice
         logger.info("Processing year %d", year)
         contest = Contest(
+            storage,
             year,
             location.get("location", None),
             location.get("region", None),
@@ -119,7 +79,7 @@ def main(args):
             location.get("latitude", None),
             location.get("longitude", None),
         )
-        contests[year] = contest
+        storage.contests[year] = contest
 
         raw_participations = drive.get_table(str(year))
         task_names = list(raw_participations[0].keys())
@@ -133,14 +93,16 @@ def main(args):
             max_score = meta.get("max_score", None)
             title = meta.get("title", None)
             link = meta.get("link", None)
-            if max_score:
-                max_score *= task_coefficients[task_name]
-            tasks[task_name] = Task(task_name, contest, index, max_score, title, link)
+            if max_score is not None:
+                max_score = float(max_score) * task_coefficients[task_name]
+            storage.tasks[year][task_name] = Task(
+                storage, task_name, contest, index, max_score, title, link
+            )
 
         for raw_user in raw_participations:
-            user = User(**raw_user)
-            users[user] = user
-            participation = Participation(user, contest, **raw_user)
+            user = User(storage, **raw_user)
+            storage.users[user] = user
+            participation = Participation(storage, user, contest, **raw_user)
             if participation.venue is None:
                 missing_venue.add(repr(user))
             elif repr(user) in missing_venue:
@@ -150,41 +112,31 @@ def main(args):
             if repr(user) in known_venue and participation.venue is None:
                 logger.debug("Deduced venue %s --> %s", user, known_venue[repr(user)])
                 participation.venue = known_venue[repr(user)]
-            participations.append(participation)
+            storage.participations.append(participation)
             for task_name in task_names:
                 score = raw_user[task_name]
-                if score:
-                    score *= task_coefficients[task_name]
-                task_score = TaskScore(tasks[task_name], participation, score)
-                task_scores.append(task_score)
+                if score is not None:
+                    score = float(score) * task_coefficients[task_name]
+                task_score = TaskScore(
+                    storage, storage.tasks[year][task_name], participation, score
+                )
+                storage.task_scores[year][task_name].append(task_score)
 
     for missing in missing_venue:
         logger.debug("Missing venue: %s", missing)
 
-    database = sqlite3.connect(
-        args.db,
-        check_same_thread=False,
-        isolation_level=None,
-        detect_types=sqlite3.PARSE_DECLTYPES,
-    )
-    cursor = database.cursor()
-    create_schema(cursor)
-
-    add_regions(cursor, REGION_NAMES)
-    add_users(cursor, users)
-    add_contests(cursor, contests)
-    add_participations(cursor, participations)
-    add_tasks(cursor, tasks)
-    add_task_scores(cursor, task_scores)
-
-    database.close()
+    storage.finish()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("spreadsheet_id", help="ID of the Google Drive spreadsheet")
-    parser.add_argument("db", help="Where to write the database")
-    parser.add_argument("--drop", help="Drop the db", action="store_true")
+    parser.add_argument("storage_dir", help="Where to write the files")
+    parser.add_argument(
+        "--drop",
+        help="Drop the storage dir if it exists",
+        action="store_true",
+    )
     parser.add_argument(
         "--request-credentials",
         help="Request the Google Drive credentials",
