@@ -74,6 +74,7 @@ class Storage:
         self.finish_tasks()
         self.finish_users()
         self.finish_homepage()
+        self.finish_search()
 
     def write(self, path: str, data):
         dest = self.path(path)
@@ -127,6 +128,19 @@ class Storage:
     def finish_homepage(self):
         self.write("home.json", homepage(self))
 
+    def finish_search(self):
+        index = {
+            "contests": [(c.search_key, c.year) for c in self.contests.values()],
+            "task": [
+                (t.search_key, t.contest.year, t.name)
+                for y in self.tasks.values()
+                for t in y.values()
+            ],
+            "regions": [(r.search_key, r.id) for r in self.regions],
+            "users": [(u.search_key, u.id()) for u in self.users.values()],
+        }
+        self.write("search.json", index)
+
 
 class User:
     def __init__(
@@ -178,6 +192,10 @@ class User:
             str(self.birth),
             self.id(),
         )
+
+    @property
+    def search_key(self):
+        return f"{self.name or ''} {self.surname or ''}"
 
     @property
     def contestant(self):
@@ -273,6 +291,10 @@ class Contest:
 
     def __repr__(self):
         return "<Contest year=%s>" % self.year
+
+    @property
+    def search_key(self):
+        return f"{self.location or ''} {self.region or ''}"
 
     @property
     def tasks(self):
@@ -411,6 +433,10 @@ class Task:
             self.contest,
             self.index,
         )
+
+    @property
+    def search_key(self):
+        return f"{self.name} {self.title}"
 
     @cached_property
     def navigation(self):
@@ -592,6 +618,10 @@ class Region:
 
     def __repr__(self):
         return "<Region id=%s name=%s>" % (self.id, self.name)
+
+    @property
+    def search_key(self):
+        return f"{self.id} {self.name}"
 
     @property
     def navigation(self):
