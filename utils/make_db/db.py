@@ -8,42 +8,29 @@ from typing import Dict, List, Optional
 
 # TODO:
 # home.json
-# regions.json
-# regions/{region}.json
 # regions/{region}/results.json
 # tasks.json
 # tasks/{year}/{name}.json
 # users.json
 # users/{id}.json
 
-REGION_NAMES = {
-    "ABR": "Abruzzo",
-    "BAS": "Basilicata",
-    "CAL": "Calabria",
-    "CAM": "Campania",
-    "EMI": "Emilia-Romagna",
-    "FRI": "Friuli-Venezia Giulia",
-    "LAZ": "Lazio",
-    "LIG": "Liguria",
-    "LOM": "Lombardia",
-    "MAR": "Marche",
-    "MOL": "Molise",
-    "PIE": "Piemonte",
-    "PUG": "Puglia",
-    "SAR": "Sardegna",
-    "SIC": "Sicilia",
-    "TOS": "Toscana",
-    "TRE": "Trentino-Alto Adige",
-    "UMB": "Umbria",
-    "VAL": "Valle d'Aosta",
-    "VEN": "Veneto",
-}
-
 MEDAL_NAMES = {
     "G": "gold",
     "S": "silver",
     "B": "bronze",
 }
+
+
+def cast_or_none(func, a):
+    if a is None:
+        return None
+    return func(a)
+
+
+def venue_to_region(venue: str):
+    if not venue:
+        return None
+    return venue[:3]
 
 
 def fold_with_none(func, a, b):
@@ -71,6 +58,7 @@ class Storage:
         self.storage_dir = storage_dir
         os.makedirs(self.storage_dir)
 
+        self.regions: List[Region] = list()
         self.users: Dict[User, User] = dict()
         self.contests: Dict[int, Contest] = dict()
         self.tasks: Dict[int, Dict[str, Task]] = defaultdict(dict)
@@ -84,6 +72,7 @@ class Storage:
 
     def finish(self):
         self.finish_contests()
+        self.finish_regions()
 
     def write(self, path: str, data):
         dest = self.path(path)
@@ -100,6 +89,15 @@ class Storage:
         for year, contest in self.contests.items():
             self.write(f"contests/{year}.json", contest.to_json())
             self.write(f"contests/{year}/results.json", contest.results_to_json())
+
+    def finish_regions(self):
+        regions = [r.to_json() for r in self.regions]
+        regions.sort(key=lambda r: r["id"])
+        self.write("regions.json", {"regions": regions})
+
+        for region in self.regions:
+            self.write(f"regions/{region.id}.json", region.to_json_detail())
+            # self.write(f"contests/{region.id}/results.json", region.results_to_json())
 
 
 class User:
@@ -162,16 +160,16 @@ class Contest:
         location: Optional[str],
         region: Optional[str],
         gmaps: Optional[str],
-        latitude: Optional[float],
-        longitude: Optional[float],
+        latitude: Optional[str],
+        longitude: Optional[str],
     ):
         self.storage = storage
-        self.year = year
+        self.year = cast_or_none(int, year)
         self.location = location
         self.region = region
         self.gmaps = gmaps
-        self.latitude = latitude
-        self.longitude = longitude
+        self.latitude = cast_or_none(float, latitude)
+        self.longitude = cast_or_none(float, longitude)
 
     def id(self) -> str:
         return str(self.year)
@@ -186,6 +184,10 @@ class Contest:
     @property
     def participations(self):
         return self.storage.participations[self.year]
+
+    @cached_property
+    def has_all_regions(self):
+        return all(p.venue is not None for p in self.participations)
 
     @cached_property
     def max_score_possible(self) -> float:
@@ -208,17 +210,21 @@ class Contest:
             "next": get_year(self.year + 1),
         }
 
+    @property
+    def location_info(self):
+        return {
+            "location": self.location,
+            "gmaps": self.gmaps,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+        }
+
     @cache
     def to_json(self):
         return {
             "year": self.year,
             "navigation": self.navigation,
-            "location": {
-                "location": self.location,
-                "gmaps": self.gmaps,
-                "latitude": self.latitude,
-                "longitude": self.longitude,
-            },
+            "location": self.location_info,
             "region": self.region,
             "num_contestants": len(self.participations),
             "max_score_possible": self.max_score_possible,
@@ -253,7 +259,7 @@ class Contest:
         }
 
     def results_to_json(self):
-        participations = sorted(self.participations, key=lambda p: p.rank)
+        participations = sorted(self.participations, key=lambda p: p.rank or 100000)
         return {
             "navigation": self.navigation,
             "tasks": list(self.tasks.keys()),
@@ -267,7 +273,7 @@ class Task:
         storage: Storage,
         name: str,
         contest: Contest,
-        index: int,
+        index: str,
         max_score_possible: float,
         title: str,
         link: Optional[str],
@@ -275,7 +281,7 @@ class Task:
         self.storage = storage
         self.name = name
         self.contest = contest
-        self.index = index
+        self.index = cast_or_none(int, index)
         self.max_score_possible = max_score_possible
         self.title = title
         self.link = link
@@ -314,28 +320,23 @@ class Participation:
         storage: Storage,
         user: User,
         contest: Contest,
-        rank: Optional[int],
+        rank: Optional[str],
         school: Optional[str],
         venue: Optional[str],
         medal: Optional[str],
-        IOI: Optional[bool],
-        score: Optional[float],
+        IOI: Optional[str],
+        score: Optional[str],
         **kwargs,
     ):
         self.storage = storage
         self.user = user
         self.contest = contest
-        if rank:
-            self.rank = int(rank)
-        else:
-            self.rank = None
+        self.rank = cast_or_none(int, rank)
         self.school = school
         self.venue = venue
         self.medal = MEDAL_NAMES[medal] if medal else None
-        self.IOI = IOI
-        self.score = score
-        if self.score is not None:
-            self.score = float(self.score)
+        self.IOI = cast_or_none(bool, IOI)
+        self.score = cast_or_none(float, score)
         user.participations.append(self)
         # automatically added on TaskScore construction
         self.scores = []
@@ -361,7 +362,7 @@ class Participation:
                 "last_name": self.user.surname,
             },
             "ioi": self.IOI or False,
-            "region": self.venue[:3] if self.venue else None,
+            "region": venue_to_region(self.venue),
             "score": self.score,
             "scores": scores,
             "medal": self.medal,
@@ -377,12 +378,12 @@ class TaskScore:
         storage: Storage,
         task: Task,
         participation: Participation,
-        score: Optional[float],
+        score: Optional[str],
     ):
         self.storage = storage
         self.task = task
         self.participation = participation
-        self.score = score
+        self.score = cast_or_none(float, score)
         assert task.contest == participation.contest
         participation.scores.append(self)
 
@@ -395,3 +396,106 @@ class TaskScore:
             self.participation,
             self.score,
         )
+
+
+class Region:
+    def __init__(self, storage: Storage, id: str, name: str):
+        self.storage = storage
+        self.id = id
+        self.name = name
+
+    def __repr__(self):
+        return "<Region id=%s name=%s>" % (self.id, self.name)
+
+    @property
+    def navigation(self):
+        index = self.storage.regions.index(self)
+        get = (
+            lambda i: self.storage.regions[i].id
+            if 0 <= i < len(self.storage.regions)
+            else None
+        )
+        return {
+            "current": self.id,
+            "previous": get(index - 1),
+            "next": get(index + 1),
+        }
+
+    @cached_property
+    def participations(self):
+        participations = []
+        for contest in self.storage.participations.values():
+            participations.extend(
+                [p for p in contest if venue_to_region(p.venue) == self.id]
+            )
+        return participations
+
+    @cached_property
+    def num_contestants(self):
+        return len(self.participations)
+
+    @cached_property
+    def num_medals(self):
+        medals = {"gold": 0, "silver": 0, "bronze": 0}
+        for p in self.participations:
+            if p.medal:
+                medals[p.medal] += 1
+        return medals
+
+    @cached_property
+    def avg_contestants_per_year(self):
+        total = 0
+        num_valid_contests = 0
+        for p in self.participations:
+            if not p.contest.has_all_regions:
+                continue
+            total += 1
+        for c in self.storage.contests.values():
+            if c.has_all_regions:
+                num_valid_contests += 1
+        return total / num_valid_contests
+
+    @cached_property
+    def hosted(self):
+        hosted = []
+        for c in self.storage.contests.values():
+            if c.region == self.id:
+                hosted.append(c.year)
+        return sorted(hosted, key=lambda c: -c)
+
+    @cached_property
+    def years(self):
+        def init(year: int):
+            return {
+                "year": year,
+                "location": self.storage.contests[year].location_info,
+                "num_contestants": 0,
+                "num_medals": {"gold": 0, "silver": 0, "bronze": 0},
+            }
+
+        years = dict()
+        for p in self.participations:
+            year = years.setdefault(p.contest.year, init(p.contest.year))
+            year["num_contestants"] += 1
+            if p.medal:
+                year["num_medals"][p.medal] += 1
+        return sorted(years.values(), key=lambda y: -y["year"])
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "navigation": self.navigation,
+            "num_contestants": self.num_contestants,
+            "medals": self.num_medals,
+            "avg_contestants_per_year": self.avg_contestants_per_year,
+            "hosted": self.hosted,
+        }
+
+    def to_json_detail(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "navigation": self.navigation,
+            "years": self.years,
+        }

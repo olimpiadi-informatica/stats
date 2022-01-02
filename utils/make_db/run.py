@@ -26,6 +26,30 @@ STATIC_COLUMNS = {
 }
 
 
+REGION_NAMES = {
+    "ABR": "Abruzzo",
+    "BAS": "Basilicata",
+    "CAL": "Calabria",
+    "CAM": "Campania",
+    "EMI": "Emilia-Romagna",
+    "FRI": "Friuli-Venezia Giulia",
+    "LAZ": "Lazio",
+    "LIG": "Liguria",
+    "LOM": "Lombardia",
+    "MAR": "Marche",
+    "MOL": "Molise",
+    "PIE": "Piemonte",
+    "PUG": "Puglia",
+    "SAR": "Sardegna",
+    "SIC": "Sicilia",
+    "TOS": "Toscana",
+    "TRE": "Trentino-Alto Adige",
+    "UMB": "Umbria",
+    "VAL": "Valle d'Aosta",
+    "VEN": "Veneto",
+}
+
+
 def get_task_coefficients(raw_participations: List[OrderedDict], task_names: List[str]):
     """
     The score column is a linear combination of the scores of the tasks. This
@@ -58,7 +82,7 @@ def main(args):
         else:
             raise RuntimeError("Pass --drop to overwrite the database")
 
-    drive = Drive(args.spreadsheet_id, args.request_credentials)
+    drive = Drive(args.spreadsheet_id, args.request_credentials, args.use_cache)
 
     storage = Storage(args.storage_dir)
 
@@ -68,7 +92,11 @@ def main(args):
     missing_venue = set()  # type: Set[str]
     known_venue = dict()  # type: Dict[str, str]
 
-    for year, location in list(locations.items())[-3:]:  # FIXME: remove slice
+    for id, name in REGION_NAMES.items():
+        region = Region(storage, id, name)
+        storage.regions.append(region)
+
+    for year, location in locations.items():
         logger.info("Processing year %d", year)
         contest = Contest(
             storage,
@@ -143,6 +171,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--request-credentials",
         help="Request the Google Drive credentials",
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "--use-cache",
+        help="Use the table cache",
         action="store_true",
         default=False,
     )
