@@ -4,12 +4,11 @@ import hashlib
 import os
 import json
 import sqlite3
-from functools import cache, reduce, partial
+from functools import cache, cached_property, reduce, partial
 from typing import Dict, List, Optional
 
 # TODO:
 # contests/{year}/results.json
-# contests/{year}/regions.json (not used)
 # home.json
 # regions.json
 # regions/{region}.json
@@ -42,9 +41,6 @@ REGION_NAMES = {
     "VEN": "Veneto",
 }
 
-with open(os.path.join(os.path.dirname(__file__), "schema.sql"), "r") as f:
-    DB_SCHEMA = f.read()
-
 
 def fold_with_none(func, a, b):
     if a is None:
@@ -71,15 +67,6 @@ class Storage:
         self.storage_dir = storage_dir
         os.makedirs(self.storage_dir)
 
-        self.conn = sqlite3.connect(
-            self.storage_dir + "/db.sqlite3",
-            check_same_thread=False,
-            isolation_level=None,
-            detect_types=sqlite3.PARSE_DECLTYPES,
-        )
-        self.cursor = self.conn.cursor()
-        self.cursor.executescript(DB_SCHEMA)
-
         self.users: Dict[User, User] = dict()
         self.contests: Dict[int, Contest] = dict()
         self.tasks: Dict[int, Dict[str, Task]] = defaultdict(dict)
@@ -99,13 +86,13 @@ class Storage:
             f.write(json.dumps(data, indent=2))
 
     def finish_contests(self):
-        contests = [c.to_json(self) for c in self.contests.values()]
+        contests = [c.to_json() for c in self.contests.values()]
         contests.sort(key=lambda c: -c["year"])
         self.write("contests.json", {"contests": contests})
 
         os.makedirs(self.path("contests"))
         for year, contest in self.contests.items():
-            self.write(f"contests/{year}.json", contest.to_json(self))
+            self.write(f"contests/{year}.json", contest.to_json())
 
 
 class User:
@@ -183,27 +170,28 @@ class Contest:
     def __repr__(self):
         return "<Contest year=%s>" % self.year
 
-    @cache
-    def max_score_possible(self, storage: Storage) -> float:
-        return sum_with_none(
-            t.max_score_possible for t in storage.tasks[self.year].values()
-        )
+    @property
+    def tasks(self):
+        return self.storage.tasks[self.year]
+
+    @cached_property
+    def max_score_possible(self) -> float:
+        return sum_with_none(t.max_score_possible for t in self.tasks.values())
+
+    @cached_property
+    def max_score(self) -> float:
+        return sum_with_none(t.max_score for t in self.tasks.values())
+
+    @cached_property
+    def avg_score(self) -> float:
+        return sum_with_none(t.avg_score for t in self.tasks.values())
 
     @cache
-    def max_score(self, storage: Storage) -> float:
-        return sum_with_none(
-            t.max_score(storage) for t in storage.tasks[self.year].values()
+    def to_json(self):
+        # FIXME: index participations by contest
+        num_contestants = sum(
+            1 for p in self.storage.participations if p.contest == self
         )
-
-    @cache
-    def avg_score(self, storage: Storage) -> float:
-        return sum_with_none(
-            t.avg_score(storage) for t in storage.tasks[self.year].values()
-        )
-
-    @cache
-    def to_json(self, storage: Storage):
-        num_contestants = sum(1 for p in storage.participations if p.contest == self)
 
         return {
             "year": self.year,
@@ -215,19 +203,17 @@ class Contest:
             },
             "region": self.region,
             "num_contestants": num_contestants,
-            "max_score_possible": self.max_score_possible(storage),
-            "max_score": self.max_score(storage),
-            "avg_score": self.avg_score(storage),
-            "tasks": [
-                self.task_to_json(t, storage) for t in storage.tasks[self.year].values()
-            ],
+            "max_score_possible": self.max_score_possible,
+            "max_score": self.max_score,
+            "avg_score": self.avg_score,
+            "tasks": [self.task_to_json(t) for t in self.tasks.values()],
             "medals": {
-                medal: self.medal_to_json(medal, storage)
+                medal: self.medal_to_json(medal)
                 for medal in ["gold", "silver", "bronze"]
             },
         }
 
-    def task_to_json(self, task: "Task", storage: Storage):
+    def task_to_json(self, task: "Task"):
         return {
             "contest_year": self.year,
             "name": task.name,
@@ -237,16 +223,16 @@ class Contest:
             "max_score_possible": task.max_score_possible,
         }
 
-    def medal_to_json(self, medal: str, storage: Storage):
+    def medal_to_json(self, medal: str):
         medal_code = medal[0].upper()
         count = sum(
             1
-            for p in storage.participations
+            for p in self.storage.participations
             if p.contest == self and p.medal == medal_code
         )
         cutoff = min_with_none(
             p.score
-            for p in storage.participations
+            for p in self.storage.participations
             if p.contest == self and p.medal == medal_code
         )
         return {
@@ -284,17 +270,19 @@ class Task:
             self.index,
         )
 
-    @cache
-    def max_score(self, storage: Storage):
-        return max_with_none(
-            s.score for s in storage.task_scores[self.contest.year][self.name]
-        )
+    @property
+    def scores(self):
+        return self.storage.task_scores[self.contest.year][self.name]
 
-    @cache
-    def avg_score(self, storage: Storage):
-        scores = [s.score for s in storage.task_scores[self.contest.year][self.name]]
-        if not scores:
+    @cached_property
+    def max_score(self):
+        return max_with_none(s.score for s in self.scores)
+
+    @cached_property
+    def avg_score(self):
+        if not self.scores:
             return None
+        scores = [s.score for s in self.scores]
         if any(s is None for s in scores):
             return None
         return sum(scores) / len(scores)
