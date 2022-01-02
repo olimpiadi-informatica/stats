@@ -8,7 +8,6 @@ from typing import Dict, List, Optional
 
 # TODO:
 # home.json
-# regions/{region}/results.json
 # tasks.json
 # tasks/{year}/{name}.json
 # users.json
@@ -97,7 +96,7 @@ class Storage:
 
         for region in self.regions:
             self.write(f"regions/{region.id}.json", region.to_json_detail())
-            # self.write(f"contests/{region.id}/results.json", region.results_to_json())
+            self.write(f"regions/{region.id}/results.json", region.results_to_json())
 
 
 class User:
@@ -335,7 +334,7 @@ class Participation:
         self.school = school
         self.venue = venue
         self.medal = MEDAL_NAMES[medal] if medal else None
-        self.IOI = cast_or_none(bool, IOI)
+        self.IOI = cast_or_none(bool, IOI) or False
         self.score = cast_or_none(float, score)
         user.participations.append(self)
         # automatically added on TaskScore construction
@@ -347,6 +346,14 @@ class Participation:
     def __repr__(self):
         return "<Participation user=%s contest=%s>" % (self.user, self.contest)
 
+    @property
+    def contestant(self):
+        return {
+            "id": self.user.id(),
+            "first_name": self.user.name,
+            "last_name": self.user.surname,
+        }
+
     def to_json(self):
         past_participations = [
             {"year": p.contest.year, "medal": p.medal}
@@ -356,12 +363,8 @@ class Participation:
         scores = [s.score for s in self.scores]
         return {
             "rank": self.rank,
-            "contestant": {
-                "id": self.user.id(),
-                "first_name": self.user.name,
-                "last_name": self.user.surname,
-            },
-            "ioi": self.IOI or False,
+            "contestant": self.contestant,
+            "ioi": self.IOI,
             "region": venue_to_region(self.venue),
             "score": self.score,
             "scores": scores,
@@ -481,6 +484,33 @@ class Region:
                 year["num_medals"][p.medal] += 1
         return sorted(years.values(), key=lambda y: -y["year"])
 
+    @cached_property
+    def results(self):
+        by_year = defaultdict(list)
+        for p in self.participations:
+            by_year[p.contest.year].append(p)
+        results = []
+        for year, participations in by_year.items():
+            contestants = [
+                {
+                    "contestant": p.contestant,
+                    "ioi": p.IOI,
+                    "rank": p.rank,
+                    "medal": p.medal,
+                    "task_scores": [
+                        {
+                            "name": s.task.name,
+                            "score": s.score,
+                            "max_score_possible": s.task.max_score_possible,
+                        }
+                        for s in p.scores
+                    ],
+                }
+                for p in participations
+            ]
+            results.append({"year": year, "contestants": contestants})
+        return sorted(results, key=lambda r: -r["year"])
+
     def to_json(self):
         return {
             "id": self.id,
@@ -498,4 +528,10 @@ class Region:
             "name": self.name,
             "navigation": self.navigation,
             "years": self.years,
+        }
+
+    def results_to_json(self):
+        return {
+            "navigation": self.navigation,
+            "results": self.results,
         }
