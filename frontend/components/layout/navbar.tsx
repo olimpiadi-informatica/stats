@@ -7,17 +7,26 @@ import {
 import Link from "next/link";
 import { Search } from "./search";
 import styles from "./navbar.module.scss";
+import { useRouter } from "next/router";
 
 export function Navbar() {
+  const router = useRouter();
+
   return (
     <BootstrapNavar bg="white" expand="lg" className={styles.navbar}>
       <Container>
         <BootstrapNavar.Toggle aria-controls="basic-navbar-nav" />
         <BootstrapNavar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Link href="/" passHref>
-              <Nav.Link>Home</Nav.Link>
-            </Link>
+            <Nav.Link
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                router.push(`/#${Math.floor(Math.random() * 100000)}`);
+              }}
+            >
+              Home
+            </Nav.Link>
             <Link href="/contests" passHref>
               <Nav.Link>Contests</Nav.Link>
             </Link>

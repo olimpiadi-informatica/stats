@@ -18,11 +18,13 @@
     "react-simple-maps": "^2.3.0",
     "recharts": "^2.1.6",
     "sass": "^1.43.5",
+    "seedrandom": "^3.0.5",
     "swr": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "16.11.10",
     "@types/react": "17.0.37",
+    "@types/seedrandom": "^3.0.1",
     "eslint": "7",
     "eslint-config-next": "12.0.4",
     "eslint-config-prettier": "^8.3.0",
