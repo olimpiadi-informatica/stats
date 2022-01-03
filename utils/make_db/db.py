@@ -64,6 +64,7 @@ class Storage:
         self.task_scores: Dict[int, Dict[str, List[TaskScore]]] = defaultdict(
             lambda: defaultdict(list)
         )
+        self.internationals: Dict[str, International] = dict()
 
     def path(self, path: str):
         return os.path.join(self.storage_dir, path)
@@ -162,6 +163,33 @@ class Storage:
         self.write("search.json", index)
 
 
+class International:
+    def __init__(
+        self,
+        storage: Storage,
+        code: str,
+        name: str,
+        link: Optional[str],
+        color: str,
+    ):
+        self.storage = storage
+        self.code = code
+        self.name = name
+        self.link = link
+        self.color = color
+
+    def __repr__(self) -> str:
+        return f"<International {self.code} {self.name}>"
+
+    def to_json(self):
+        return {
+            "code": self.code,
+            "name": self.name,
+            "link": self.link,
+            "color": self.color,
+        }
+
+
 class User:
     def __init__(
         self,
@@ -251,7 +279,7 @@ class User:
                 [
                     {
                         "year": p.contest.year,
-                        "ioi": p.IOI,
+                        "internationals": p.internationals_info,
                         "medal": p.medal,
                     }
                     for p in self.participations
@@ -267,7 +295,7 @@ class User:
                 [
                     {
                         "year": p.contest.year,
-                        "ioi": p.IOI,
+                        "internationals": p.internationals_info,
                         "medal": p.medal,
                         "rank": p.rank,
                         "region": venue_to_region(p.venue),
@@ -536,7 +564,7 @@ class Task:
                 [
                     {
                         "contestant": s.participation.contestant,
-                        "ioi": s.participation.IOI,
+                        "internationals": s.participation.internationals_info,
                         "rank": s.participation.rank,
                         "score": s.score,
                     }
@@ -557,7 +585,7 @@ class Participation:
         school: Optional[str],
         venue: Optional[str],
         medal: Optional[str],
-        IOI: Optional[str],
+        internationals: Optional[str],
         score: Optional[str],
         **kwargs,
     ):
@@ -568,7 +596,12 @@ class Participation:
         self.school = school
         self.venue = venue
         self.medal = MEDAL_NAMES[medal] if medal else None
-        self.IOI = cast_or_none(bool, IOI) or False
+        if internationals:
+            self.internationals = [
+                self.storage.internationals[name] for name in internationals.split(",")
+            ]
+        else:
+            self.internationals = []
         self.score = cast_or_none(float, score)
         user.participations.append(self)
         # automatically added on TaskScore construction
@@ -584,6 +617,10 @@ class Participation:
     def contestant(self):
         return self.user.contestant
 
+    @property
+    def internationals_info(self):
+        return [i.to_json() for i in self.internationals]
+
     def to_json(self):
         past_participations = [
             {"year": p.contest.year, "medal": p.medal}
@@ -594,7 +631,7 @@ class Participation:
         return {
             "rank": self.rank,
             "contestant": self.contestant,
-            "ioi": self.IOI,
+            "internationals": self.internationals_info,
             "region": venue_to_region(self.venue),
             "score": self.score,
             "scores": scores,
@@ -732,7 +769,7 @@ class Region:
             contestants = [
                 {
                     "contestant": p.contestant,
-                    "ioi": p.IOI,
+                    "internationals": p.internationals_info,
                     "rank": p.rank,
                     "medal": p.medal,
                     "task_scores": [

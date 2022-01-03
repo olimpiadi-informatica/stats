@@ -21,7 +21,7 @@ STATIC_COLUMNS = {
     "medal",
     "gender",
     "venue",
-    "IOI",
+    "internationals",
     "score",
 }
 
@@ -85,6 +85,10 @@ def main(args):
     drive = Drive(args.spreadsheet_id, args.request_credentials, args.use_cache)
 
     storage = Storage(args.storage_dir)
+
+    for intern in drive.get_table("internationals"):
+        international = International(storage, **intern)
+        storage.internationals[international.code] = international
 
     task_meta = {task["task_name"]: task for task in drive.get_table("tasks")}
     locations = {int(c["year"]): c for c in drive.get_table("contests")}

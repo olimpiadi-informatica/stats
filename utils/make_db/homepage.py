@@ -149,7 +149,13 @@ def get_student_with_most_participations(storage, result):
 
 
 def get_ioist_with_worst_rank(storage, result):
-    participations = [p for u in storage.users for p in u.participations if p.IOI]
+    participations = [
+        p
+        for u in storage.users
+        for p in u.participations
+        for i in p.internationals
+        if i.code == "IOI"
+    ]
     key = lambda p: p.rank
     participations.sort(key=key, reverse=True)
 
