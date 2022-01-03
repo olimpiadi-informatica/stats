@@ -45,7 +45,7 @@ $ yarn dev
 4. Generate the new database by running
 
 ```
-$ ./run $SPREADSHEET_ID ../../data --drop --use-cache
+$ ./run $SPREADSHEET_ID ../../data --drop
 ```
 
 > If it's the first time you follow this guide you may need the `token.pickle` file. To obtain it add `--request-credentials` to the command above.
