@@ -79,44 +79,42 @@ export function Results({ results }: { results: RegionResults }) {
           </tr>
         </thead>
         <tbody>
-          {results.results.map((result) => (
-            <>
-              {result.contestants.map((cont) => (
-                <tr key={cont.contestant.id}>
-                  <td>
-                    <Link href={`/contest/${result.year}`}>
-                      <a>{result.year}</a>
-                    </Link>
-                  </td>
-                  <td>
-                    <Link href={`/contestant/${cont.contestant.id}`}>
-                      <a>
-                        {cont.contestant.first_name} {cont.contestant.last_name}
-                      </a>
-                    </Link>
-                    {cont.ioi && (
-                      <>
-                        {" "}
-                        <Badge pill bg="success">
-                          IOI
-                        </Badge>
-                      </>
-                    )}
-                  </td>
-                  <td>{cont.rank ?? "?"}</td>
-                  <td>{computeScore(cont.task_scores) ?? "?"}</td>
-                  <td className={styles.medal}>
-                    {cont.medal ? <MedalIcon color={cont.medal} /> : null}
-                  </td>
-                  <Scores
-                    year={result.year}
-                    scores={cont.task_scores}
-                    numTasks={numCols}
-                  />
-                </tr>
-              ))}
-            </>
-          ))}
+          {results.results.flatMap((result) =>
+            result.contestants.map((cont) => (
+              <tr key={`${result.year} ${cont.contestant.id}`}>
+                <td>
+                  <Link href={`/contest/${result.year}`}>
+                    <a>{result.year}</a>
+                  </Link>
+                </td>
+                <td>
+                  <Link href={`/contestant/${cont.contestant.id}`}>
+                    <a>
+                      {cont.contestant.first_name} {cont.contestant.last_name}
+                    </a>
+                  </Link>
+                  {cont.ioi && (
+                    <>
+                      {" "}
+                      <Badge pill bg="success">
+                        IOI
+                      </Badge>
+                    </>
+                  )}
+                </td>
+                <td>{cont.rank ?? "?"}</td>
+                <td>{computeScore(cont.task_scores) ?? "?"}</td>
+                <td className={styles.medal}>
+                  {cont.medal ? <MedalIcon color={cont.medal} /> : null}
+                </td>
+                <Scores
+                  year={result.year}
+                  scores={cont.task_scores}
+                  numTasks={numCols}
+                />
+              </tr>
+            ))
+          )}
         </tbody>
       </Table>
     </div>
