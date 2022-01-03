@@ -15,7 +15,7 @@ if [ ! -f frontend/docker/Dockerfile ]; then
 fi
 
 PUSH=0
-TAG=$(date +%Y%m%d)
+TAG=$(date +%Y%m%d)-v1
 
 while getopts "pht:" opt; do
   case "$opt" in
