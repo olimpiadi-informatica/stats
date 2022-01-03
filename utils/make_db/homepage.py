@@ -45,7 +45,7 @@ def get_region_with_most_medals_per_participant(storage, result):
             "region_with_most_medals_per_participant": {
                 "id": best.id,
                 "name": best.name,
-                "medals_per_participants": key(best),
+                "medals_per_participant": key(best),
             },
         }
     )
@@ -264,7 +264,7 @@ def get_task_with_most_fullscores(storage, result):
 
     result.append(
         {
-            "task_with_fullscores": {
+            "task_with_most_fullscores": {
                 "contest_year": best.contest.year,
                 "name": best.name,
                 "title": best.title,
