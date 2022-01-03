@@ -8,7 +8,7 @@ usage() {
   echo "  -t tag  Override the tag"
 }
 
-if [ ! -f backend/docker/Dockerfile ]; then
+if [ ! -f frontend/docker/Dockerfile ]; then
   usage
   echo "Error: run this script from the repo root"
   exit 1
@@ -39,16 +39,10 @@ done
 echo "Image tag is: $TAG"
 
 docker build \
-  -t "ghcr.io/algorithm-ninja/oii-stats-backend:$TAG" \
-  -f backend/docker/Dockerfile \
-  backend
-
-docker build \
   -t "ghcr.io/algorithm-ninja/oii-stats-frontend:$TAG" \
   -f frontend/docker/Dockerfile \
-  frontend
+  .
 
 if [ "$PUSH" = 1 ]; then
-  docker push "ghcr.io/algorithm-ninja/oii-stats-backend:$TAG"
   docker push "ghcr.io/algorithm-ninja/oii-stats-frontend:$TAG"
 fi

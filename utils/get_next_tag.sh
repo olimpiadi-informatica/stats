@@ -37,13 +37,8 @@ info "ghcr.io token obtained"
 TOKEN=$(echo "$TOKEN_JSON"| jq -r .token)
 info "Token is ${TOKEN:1:8}..."
 
-images=("algorithm-ninja/oii-stats-frontend" "algorithm-ninja/oii-stats-backend")
-tags=""
-
-for image in "${images[@]}"; do
-  new_tags=$(mycurl -H "Authorization: Bearer $TOKEN" https://ghcr.io/v2/$image/tags/list | jq -r '.tags[]' | grep "$default_tag" || true)
-  tags=$(printf '%s\n%s' "$new_tags" "$tags")
-done
+image="algorithm-ninja/oii-stats-frontend"
+tags=$(mycurl -H "Authorization: Bearer $TOKEN" https://ghcr.io/v2/$image/tags/list | jq -r '.tags[]' | grep "$default_tag" || true)
 
 for v in $(seq 1 20); do
   tag="$default_tag-v$v"
