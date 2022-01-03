@@ -1,5 +1,4 @@
-import useSWR from "swr";
-import { ROOT_URL, Contestant, NumMedals, fetcher, Loadable } from "./common";
+import { Contestant, NumMedals, loadJSON } from "./common";
 import { ContestLocation } from "./contest";
 
 type RegionWithMostMedalsInfo = {
@@ -216,12 +215,6 @@ export type Stats = {
   contest: StatsContest[];
 };
 
-export function useStats(): Loadable<Stats> {
-  const { data, error } = useSWR(`${ROOT_URL}/home`, fetcher);
-
-  return {
-    data,
-    isLoading: !error && !data,
-    isError: error,
-  };
+export async function getStats(): Promise<Stats> {
+  return await loadJSON("home.json");
 }

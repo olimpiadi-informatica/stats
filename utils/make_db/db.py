@@ -129,16 +129,36 @@ class Storage:
         self.write("home.json", homepage(self))
 
     def finish_search(self):
-        index = {
-            "contests": [(c.search_key, c.year) for c in self.contests.values()],
-            "task": [
-                (t.search_key, t.contest.year, t.name)
-                for y in self.tasks.values()
-                for t in y.values()
-            ],
-            "regions": [(r.search_key, r.id) for r in self.regions],
-            "users": [(u.search_key, u.id()) for u in self.users.values()],
-        }
+        index = []
+        for c in self.contests.values():
+            index.append(
+                {
+                    "id": f"contest:{c.year}",
+                    "k": c.search_key,
+                    "v": {"contest": c.to_json()},
+                }
+            )
+        for year, tasks in self.tasks.items():
+            for task in tasks.values():
+                index.append(
+                    {
+                        "id": f"task:{year}:{task.name}",
+                        "k": task.search_key,
+                        "v": {"task": {"year": year, "task": task.to_json()}},
+                    }
+                )
+        for r in self.regions:
+            index.append(
+                {
+                    "id": f"region:{r.id}",
+                    "k": r.search_key,
+                    "v": {"region": r.to_json()},
+                }
+            )
+        for u in self.users:
+            index.append(
+                {"id": f"user:{u.id()}", "k": u.search_key, "v": {"user": u.to_json()}}
+            )
         self.write("search.json", index)
 
 
@@ -294,7 +314,8 @@ class Contest:
 
     @property
     def search_key(self):
-        return f"{self.location or ''} {self.region or ''}"
+        tasks = " ".join(self.storage.tasks[self.year].keys())
+        return f"{self.location or ''} {self.region or ''} {tasks}"
 
     @property
     def tasks(self):

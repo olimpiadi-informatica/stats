@@ -1,14 +1,5 @@
 import { ContestLocation } from "./contest";
-import {
-  ROOT_URL,
-  Contestant,
-  Error,
-  NumMedals,
-  Medal,
-  Loadable,
-  fetcher,
-} from "./common";
-import useSWR from "swr";
+import { Contestant, NumMedals, Medal, loadJSON } from "./common";
 
 export type RegionItem = {
   id: string;
@@ -67,24 +58,14 @@ export type RegionList = {
   regions: RegionItem[];
 };
 
-export function useRegionList(): Loadable<RegionList> {
-  const { data, error } = useSWR(`${ROOT_URL}/regions`, fetcher);
-
-  return {
-    data,
-    isLoading: !error && !data,
-    isError: error,
-  };
+export async function getRegionList(): Promise<RegionList> {
+  return await loadJSON("regions.json");
 }
 
-export async function loadRegion(id: string): Promise<RegionDetail | Error> {
-  const res = await fetch(`${ROOT_URL}/regions/${id}`);
-  return await res.json();
+export async function getRegion(id: string): Promise<RegionDetail> {
+  return await loadJSON(`regions/${id}.json`);
 }
 
-export async function loadRegionResults(
-  id: string
-): Promise<RegionResults | Error> {
-  const res = await fetch(`${ROOT_URL}/regions/${id}/results`);
-  return await res.json();
+export async function getRegionResults(id: string): Promise<RegionResults> {
+  return await loadJSON(`regions/${id}/results.json`);
 }

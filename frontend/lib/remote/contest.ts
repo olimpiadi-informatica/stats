@@ -1,12 +1,4 @@
-import {
-  ROOT_URL,
-  Contestant,
-  Loadable,
-  fetcher,
-  Error,
-  Medal,
-} from "./common";
-import useSWR from "swr";
+import { Contestant, Medal, loadJSON } from "./common";
 
 export type ContestLocation = {
   location: string | null;
@@ -101,26 +93,14 @@ export type ContestResults = {
   results: ContestResultItem[];
 };
 
-export function useContestList(): Loadable<ContestList> {
-  const { data, error } = useSWR(`${ROOT_URL}/contests`, fetcher);
-
-  return {
-    data,
-    isLoading: !error && !data,
-    isError: error,
-  };
+export async function getContestList(): Promise<ContestList> {
+  return await loadJSON("contests.json");
 }
 
-export async function loadContest(
-  year: number
-): Promise<ContestDetail | Error> {
-  const res = await fetch(`${ROOT_URL}/contests/${year}`);
-  return await res.json();
+export async function getContest(year: number): Promise<ContestDetail> {
+  return await loadJSON(`contests/${year}.json`);
 }
 
-export async function loadContestResults(
-  year: number
-): Promise<ContestResults | Error> {
-  const res = await fetch(`${ROOT_URL}/contests/${year}/results`);
-  return await res.json();
+export async function getContestResults(year: number): Promise<ContestResults> {
+  return await loadJSON(`contests/${year}/results.json`);
 }

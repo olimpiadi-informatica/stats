@@ -1,13 +1,4 @@
-import {
-  ROOT_URL,
-  Contestant,
-  NumMedals,
-  Loadable,
-  fetcher,
-  Error,
-  Medal,
-} from "./common";
-import useSWR from "swr";
+import { Contestant, NumMedals, Medal, loadJSON } from "./common";
 
 export type ContestantParticipationScore = {
   task: string;
@@ -46,19 +37,10 @@ export type ContestantList = {
   users: ContestantItem[];
 };
 
-export function useContestantList(): Loadable<ContestantList> {
-  const { data, error } = useSWR(`${ROOT_URL}/users`, fetcher);
-
-  return {
-    data,
-    isLoading: !error && !data,
-    isError: error,
-  };
+export async function getContestantList(): Promise<ContestantList> {
+  return await loadJSON("users.json");
 }
 
-export async function loadContestant(
-  id: string
-): Promise<ContestantDetail | Error> {
-  const res = await fetch(`${ROOT_URL}/users/${id}`);
-  return await res.json();
+export async function getContestant(id: string): Promise<ContestantDetail> {
+  return await loadJSON(`users/${id}.json`);
 }

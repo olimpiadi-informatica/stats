@@ -1,9 +1,9 @@
-import { fetcher, Loadable, ROOT_URL } from "./common";
+import { loadJSON } from "./common";
 import { ContestantItem } from "./user";
 import { TaskItem } from "./task";
 import { ContestItem } from "./contest";
 import { RegionItem } from "./region";
-import useSWR from "swr";
+import MiniSearch, { AsPlainObject, Options } from "minisearch";
 
 export type SearchResultTask = {
   year: number;
@@ -32,15 +32,42 @@ export type SearchResultList = {
   results: SearchResult[];
 };
 
-export function useSearchResults(q: string): Loadable<SearchResultList> {
-  const { data, error } = useSWR(
-    `${ROOT_URL}/search?q=${encodeURIComponent(q)}`,
-    fetcher
-  );
+export type SearchIndexItem = {
+  id: string;
+  k: string;
+  v: SearchResult;
+};
 
+export type SearchIndex = SearchIndexItem[];
+
+export type Index = {
+  index: AsPlainObject;
+};
+
+let globalIndex: MiniSearch | null = null;
+const INDEX_OPTIONS: Options = {
+  fields: ["k"],
+  storeFields: ["v"],
+  searchOptions: {
+    prefix: true,
+    fuzzy: 0.2,
+  },
+};
+
+export async function getSearchIndex(): Promise<Index> {
+  const index = (await loadJSON("search.json")) as SearchIndex;
+  const minisearchIndex = new MiniSearch(INDEX_OPTIONS);
+  await minisearchIndex.addAllAsync(index);
+  const searchIndex = JSON.parse(JSON.stringify(minisearchIndex));
+  return { index: searchIndex };
+}
+
+export function search(index: Index, q: string): SearchResultList {
+  if (globalIndex === null) {
+    globalIndex = MiniSearch.loadJS(index.index, INDEX_OPTIONS);
+  }
+  const results = globalIndex.search(q).slice(0, 30);
   return {
-    data,
-    isLoading: !error && !data,
-    isError: error,
+    results: results.map((result) => result.v),
   };
 }

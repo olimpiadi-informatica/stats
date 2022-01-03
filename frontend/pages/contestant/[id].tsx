@@ -1,18 +1,22 @@
 import { Contestant } from "components/contestant/contestant";
 import { Layout } from "components/layout/layout";
-import { Error } from "lib/remote/common";
-import { ContestantDetail, loadContestant } from "lib/remote/user";
+import {
+  ContestantDetail,
+  getContestant,
+  getContestantList,
+} from "lib/remote/user";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 type Props = {
-  contestant: ContestantDetail | Error;
+  contestant: ContestantDetail;
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const contestants = await getContestantList();
   return {
-    paths: [],
-    fallback: "blocking",
+    paths: contestants.users.map((c) => ({ params: { id: c.contestant.id } })),
+    fallback: false,
   };
 };
 
@@ -21,7 +25,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const id = params.id as string;
   if (!id) return { notFound: true };
 
-  const contestant = await loadContestant(id);
+  const contestant = await getContestant(id);
 
   return {
     props: {
@@ -31,13 +35,6 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 };
 
 export default function ContestantPage({ contestant }: Props) {
-  if ("error" in contestant) {
-    return (
-      <Layout>
-        <p>{contestant.error}</p>
-      </Layout>
-    );
-  }
   return (
     <Layout>
       <Head>

@@ -3,23 +3,26 @@ import { Layout } from "components/layout/layout";
 import {
   ContestDetail,
   ContestResults,
-  loadContest,
-  loadContestResults,
+  getContest,
+  getContestList,
+  getContestResults,
 } from "lib/remote/contest";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
-import { Error } from "lib/remote/common";
 import { Contest } from "components/contest/contest";
 
 type Props = {
   year: number;
-  contest: ContestDetail | Error;
-  results: ContestResults | Error;
+  contest: ContestDetail;
+  results: ContestResults;
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const contests = await getContestList();
   return {
-    paths: [],
-    fallback: "blocking",
+    paths: contests.contests.map((c) => ({
+      params: { year: c.year.toString() },
+    })),
+    fallback: false,
   };
 };
 
@@ -28,8 +31,8 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const contestYear = parseInt(params.year as string, 10);
   if (Number.isNaN(contestYear)) return { notFound: true };
 
-  const contest = await loadContest(contestYear);
-  const results = await loadContestResults(contestYear);
+  const contest = await getContest(contestYear);
+  const results = await getContestResults(contestYear);
 
   return {
     props: {
@@ -45,20 +48,6 @@ export default function ContestYear({
   results,
   year,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  if ("error" in contest) {
-    return (
-      <Layout>
-        <p>{contest.error}</p>
-      </Layout>
-    );
-  }
-  if ("error" in results) {
-    return (
-      <Layout>
-        <p>{results.error}</p>
-      </Layout>
-    );
-  }
   return (
     <Layout>
       <Head>

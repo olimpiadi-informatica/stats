@@ -1,5 +1,4 @@
-import { ROOT_URL, Contestant, Loadable, fetcher, Error } from "./common";
-import useSWR from "swr";
+import { Contestant, loadJSON } from "./common";
 
 export type TaskItem = {
   contest_year: number;
@@ -48,20 +47,10 @@ export type TaskList = {
   tasks: TaskYear[];
 };
 
-export function useTaskList(): Loadable<TaskList> {
-  const { data, error } = useSWR(`${ROOT_URL}/tasks`, fetcher);
-
-  return {
-    data,
-    isLoading: !error && !data,
-    isError: error,
-  };
+export async function getTaskList(): Promise<TaskList> {
+  return await loadJSON("tasks.json");
 }
 
-export async function loadTask(
-  year: number,
-  name: string
-): Promise<TaskDetail | Error> {
-  const res = await fetch(`${ROOT_URL}/tasks/${year}/${name}`);
-  return await res.json();
+export async function getTask(year: number, name: string): Promise<TaskDetail> {
+  return await loadJSON(`tasks/${year}/${name}.json`);
 }

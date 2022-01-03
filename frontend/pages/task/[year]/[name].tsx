@@ -1,18 +1,22 @@
 import { Layout } from "components/layout/layout";
 import { Task } from "components/task/task";
-import { Error } from "lib/remote/common";
-import { loadTask, TaskDetail } from "lib/remote/task";
+import { getTask, getTaskList, TaskDetail } from "lib/remote/task";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 type Props = {
-  task: TaskDetail | Error;
+  task: TaskDetail;
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const tasks = await getTaskList();
   return {
-    paths: [],
-    fallback: "blocking",
+    paths: tasks.tasks.flatMap((y) =>
+      y.tasks.map((t) => ({
+        params: { year: y.year.toString(), name: t.name },
+      }))
+    ),
+    fallback: false,
   };
 };
 
@@ -22,7 +26,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const name = params.name as string;
   if (Number.isNaN(contestYear) || !name) return { notFound: true };
 
-  const task = await loadTask(contestYear, name);
+  const task = await getTask(contestYear, name);
 
   return {
     props: {
@@ -32,13 +36,6 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 };
 
 export default function TaskPage({ task }: Props) {
-  if ("error" in task) {
-    return (
-      <Layout>
-        <p>{task.error}</p>
-      </Layout>
-    );
-  }
   return (
     <Layout>
       <Head>
