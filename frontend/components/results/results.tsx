@@ -50,6 +50,7 @@ export function Results({ results, contest }: Props) {
             <th colSpan={results.tasks.length}>Tasks</th>
             <th className={styles.medal}>Medal</th>
             <th className={styles.region}>Region</th>
+            <th>Past Years</th>
           </tr>
         </thead>
         <tbody>
@@ -84,6 +85,22 @@ export function Results({ results, contest }: Props) {
                 {user.region ? (
                   <Link href={`/region/${user.region}`}>{user.region}</Link>
                 ) : null}
+              </td>
+              <td>
+                {user.past_participations.map((past) => (
+                  <div key={past.year}>
+                    <Link href={`/contest/${past.year}`}>
+                      <a>{past.year}</a>
+                    </Link>
+                    {past.medal && (
+                      <MedalIcon
+                        color={past.medal}
+                        size={20}
+                        className={styles.pastMedal}
+                      />
+                    )}
+                  </div>
+                ))}
               </td>
             </tr>
           ))}

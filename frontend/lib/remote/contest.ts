@@ -69,7 +69,7 @@ export type ContestDetail = ContestBase & {
 
 type PastParticipation = {
   year: number;
-  medal: MedalInfo;
+  medal: Medal;
 };
 
 type ContestResultItem = {
