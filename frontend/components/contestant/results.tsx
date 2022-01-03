@@ -8,6 +8,7 @@ import Link from "next/link";
 import { round } from "lib/round";
 import { MedalIcon } from "components/medals/medalIcon";
 import { ScoreBadge } from "components/results/scoreBadge";
+import { International } from "components/international/international";
 
 type ScoresProps = {
   year: number;
@@ -84,14 +85,9 @@ export function ContestantResults({
                 <Link href={`/contest/${part.year}`}>
                   <a>{part.year}</a>
                 </Link>
-                {part.ioi && (
-                  <>
-                    {" "}
-                    <Badge pill bg="success">
-                      IOI
-                    </Badge>
-                  </>
-                )}
+                {part.internationals.map((int) => (
+                  <International key={int.code} international={int} />
+                ))}
               </td>
               <td>{part.rank ?? "?"}</td>
               <td>{computeScore(part.scores) ?? "?"}</td>

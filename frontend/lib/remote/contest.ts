@@ -1,4 +1,4 @@
-import { Contestant, Medal, loadJSON } from "./common";
+import { Contestant, Medal, loadJSON, International } from "./common";
 
 export type ContestLocation = {
   location: string | null;
@@ -77,7 +77,7 @@ type ContestResultItem = {
   contestant: Contestant;
   region: string | null;
   score: number | null;
-  ioi: boolean;
+  internationals: International[];
   scores: (number | null)[];
   medal: Medal;
   past_participations: PastParticipation[];

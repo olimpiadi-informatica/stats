@@ -17,9 +17,16 @@ export type NumMedals = {
   bronze: number;
 };
 
+export type International = {
+  code: string;
+  name: string;
+  link: string | null;
+  color: string;
+};
+
 export type Medal = "gold" | "silver" | "bronze" | null;
 
-export const DATA_DIR = process.env.DATA_DIR || "../utils/make_db/data";
+export const DATA_DIR = process.env.DATA_DIR || "../data";
 
 export async function loadJSON<T>(filePath: string): Promise<T> {
   const fullPath = path.join(DATA_DIR, filePath);

@@ -1,4 +1,4 @@
-import { Contestant, loadJSON } from "./common";
+import { Contestant, International, loadJSON } from "./common";
 
 export type TaskItem = {
   contest_year: number;
@@ -23,7 +23,7 @@ type TaskNavigationItem = {
 
 type TaskDetailScore = {
   contestant: Contestant;
-  ioi: boolean;
+  internationals: International[];
   rank: number | null;
   score: number | null;
 };

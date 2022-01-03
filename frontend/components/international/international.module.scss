@@ -1,0 +1,14 @@
+.international {
+  margin-left: 0.3rem;
+  background-color: var(--background);
+  color: var(--color);
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    abbr {
+      cursor: pointer;
+    }
+  }
+}

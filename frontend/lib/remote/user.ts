@@ -1,4 +1,10 @@
-import { Contestant, NumMedals, Medal, loadJSON } from "./common";
+import {
+  Contestant,
+  NumMedals,
+  Medal,
+  loadJSON,
+  International,
+} from "./common";
 
 export type ContestantParticipationScore = {
   task: string;
@@ -8,7 +14,7 @@ export type ContestantParticipationScore = {
 
 type ContestantParticipation = {
   year: number;
-  ioi: boolean;
+  internationals: International[];
   medal: Medal;
   rank: number | null;
   region: string | null;
@@ -22,7 +28,7 @@ export type ContestantDetail = {
 
 type ContestantItemParticipation = {
   year: number;
-  ioi: boolean;
+  internationals: International[];
   medal: Medal;
 };
 

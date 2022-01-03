@@ -9,6 +9,7 @@ import styles from "./results.module.scss";
 import { ScoreBadge } from "./scoreBadge";
 import { Badge, Table } from "react-bootstrap";
 import { round } from "lib/round";
+import { International } from "components/international/international";
 
 type ScoresProps = {
   scores: (number | null)[];
@@ -63,14 +64,9 @@ export function Results({ results, contest }: Props) {
                     {user.contestant.first_name} {user.contestant.last_name}
                   </a>
                 </Link>
-                {user.ioi && (
-                  <>
-                    {" "}
-                    <Badge pill bg="success">
-                      IOI
-                    </Badge>
-                  </>
-                )}
+                {user.internationals.map((int) => (
+                  <International key={int.code} international={int} />
+                ))}
               </td>
               <td>{user.score === null ? "?" : round(user.score, 2)}</td>
               <Scores

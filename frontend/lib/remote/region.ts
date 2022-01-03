@@ -1,5 +1,11 @@
 import { ContestLocation } from "./contest";
-import { Contestant, NumMedals, Medal, loadJSON } from "./common";
+import {
+  Contestant,
+  NumMedals,
+  Medal,
+  loadJSON,
+  International,
+} from "./common";
 
 export type RegionItem = {
   id: string;
@@ -38,7 +44,7 @@ export type RegionResultsYearContestantTask = {
 
 type RegionResultsYearContestant = {
   contestant: Contestant;
-  ioi: boolean;
+  internationals: International[];
   rank: number | null;
   medal: Medal;
   task_scores: RegionResultsYearContestantTask[];
