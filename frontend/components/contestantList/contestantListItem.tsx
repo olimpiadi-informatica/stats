@@ -1,3 +1,4 @@
+import { ContestantImage } from "components/contestant/contestantImage";
 import { ContestantInfo } from "components/contestant/contestantInfo";
 import { Medals } from "components/medals/medals";
 import { ContestantItem } from "lib/remote/user";
@@ -20,11 +21,7 @@ export function ContestantListItem({ user }: { user: ContestantItem }) {
         <div className={styles.image}>
           <Link href={`/contestant/${user.contestant.id}`}>
             <a>
-              <img
-                src={`/static/contestants/${user.contestant.id}.jpg`}
-                alt={`${user.contestant.first_name} ${user.contestant.last_name}`}
-                onError={() => setImgOk(false)}
-              />
+              <ContestantImage contestant={user.contestant} />
             </a>
           </Link>
         </div>

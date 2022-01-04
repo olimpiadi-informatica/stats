@@ -30,7 +30,6 @@ export const DATA_DIR = process.env.DATA_DIR || "../data";
 
 export async function loadJSON<T>(filePath: string): Promise<T> {
   const fullPath = path.join(DATA_DIR, filePath);
-  console.debug("Loading JSON at", fullPath);
   const data = await fs.promises.readFile(fullPath);
   return JSON.parse(data.toString()) as T;
 }

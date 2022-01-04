@@ -10,19 +10,13 @@ import { Tile } from "./tile";
 import Link from "next/link";
 import styles from "./tile.module.scss";
 import { Medals } from "components/medals/medals";
+import { ContestantImage } from "components/contestant/contestantImage";
 
-function ContestantImage({ contestant }: { contestant: Contestant }) {
+function ContestantImageLink({ contestant }: { contestant: Contestant }) {
   return (
     <Link href={`/contestant/${contestant.id}`}>
-      <a>
-        <img
-          className={styles.image}
-          src={`/static/contestants/${contestant.id}.jpg`}
-          alt={`${contestant.first_name} ${contestant.last_name}`}
-          onError={(event: any) => {
-            event.target.style = "display: none";
-          }}
-        />
+      <a className={styles.image}>
+        <ContestantImage contestant={contestant} />
       </a>
     </Link>
   );
@@ -42,7 +36,7 @@ function BestStudentTile({ stat }: { stat: BestStudent }) {
   const { contestant, num_medals } = stat.best_student;
   return (
     <div>
-      <ContestantImage contestant={contestant} />
+      <ContestantImageLink contestant={contestant} />
       The student that won the most is{" "}
       <ContestantLink contestant={contestant} />
       <Medals medals={num_medals} />

@@ -5,7 +5,8 @@
   margin-bottom: 0.75rem;
 }
 
-.image {
+.image,
+.image img {
   width: 100%;
   border-top-left-radius: calc(0.25rem - 1px);
   border-top-right-radius: calc(0.25rem - 1px);
