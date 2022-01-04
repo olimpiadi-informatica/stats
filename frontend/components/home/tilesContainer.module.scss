@@ -1,23 +1,15 @@
-@media (min-width: 576px) {
-  .container {
-    column-count: 1;
-  }
-}
+@import "styles/bootstrap.module.scss";
 
-@media (min-width: 768px) {
-  .container {
-    column-count: 2;
-  }
-}
+$col-count: (
+  "sm": 1,
+  "md": 2,
+  "xl": 3,
+);
 
-@media (min-width: 992px) {
-  .container {
-    column-count: 2;
-  }
-}
-
-@media (min-width: 1200px) {
-  .container {
-    column-count: 3;
+.container {
+  @each $break, $col in $col-count {
+    @include media-breakpoint-up($break) {
+      column-count: $col;
+    }
   }
 }
