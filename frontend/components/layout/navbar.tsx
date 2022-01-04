@@ -17,7 +17,7 @@ export function Navbar() {
       <Container>
         <BootstrapNavar.Toggle aria-controls="basic-navbar-nav" />
         <BootstrapNavar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
+          <Nav className="w-100">
             <Nav.Link
               href="/"
               onClick={(e) => {
@@ -45,7 +45,7 @@ export function Navbar() {
             <Link href="/about" passHref>
               <Nav.Link>About</Nav.Link>
             </Link>
-            <NavItem className="ml-lg-4">
+            <NavItem className={styles.search}>
               <Search />
             </NavItem>
           </Nav>

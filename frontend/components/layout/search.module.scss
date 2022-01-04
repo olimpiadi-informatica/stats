@@ -1,10 +1,5 @@
-.searchBar {
-  width: 250px;
-  display: inline-block;
-  margin-left: 0.375rem;
-  vertical-align: middle;
-}
-
-.searchBtn {
-  margin-left: 0.375rem;
+.search {
+  display: flex;
+  max-width: 300px;
+  gap: 0.375rem;
 }

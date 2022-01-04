@@ -13,18 +13,14 @@ export function Search() {
         e.preventDefault();
         router.push(`/search?q=${encodeURIComponent(q)}`);
       }}
+      className={styles.search}
     >
       <FormControl
         placeholder="Search"
-        className={styles.searchBar}
         value={q}
         onChange={(e) => setQ(e.target.value)}
       />
-      <Button
-        className={styles.searchBtn}
-        variant="outline-success"
-        type="submit"
-      >
+      <Button variant="outline-success" type="submit">
         Search
       </Button>
     </form>

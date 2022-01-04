@@ -1,3 +1,11 @@
+@import "styles/bootstrap.module.scss";
+
 .navbar {
   margin-bottom: 1rem;
+}
+
+.search {
+  @include media-breakpoint-up(lg) {
+    margin-left: auto;
+  }
 }
