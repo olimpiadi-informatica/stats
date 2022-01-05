@@ -15,7 +15,7 @@ COPY ./data /data
 ENV DATA_DIR /data
 RUN yarn build && yarn export -o /out
 
-# Production image, copy all the files and run next
 FROM nginx:stable AS runner
 
 COPY --from=builder /out /usr/share/nginx/html
+COPY ./frontend/docker/nginx.conf /etc/nginx/nginx.conf
