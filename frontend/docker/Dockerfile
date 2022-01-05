@@ -9,6 +9,7 @@ RUN yarn install --frozen-lockfile
 FROM node:current-bullseye-slim AS builder
 WORKDIR /app
 COPY ./frontend/ .
+COPY ./static /static
 COPY --from=deps /app/node_modules ./node_modules
 COPY ./data /data
 ENV DATA_DIR /data
