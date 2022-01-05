@@ -18,7 +18,6 @@ export function ContestantImage({ contestant }: { contestant: Contestant }) {
     src = requireImage(`./${contestant.id}.jpg`);
     srcWebp = requireImageWebp(`./${contestant.id}.jpg`);
   } catch {
-    console.log("no image available");
     return null;
   }
   return (
