@@ -4,6 +4,7 @@ import styles from "./layout.module.scss";
 import { Container } from "react-bootstrap";
 import { Navbar } from "./navbar";
 import { useRouter } from "next/router";
+import { Image } from "components/image/image";
 
 type Props = {
   children: React.ReactNode;
@@ -57,12 +58,7 @@ export function Layout({ children }: Props) {
             router.push(`/#${Math.floor(Math.random() * 100000)}`);
           }}
         >
-          <img
-            src={"/images/oiistats.png"}
-            alt="OII Stats"
-            width={190}
-            height={50}
-          />
+          <Image path="oiistats.png" alt="OII Stats" className={styles.logo} />
         </a>
       </div>
       <Navbar />

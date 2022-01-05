@@ -1,6 +1,7 @@
 type Props = {
   path: string;
   alt: string;
+  className?: string;
 };
 
 const requireImage = (require as any).context(
@@ -14,7 +15,7 @@ const requireImageWebp = (require as any).context(
   /\.(jpg|png)$/
 );
 
-export function Image({ path, alt }: Props) {
+export function Image({ path, alt, className }: Props) {
   let src = null;
   let srcWebp = null;
   try {
@@ -27,7 +28,7 @@ export function Image({ path, alt }: Props) {
     <picture>
       <source srcSet={srcWebp.srcSet} type="image/webp" />
       <source srcSet={src.srcSet} type="image/jpeg" />
-      <img src={src.src} alt={alt} />
+      <img src={src.src} alt={alt} className={className} />
     </picture>
   );
 }
