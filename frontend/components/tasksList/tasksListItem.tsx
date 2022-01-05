@@ -1,7 +1,7 @@
+import { TaskImage } from "components/task/taskImage";
 import { TaskInfo } from "components/task/taskInfo";
 import { ContestInfoTask } from "lib/remote/contest";
 import Link from "next/link";
-import { useState } from "react";
 import styles from "./tasksListItem.module.scss";
 
 type Props = {
@@ -9,8 +9,6 @@ type Props = {
 };
 
 export function TasksListItem({ task }: Props) {
-  const [imgOk, setImgOk] = useState<boolean>(true);
-
   return (
     <div className={styles.layout}>
       <div className={styles.title}>
@@ -18,19 +16,13 @@ export function TasksListItem({ task }: Props) {
           {task.title}
         </Link>
       </div>
-      {imgOk && (
-        <div className={styles.image}>
-          <Link href={`/task/${task.contest_year}/${task.name}`}>
-            <a>
-              <img
-                src={`/static/tasks/${task.contest_year}/${task.name}.png`}
-                alt={`${task.name} ${task.contest_year}`}
-                onError={() => setImgOk(false)}
-              />
-            </a>
-          </Link>
-        </div>
-      )}
+      <div className={styles.image}>
+        <Link href={`/task/${task.contest_year}/${task.name}`}>
+          <a>
+            <TaskImage contest_year={task.contest_year} name={task.name} />
+          </a>
+        </Link>
+      </div>
       <div className={styles.info}>
         <TaskInfo task={task} />
       </div>

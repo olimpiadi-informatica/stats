@@ -10,6 +10,7 @@ import { Tile } from "./tile";
 import Link from "next/link";
 import styles from "./tile.module.scss";
 import { round } from "lib/round";
+import { TaskImage } from "components/task/taskImage";
 
 type Task = {
   contest_year: number;
@@ -17,18 +18,11 @@ type Task = {
   title: string;
 };
 
-function TaskImage({ task }: { task: Task }) {
+function TaskImageLink({ task }: { task: Task }) {
   return (
     <Link href={`/task/${task.contest_year}/${task.name}`}>
-      <a>
-        <img
-          className={styles.image}
-          src={`/static/tasks/${task.contest_year}/${task.name}.png`}
-          alt={task.title}
-          onError={(event: any) => {
-            event.target.style = "display: none";
-          }}
-        />
+      <a className={styles.image}>
+        <TaskImage contest_year={task.contest_year} name={task.name} />
       </a>
     </Link>
   );
@@ -50,7 +44,7 @@ function TaskWithLowestAvgScoreTile({
   const task = stat.task_with_lowest_avg_score;
   return (
     <div>
-      <TaskImage task={task} />
+      <TaskImageLink task={task} />
       <TaskLink task={task} /> is the task with the lowest average score,{" "}
       {round(task.avg_score, 2)} out of {task.max_score_possible}.
     </div>
@@ -65,7 +59,7 @@ function TaskWithHighestAvgScoreTile({
   const task = stat.task_with_highest_avg_score;
   return (
     <div>
-      <TaskImage task={task} />
+      <TaskImageLink task={task} />
       <TaskLink task={task} /> is the task with the highest average score,{" "}
       {round(task.avg_score, 2)} out of {task.max_score_possible}.
     </div>
@@ -80,7 +74,7 @@ function TaskWithLowestMaxScoreTile({
   const task = stat.task_with_lowest_max_score;
   return (
     <div>
-      <TaskImage task={task} />
+      <TaskImageLink task={task} />
       <TaskLink task={task} /> is one of the hardest task of its time, everyone
       scored no more than {round(task.max_score, 2)} out of{" "}
       {task.max_score_possible}.
@@ -92,7 +86,7 @@ function TaskWithMostZerosTile({ stat }: { stat: TaskWithMostZeros }) {
   const task = stat.task_with_most_zeros;
   return (
     <div>
-      <TaskImage task={task} />
+      <TaskImageLink task={task} />
       <TaskLink task={task} /> is one of the most challenging tasks,{" "}
       {task.num_zeros} out of {task.num_participants} students scored zero
       points.
@@ -108,7 +102,7 @@ function TaskWithMostFullscoresTile({
   const task = stat.task_with_most_fullscores;
   return (
     <div>
-      <TaskImage task={task} />
+      <TaskImageLink task={task} />
       <TaskLink task={task} /> is one of the easiest tasks,{" "}
       {task.num_fullscores} out of {task.num_participants} students had full
       score.

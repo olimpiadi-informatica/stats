@@ -3,6 +3,7 @@ import Link from "next/link";
 import styles from "./contestListItem.module.scss";
 import { Medals } from "components/medals/medals";
 import { ContestInfo } from "components/contest/contestInfo";
+import { ContestImage } from "components/contest/contestImage";
 
 type Props = {
   contest: ContestItem;
@@ -23,13 +24,7 @@ export function ContestListItem({ contest }: Props) {
       <div className={styles.image}>
         <Link href={`/contest/${contest.year}`}>
           <a>
-            <img
-              src={`/static/contests/${contest.year}.jpg`}
-              alt={`Contest ${contest.year}`}
-              onError={(event: any) => {
-                event.target.style = "display: none";
-              }}
-            />
+            <ContestImage year={contest.year} />
           </a>
         </Link>
       </div>

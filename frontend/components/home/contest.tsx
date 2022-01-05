@@ -22,19 +22,13 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import { ContestImage } from "components/contest/contestImage";
 
-function ContestImage({ year }: { year: number }) {
+function ContestImageLink({ year }: { year: number }) {
   return (
     <Link href={`/contest/${year}`}>
-      <a>
-        <img
-          className={styles.image}
-          src={`/static/contests/${year}.jpg`}
-          alt={`${year}`}
-          onError={(event: any) => {
-            event.target.style = "display: none";
-          }}
-        />
+      <a className={styles.image}>
+        <ContestImage year={year} />
       </a>
     </Link>
   );
@@ -61,7 +55,7 @@ function ContestWithMostParticipantsTile({
   const { year, num_participants } = stat.contest_with_most_participants;
   return (
     <div>
-      <ContestImage year={year} />
+      <ContestImageLink year={year} />
       The <ContestLink year={year} /> competition registered the highest number
       of contestants, {num_participants}!
     </div>
@@ -76,7 +70,7 @@ function ContestWithMostExAequoTile({
   const { year, num_ex_aequo } = stat.contest_with_most_ex_aequo;
   return (
     <div>
-      <ContestImage year={year} />
+      <ContestImageLink year={year} />
       {num_ex_aequo} is the highest number of ex-aequo, in{" "}
       <ContestLink year={year} /> all those students ended at the first place
       with the same score!
@@ -142,7 +136,7 @@ function MostGirlsTile({ stat }: { stat: MostGirls }) {
   const { year, num_girls, num_participants } = stat.contest_with_most_girls;
   return (
     <div>
-      <ContestImage year={year} />
+      <ContestImageLink year={year} />
       <ContestLink year={year} /> was the contest with the highest number of
       girl, {num_girls} out of {num_participants} participants!
     </div>

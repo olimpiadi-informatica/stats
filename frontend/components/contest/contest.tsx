@@ -5,9 +5,8 @@ import { ContestInfo } from "./contestInfo";
 import { Medals } from "components/medals/medals";
 import { TasksList } from "components/tasksList/tasksList";
 import { Results } from "components/results/results";
-import { useState } from "react";
-import Link from "next/link";
 import { Navigation } from "components/navigation/navigation";
+import { ContestImage } from "./contestImage";
 
 type Props = {
   contest: ContestDetail;
@@ -16,8 +15,6 @@ type Props = {
 };
 
 export function Contest({ contest, year, results }: Props) {
-  const [imgOk, setImgOk] = useState<boolean>(true);
-
   return (
     <div className={styles.contest}>
       <div className={styles.title}>
@@ -28,13 +25,7 @@ export function Contest({ contest, year, results }: Props) {
         />
       </div>
       <div className={styles.logo}>
-        {imgOk && (
-          <img
-            src={`/static/contests/${year}.jpg`}
-            alt={`Contest ${year}`}
-            onError={() => setImgOk(false)}
-          />
-        )}
+        <ContestImage year={year} />
       </div>
       <div className={styles.info}>
         <ContestInfo contest={contest} />

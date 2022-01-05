@@ -2,9 +2,9 @@ import { RegionDetail, RegionDetailYear } from "lib/remote/region";
 import { ListGroup } from "react-bootstrap";
 import Link from "next/link";
 import styles from "./participations.module.scss";
-import { useState } from "react";
 import { Medals } from "components/medals/medals";
 import { Row, Col } from "react-bootstrap";
+import { ContestImage } from "components/contest/contestImage";
 
 function ParticipationInfo({ year }: { year: RegionDetailYear }) {
   return (
@@ -20,7 +20,6 @@ function ParticipationInfo({ year }: { year: RegionDetailYear }) {
 }
 
 function ParticipationItem({ year }: { year: RegionDetailYear }) {
-  const [imgOk, setImgOk] = useState<boolean>(true);
   return (
     <div className={styles.layout}>
       <div className={styles.title}>
@@ -30,19 +29,13 @@ function ParticipationItem({ year }: { year: RegionDetailYear }) {
           </a>
         </Link>
       </div>
-      {imgOk && (
-        <div className={styles.image}>
-          <Link href={`/contest/${year.year}`}>
-            <a>
-              <img
-                src={`/static/contests/${year.year}.jpg`}
-                alt={`${year.location.location} ${year.year}`}
-                onError={() => setImgOk(false)}
-              />
-            </a>
-          </Link>
-        </div>
-      )}
+      <div className={styles.image}>
+        <Link href={`/contest/${year.year}`}>
+          <a>
+            <ContestImage year={year.year} />
+          </a>
+        </Link>
+      </div>
       <div className={styles.info}>
         <ParticipationInfo year={year} />
       </div>

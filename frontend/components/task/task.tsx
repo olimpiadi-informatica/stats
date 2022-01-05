@@ -1,14 +1,12 @@
 import { TaskDetail } from "lib/remote/task";
 import styles from "./task.module.scss";
 import commonStyles from "styles/common.module.scss";
-import { useState } from "react";
 import { TaskInfo } from "./taskInfo";
 import { Results } from "./results";
 import { Navigation } from "components/navigation/navigation";
+import { TaskImage } from "./taskImage";
 
 export function Task({ task }: { task: TaskDetail }) {
-  const [imgOk, setImgOk] = useState<boolean>(true);
-
   return (
     <div className={styles.contest}>
       <div className={styles.title}>
@@ -20,13 +18,7 @@ export function Task({ task }: { task: TaskDetail }) {
         />
       </div>
       <div className={styles.logo}>
-        {imgOk && (
-          <img
-            src={`/static/tasks/${task.contest_year}/${task.name}.png`}
-            alt={task.name}
-            onError={() => setImgOk(false)}
-          />
-        )}
+        <TaskImage contest_year={task.contest_year} name={task.name} />
       </div>
       <div className={styles.info}>
         <TaskInfo task={task} />
