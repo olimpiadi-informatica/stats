@@ -1,13 +1,12 @@
-FROM node:alpine AS deps
+FROM node:current-bullseye-slim AS deps
 
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY ./frontend/package.json ./frontend/yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 # Rebuild the source code only when needed
-FROM node:alpine AS builder
+FROM node:current-bullseye-slim AS builder
 WORKDIR /app
 COPY ./frontend/ .
 COPY --from=deps /app/node_modules ./node_modules
