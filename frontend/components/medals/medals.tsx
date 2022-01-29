@@ -45,9 +45,9 @@ export function Medals({ contest, showCutoffs, medals }: Props) {
   }
   if (contest) {
     const medals = {
-      gold: contest.medals.gold.number,
-      silver: contest.medals.silver.number,
-      bronze: contest.medals.bronze.number,
+      gold: contest.medals.gold.count,
+      silver: contest.medals.silver.count,
+      bronze: contest.medals.bronze.count,
     };
     const cutoffs = {
       gold: contest.medals.gold.cutoff,

@@ -18,7 +18,7 @@ export type ContestInfoTask = {
 };
 
 type MedalInfo = {
-  number: number | null;
+  count: number | null;
   cutoff: number | null;
 };
 
