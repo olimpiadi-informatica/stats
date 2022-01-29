@@ -435,10 +435,9 @@ class Contest:
         }
 
     def medal_to_json(self, medal: str):
-        medal_code = medal[0].upper()
-        count = sum(1 for p in self.participations if p.medal == medal_code)
+        count = sum(1 for p in self.participations if p.medal == medal)
         cutoff = min_with_none(
-            p.score for p in self.participations if p.medal == medal_code
+            p.score for p in self.participations if p.medal == medal
         )
         return {
             "count": count or None,  # assume the number of medals is positive
