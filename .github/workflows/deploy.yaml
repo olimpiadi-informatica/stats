@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
 
       - name: Build
         working-directory: frontend
