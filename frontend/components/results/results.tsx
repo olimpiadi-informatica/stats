@@ -48,7 +48,9 @@ export function Results({ results, contest }: Props) {
             <th>#</th>
             <th>Contestant</th>
             <th>Score</th>
-            <th colSpan={results.tasks.length}>Tasks</th>
+            {results.tasks.length > 0 && (
+              <th colSpan={results.tasks.length}>Tasks</th>
+            )}
             <th className={styles.medal}>Medal</th>
             <th className={styles.region}>Region</th>
             <th>Past Years</th>

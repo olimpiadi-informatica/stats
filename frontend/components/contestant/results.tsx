@@ -75,7 +75,7 @@ export function ContestantResults({
             <th>Score</th>
             <th className={styles.medal}>Medal</th>
             <th className={styles.region}>Region</th>
-            <th colSpan={numCols}>Tasks</th>
+            {numCols > 0 && <th colSpan={numCols}>Tasks</th>}
           </tr>
         </thead>
         <tbody>

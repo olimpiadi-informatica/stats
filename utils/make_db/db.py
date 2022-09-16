@@ -501,7 +501,8 @@ class Task:
 
         if self.index + 1 < len(names):
             next = {"year": year, "name": names[self.index + 1]}
-        elif year < max(self.storage.tasks.keys()):
+        # Not the last year, and the next year has tasks.
+        elif self.storage.tasks.get(year + 1, []):
             next_names = self.storage.contests[year + 1].task_names
             next = {"year": year + 1, "name": next_names[0]}
         else:

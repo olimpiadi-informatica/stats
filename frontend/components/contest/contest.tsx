@@ -33,10 +33,14 @@ export function Contest({ contest, year, results }: Props) {
       <div className={styles.medals}>
         <Medals contest={contest} showCutoffs />
       </div>
-      <div className={styles.tasks}>
-        <h2 className={commonStyles.h2}>Tasks</h2>
-        <TasksList tasks={contest.tasks} />
-      </div>
+      {contest.tasks.length > 0 && (
+        <>
+          <div className={styles.tasks}>
+            <h2 className={commonStyles.h2}>Tasks</h2>
+            <TasksList tasks={contest.tasks} />
+          </div>
+        </>
+      )}
       <div className={styles.results}>
         <h2 className={commonStyles.h2}>Results</h2>
         <Results contest={contest} results={results} />
