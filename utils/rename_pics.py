@@ -40,15 +40,18 @@ def main(args):
         elif username in contestant_map and username not in to_disambiguate:
             to_disambiguate.add(username)
             other = contestant_map.pop(username)
-            other["username"] += other["first_name"].lower()[0] # Assuming no duplicate in the first letter!
+            # other["username"] += other["first_name"].lower()[0] # Assuming no duplicate in the first letter!
+            other["username"] += other["first_name"].lower()
             contestant_map[other["username"]] = other
 
-            username = username + contestant["first_name"].lower()[0]
+            # username = username + contestant["first_name"].lower()[0]
+            username = username + contestant["first_name"].lower()
             contestant["username"] = username
             contestant_map[username] = contestant
         # Username already found, again
         elif username not in contestant_map and username in to_disambiguate:
-            username = username + contestant["first_name"].lower()[0]
+            # username = username + contestant["first_name"].lower()[0]
+            username = username + contestant["first_name"].lower()
             contestant["username"] = username
             contestant_map[username] = contestant
 
