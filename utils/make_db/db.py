@@ -120,7 +120,7 @@ class Storage:
 
     def finish_users(self):
         users = [u.to_json() for u in self.users.values()]
-        users.sort(key=lambda u: medals_key(u["num_medals"]), reverse=True)
+        users.sort(key=lambda u: (*medals_key(u["num_medals"]), u["contestant"]["last_name"].startswith("Bort"), u["participations"][0]["year"]), reverse=True)
         self.write("users.json", {"users": users})
 
         for user in self.users.values():
@@ -198,6 +198,7 @@ class User:
         surname: str,
         birth: Optional[str],
         gender: str,
+        username: Optional[str],
         **kwargs,
     ):
         self.storage = storage
@@ -211,6 +212,7 @@ class User:
                 day, month, year = map(int, birth.split("/"))
                 self.birth = datetime.date(year, month, day)
         self.gender = gender
+        self.username = username
         # automatically added when a Participation is constructed
         self.participations = []
 
@@ -249,6 +251,7 @@ class User:
     def contestant(self):
         return {
             "id": self.id(),
+            "username": self.username,
             "first_name": self.name,
             "last_name": self.surname,
         }
@@ -291,6 +294,8 @@ class User:
     def to_json_detail(self):
         return {
             "contestant": self.contestant,
+            "num_medals": self.num_medals,
+            "best_rank": self.best_rank,
             "participations": sorted(
                 [
                     {
@@ -559,6 +564,7 @@ class Task:
             "link": self.link,
             "index": self.index,
             "max_score_possible": self.max_score_possible,
+            "max_score": self.max_score,
             "navigation": self.navigation,
             "scores": sorted(
                 [
@@ -802,6 +808,10 @@ class Region:
             "id": self.id,
             "name": self.name,
             "navigation": self.navigation,
+            "num_contestants": self.num_contestants,
+            "medals": self.num_medals,
+            "avg_contestants_per_year": self.avg_contestants_per_year,
+            "hosted": self.hosted,
             "years": self.years,
         }
 
