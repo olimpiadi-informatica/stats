@@ -4,36 +4,44 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "export": "next export",
     "lint": "next lint"
   },
   "dependencies": {
-    "bootstrap": "5.1.3",
-    "imagemin-mozjpeg": "^9.0.0",
-    "imagemin-optipng": "^8.0.0",
-    "minisearch": "^3.2.0",
-    "next": "12.0.5",
-    "next-optimized-images": "^2.6.2",
-    "react": "17.0.2",
-    "react-bootstrap": "^2.0.2",
-    "react-dom": "17.0.2",
-    "react-infinite-scroll-component": "^6.1.0",
-    "react-simple-maps": "^2.3.0",
-    "recharts": "^2.1.6",
-    "responsive-loader": "^2.3.0",
-    "sass": "^1.43.5",
-    "seedrandom": "^3.0.5",
-    "sharp": "^0.29.3",
-    "webp-loader": "^0.6.0"
+    "@olinfo/react-components": "^0.3",
+    "@olinfo/tailwind": "^0.1",
+    "@types/node": "^20",
+    "@types/react": "^18.0",
+    "@types/react-simple-maps": "^3.0",
+    "autoprefixer": "^10.4",
+    "clsx": "^2.1",
+    "image-size": "^1.1",
+    "loader-utils": "^3.2",
+    "lucide-react": "^0.395",
+    "minisearch": "^6.3",
+    "next": "^14.0",
+    "prop-types": "^15.8",
+    "react": "^18.0",
+    "react-dom": "^18.0",
+    "react-simple-maps": "^3.0",
+    "react-virtuoso": "^4.7",
+    "recharts": "^2.12",
+    "sharp": "^0.32",
+    "swr": "^2.2",
+    "tailwindcss": "^3.3",
+    "typescript": "^5.3",
+    "zod": "^3.23"
   },
   "devDependencies": {
-    "@types/node": "16.11.10",
-    "@types/react": "17.0.37",
-    "@types/seedrandom": "^3.0.1",
-    "eslint": "7",
-    "eslint-config-next": "12.0.4",
-    "eslint-config-prettier": "^8.3.0",
-    "typescript": "4.5.2"
-  }
+    "@eslint/eslintrc": "^3.0",
+    "@next/eslint-plugin-next": "^14.2",
+    "@olinfo/eslint": "^0.2",
+    "@olinfo/prettier": "^0.1"
+  },
+  "postcss": {
+    "plugins": {
+      "tailwindcss": {},
+      "autoprefixer": {}
+    }
+  },
+  "prettier": "@olinfo/prettier"
 }
