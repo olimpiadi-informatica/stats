@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002Fapi\u002Fcontestants\u002F[id]","\u002Fcontest\u002F[year]","\u002Fcontestant\u002F[id]","\u002Fregion\u002F[id]","\u002Fregion\u002F[id]\u002F[year]","\u002Ftask\u002F[year]\u002F[name]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()
