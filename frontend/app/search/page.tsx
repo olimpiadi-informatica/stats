@@ -48,5 +48,5 @@ function PageInner() {
 async function fetcher() {
   const res = await fetch("/api/search");
   const index = await res.text();
-  return MiniSearch.loadJSON(index, { fields: ["k"], storeFields: ["v"] });
+  return MiniSearch.loadJSONAsync(index, { fields: ["k"], storeFields: ["v"] });
 }
