@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent } from "react";
+import type { FormEvent } from "react";
 
 import { SearchIcon } from "lucide-react";
 
@@ -25,7 +25,10 @@ export function Search() {
           aria-label="Parola da cercare"
           required
         />
-        <button className="btn btn-outline join-item border-base-content/20" aria-label="Cerca">
+        <button
+          className="btn btn-outline join-item border-base-content/20"
+          aria-label="Cerca"
+          type="submit">
           <SearchIcon />
         </button>
       </form>

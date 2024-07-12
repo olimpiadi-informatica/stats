@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { International } from "~/lib/common";
+import type { International } from "~/lib/common";
 
 export default function InternationalBadge({ international }: { international: International }) {
   return (

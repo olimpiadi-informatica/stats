@@ -15,7 +15,7 @@ const statsSchema = z.object({
 });
 
 export async function getStats() {
-  return statsSchema.parseAsync(JSON.parse(await readFile(`../data/home.json`, "utf8")));
+  return statsSchema.parseAsync(JSON.parse(await readFile("../data/home.json", "utf8")));
 }
 
 export type { RegionStat } from "./region";

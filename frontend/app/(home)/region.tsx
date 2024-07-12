@@ -1,11 +1,11 @@
-import { StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { Card, CardBody } from "@olinfo/react-components";
 
 import { RegionImage } from "~/components/region";
-import { RegionStat } from "~/lib/stats";
+import type { RegionStat } from "~/lib/stats";
 import { round } from "~/lib/utils";
 
 export function RegionStatCard({ stat }: { stat: RegionStat }) {

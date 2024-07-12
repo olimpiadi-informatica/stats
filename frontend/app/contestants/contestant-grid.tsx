@@ -9,7 +9,7 @@ import useSWRInfinite from "swr/infinite";
 
 import { Loading } from "~/components/placeholder";
 import { UserCard } from "~/components/user";
-import { Users } from "~/lib/users";
+import type { Users } from "~/lib/users";
 
 type Props = {
   firstChunk: Users;

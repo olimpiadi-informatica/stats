@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "lint": "next lint"
+    "lint": "yarn biome check --write"
   },
   "dependencies": {
     "@olinfo/react-components": "^0.4",
@@ -16,7 +16,7 @@
     "clsx": "^2.1",
     "image-size": "^1.1",
     "loader-utils": "^3.2",
-    "lucide-react": "^0.395",
+    "lucide-react": ">=0.395, <1",
     "minisearch": "^7.0",
     "next": "^14.0",
     "prop-types": "^15.8",
@@ -32,16 +32,12 @@
     "zod": "^3.23"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.0",
-    "@next/eslint-plugin-next": "^14.2",
-    "@olinfo/eslint": "^0.2",
-    "@olinfo/prettier": "^0.1"
+    "@biomejs/biome": "^1.8.3"
   },
   "postcss": {
     "plugins": {
       "tailwindcss": {},
       "autoprefixer": {}
     }
-  },
-  "prettier": "@olinfo/prettier"
+  }
 }

@@ -1,11 +1,10 @@
-import { Metadata } from "next";
-import { ReactNode } from "react";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
 import { Layout } from "@olinfo/react-components";
 
 import "./globals.css";
 import { Navbar } from "./navbar";
-import { Routing } from "./routing";
 
 export const metadata: Metadata = {
   title: "OII Stats",
@@ -26,7 +25,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {children}
           </div>
         </Layout>
-        <Routing />
       </body>
     </html>
   );

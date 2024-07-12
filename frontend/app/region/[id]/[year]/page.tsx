@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import InternationalBadge from "~/components/international";
@@ -6,7 +6,7 @@ import { Medal } from "~/components/medal";
 import { RegionYearCard } from "~/components/region";
 import { Table, TableHeaders, TableRow } from "~/components/table";
 import { getRegion } from "~/lib/region";
-import { RegionResults, getRegionResults } from "~/lib/region-results";
+import { type RegionResults, getRegionResults } from "~/lib/region-results";
 import { getRegions } from "~/lib/regions";
 import { round } from "~/lib/utils";
 

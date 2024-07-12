@@ -16,7 +16,7 @@ import {
 } from "recharts";
 
 import { ContestImage } from "~/components/contest";
-import { ContestStat } from "~/lib/stats";
+import type { ContestStat } from "~/lib/stats";
 
 import { ItalyMap } from "./italy";
 

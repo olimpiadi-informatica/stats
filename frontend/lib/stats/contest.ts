@@ -1,4 +1,4 @@
-import { ZodRawShape, z } from "zod";
+import { type ZodRawShape, z } from "zod";
 
 import { locationSchema } from "~/lib/common";
 import { getContestImage } from "~/lib/contests";

@@ -66,7 +66,9 @@ function PageInner() {
 
   return (
     <div className="grid gap-4 xl:grid-cols-2">
-      {results?.map((result) => <SearchCard key={result.id} v={result.v} />)}
+      {results?.map((result) => (
+        <SearchCard key={result.id} v={result.v} />
+      ))}
     </div>
   );
 }

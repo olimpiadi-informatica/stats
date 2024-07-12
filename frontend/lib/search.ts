@@ -28,5 +28,5 @@ export type SearchResultValue = SearchResult["v"];
 const searchSchema = searchResultSchema.array();
 
 export async function getSearchResults(): Promise<SearchResult[]> {
-  return searchSchema.parseAsync(JSON.parse(await readFile(`../data/search.json`, "utf8")));
+  return searchSchema.parseAsync(JSON.parse(await readFile("../data/search.json", "utf8")));
 }

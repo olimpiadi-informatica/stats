@@ -1,12 +1,12 @@
-import { StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
 
 import { Card, CardBody } from "@olinfo/react-components";
 import clsx from "clsx";
 
 import { Image } from "~/components/image";
 import { Medals } from "~/components/medal";
-import { Region } from "~/lib/region";
-import { Regions } from "~/lib/regions";
+import type { Region } from "~/lib/region";
+import type { Regions } from "~/lib/regions";
 import { round } from "~/lib/utils";
 
 export function RegionCard({ region }: { region: Region | Regions[number] }) {

@@ -1,11 +1,11 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import InternationalBadge from "~/components/international";
 import { Medal } from "~/components/medal";
 import { Table, TableHeaders, TableRow } from "~/components/table";
 import { UserCard } from "~/components/user";
-import { User, getUser } from "~/lib/user";
+import { type User, getUser } from "~/lib/user";
 import { getUsers } from "~/lib/users";
 import { round } from "~/lib/utils";
 

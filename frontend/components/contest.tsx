@@ -1,11 +1,11 @@
-import { StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
 
 import { Card, CardBody } from "@olinfo/react-components";
 import clsx from "clsx";
 
 import { Image } from "~/components/image";
 import { Medals } from "~/components/medal";
-import { Contest } from "~/lib/contests";
+import type { Contest } from "~/lib/contests";
 import { round } from "~/lib/utils";
 
 export function ContestCard({ contest }: { contest: Contest }) {

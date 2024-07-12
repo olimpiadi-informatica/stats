@@ -1,12 +1,12 @@
-import { StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
 import Link from "next/link";
 
 import { Card, CardBody } from "@olinfo/react-components";
 import clsx from "clsx";
 
 import { Image } from "~/components/image";
-import { Task } from "~/lib/task";
-import { Tasks } from "~/lib/tasks";
+import type { Task } from "~/lib/task";
+import type { Tasks } from "~/lib/tasks";
 
 export function TaskCard({ task, links }: { task: Task | Tasks[number]; links?: boolean }) {
   return (

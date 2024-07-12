@@ -1,11 +1,11 @@
-import { StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { Card, CardBody } from "@olinfo/react-components";
 
 import { TaskImage } from "~/components/task";
-import { TaskStat } from "~/lib/stats";
+import type { TaskStat } from "~/lib/stats";
 import { round } from "~/lib/utils";
 
 export function TaskStatCard({ stat }: { stat: TaskStat }) {

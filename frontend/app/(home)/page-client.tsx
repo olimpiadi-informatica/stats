@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, Fragment, ReactNode, useEffect, useState } from "react";
+import { Children, Fragment, type ReactNode, useEffect, useState } from "react";
 
 export function PageClient(props: {
   regions: ReactNode;

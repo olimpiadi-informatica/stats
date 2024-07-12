@@ -6,9 +6,9 @@ import clsx from "clsx";
 
 import { Image } from "~/components/image";
 import { Medals } from "~/components/medal";
-import { Contestant } from "~/lib/common";
-import { User } from "~/lib/user";
-import { Users } from "~/lib/users";
+import type { Contestant } from "~/lib/common";
+import type { User } from "~/lib/user";
+import type { Users } from "~/lib/users";
 
 export function UserCard({ user, links }: { user: User | Users[number]; links?: boolean }) {
   return (

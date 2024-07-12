@@ -1,13 +1,13 @@
-import { StaticImageData } from "next/image";
+import type { StaticImageData } from "next/image";
 import Link from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { Card, CardBody } from "@olinfo/react-components";
 
 import { Medals } from "~/components/medal";
 import { ContestantImage } from "~/components/user";
-import { Contestant } from "~/lib/common";
-import { UserStat } from "~/lib/stats";
+import type { Contestant } from "~/lib/common";
+import type { UserStat } from "~/lib/stats";
 
 export function UserStatCard({ stat }: { stat: UserStat }) {
   if ("best_student" in stat) {

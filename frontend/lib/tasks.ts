@@ -41,7 +41,7 @@ export type Tasks = z.infer<typeof taskSchema>[];
 
 export async function getTasks(): Promise<Tasks> {
   const { tasks } = await tasksSchema.parseAsync(
-    JSON.parse(await readFile(`../data/tasks.json`, "utf8")),
+    JSON.parse(await readFile("../data/tasks.json", "utf8")),
   );
   return tasks.flatMap((task) => task.tasks);
 }

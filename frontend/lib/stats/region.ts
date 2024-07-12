@@ -1,4 +1,4 @@
-import z, { ZodRawShape } from "zod";
+import { type ZodRawShape, z } from "zod";
 
 import { medalsSchema } from "~/lib/common";
 import { getRegionImage } from "~/lib/region";

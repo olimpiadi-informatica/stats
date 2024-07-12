@@ -4,7 +4,7 @@ import { ContestCard } from "~/components/contest";
 import { RegionCard } from "~/components/region";
 import { TaskCard } from "~/components/task";
 import { UserCard } from "~/components/user";
-import { SearchResultValue } from "~/lib/search";
+import type { SearchResultValue } from "~/lib/search";
 
 export function SearchCard({ v }: { v: SearchResultValue }) {
   if ("contest" in v) {
