@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 
@@ -14,18 +15,23 @@ export function Search() {
   };
 
   return (
-    <form role="search" className="join" action="/search" onSubmit={onSubmit}>
-      <input
-        className="input join-item input-bordered"
-        name="q"
-        type="search"
-        placeholder="Cerca"
-        aria-label="Parola da cercare"
-        required
-      />
-      <button className="btn btn-outline join-item border-base-content/20" aria-label="Cerca">
+    <>
+      <form role="search" className="join max-lg:hidden" action="/search" onSubmit={onSubmit}>
+        <input
+          className="input join-item input-bordered"
+          name="q"
+          type="search"
+          placeholder="Cerca"
+          aria-label="Parola da cercare"
+          required
+        />
+        <button className="btn btn-outline join-item border-base-content/20" aria-label="Cerca">
+          <SearchIcon />
+        </button>
+      </form>
+      <Link href="/search" className="btn btn-ghost lg:hidden">
         <SearchIcon />
-      </button>
-    </form>
+      </Link>
+    </>
   );
 }
