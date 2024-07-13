@@ -7,7 +7,7 @@ export function Table({ className, children }: { className?: string; children: R
     <div className="max-xl:w-screen max-xl:-translate-x-4 max-xl:overflow-x-auto max-xl:px-4">
       <div
         className={clsx(
-          "grid min-w-fit items-center gap-x-4 gap-y-2 text-nowrap rounded-box bg-base-200 p-4",
+          "grid min-w-fit items-center gap-x-4 gap-y-2 text-nowrap rounded-box border border-base-content/10 bg-base-200 shadow-xl p-4",
           className,
         )}>
         {children}

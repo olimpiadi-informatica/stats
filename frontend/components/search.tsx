@@ -32,7 +32,7 @@ export function Search() {
           <SearchIcon />
         </button>
       </form>
-      <Link href="/search" className="btn btn-ghost lg:hidden">
+      <Link href="/search" className="btn btn-ghost lg:hidden" aria-label="Cerca">
         <SearchIcon />
       </Link>
     </>

@@ -22,7 +22,7 @@ export async function generateMetadata({ params: { id } }: Props): Promise<Metad
   const user = await getUser(id);
   return {
     title: `OII Stats - ${user.contestant.first_name ?? ""} ${user.contestant.last_name}`,
-    description: `Statistiche e classifiche dell'edizione di ${user.contestant.first_name ?? ""} ${user.contestant.last_name} alle Olimpiadi Italiane di Informatica`,
+    description: `Statistiche di ${user.contestant.first_name ?? ""} ${user.contestant.last_name} alle Olimpiadi Italiane di Informatica`,
   };
 }
 

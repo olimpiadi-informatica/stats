@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "lint": "yarn biome check --write"
+    "lint": "biome check --write"
   },
   "dependencies": {
     "@olinfo/react-components": "^0.4",

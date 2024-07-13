@@ -1,8 +1,8 @@
-import { join, extname } from "node:path";
+import { extname, join } from "node:path";
 
+import sizeOf from "image-size";
 import { interpolateName } from "loader-utils";
 import sharp from "sharp";
-import sizeOf from "image-size";
 
 /**
  * @this {import("webpack").loader.LoaderContext}
@@ -29,11 +29,13 @@ export default async function imageLoader(source) {
 
     if (!isDev && (width || height)) {
       const [_1x, _2x, _3x] = await Promise.all(
-        [1, 2, 3].map((factor) => optimizeImage(this, {
-          width: width && factor * width,
-          height: height && factor * height,
-          fit,
-        }))
+        [1, 2, 3].map((factor) =>
+          optimizeImage(this, {
+            width: width && factor * width,
+            height: height && factor * height,
+            fit,
+          }),
+        ),
       );
       image = _1x;
       image.srcSet = `${_1x.src} 1x, ${_2x.src} 2x, ${_3x.src} 3x`;
@@ -64,9 +66,7 @@ function emitFile(ctx, name, data) {
   const { compilerType, isDev } = ctx.getOptions();
 
   const fileName = interpolateName(ctx, name, { content: data });
-  const outputPath = compilerType === "client"
-    ? fileName
-    : join("..", isDev ? "" : "..", fileName);
+  const outputPath = compilerType === "client" ? fileName : join("..", isDev ? "" : "..", fileName);
   ctx.emitFile(outputPath, data);
 
   return join("/_next", fileName);
