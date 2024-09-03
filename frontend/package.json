@@ -7,9 +7,9 @@
     "lint": "biome check --write"
   },
   "dependencies": {
-    "@olinfo/react-components": "^0.4",
+    "@olinfo/react-components": "^0.7",
     "@olinfo/tailwind": "^0.1",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "^18.0",
     "@types/react-simple-maps": "^3.0",
     "autoprefixer": "^10.4",
