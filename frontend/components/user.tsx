@@ -33,7 +33,7 @@ export function UserCard({ user, links }: { user: User | Users[number]; links?: 
           <div>
             <span className="font-semibold">Profilo su training.olinfo.it:</span>{" "}
             <Link
-              href={`https://training.olinfo.it/#/user/${user.contestant.username}/profile`}
+              href={`https://training.olinfo.it/user/${user.contestant.username}/profile`}
               className="link">
               {user.contestant.username}
             </Link>
