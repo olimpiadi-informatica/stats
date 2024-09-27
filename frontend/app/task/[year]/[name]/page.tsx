@@ -18,9 +18,35 @@ type Props = {
 
 export async function generateMetadata({ params: { year, name } }: Props): Promise<Metadata> {
   const task = await getTask(year, name);
+
+  const title = `OII Stats - ${task.name}`;
+  const description = `Statistiche e classifiche del problema ${task.name} delle Olimpiadi Italiane di Informatica ${task.contest_year}`;
+
+  const image = task.image
+    ? {
+        url: task.image.src,
+        width: task.image.width,
+        height: task.image.height,
+      }
+    : undefined;
+
   return {
-    title: `OII Stats - ${task.name}`,
-    description: `Statistiche e classifiche del problema ${task.name} delle Olimpiadi Italiane di Informatica ${task.contest_year}`,
+    title,
+    description,
+    openGraph: {
+      title,
+      type: "website",
+      images: image,
+      url: `https://stats.olinfo.it/task/${year}/${name}`,
+      description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@olimpiadi_info",
+      title,
+      description,
+      images: image,
+    },
   };
 }
 

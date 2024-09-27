@@ -20,9 +20,38 @@ type Props = {
 
 export async function generateMetadata({ params: { id } }: Props): Promise<Metadata> {
   const user = await getUser(id);
+
+  const title = `OII Stats - ${user.contestant.first_name ?? ""} ${user.contestant.last_name}`;
+  const description = `Statistiche di ${user.contestant.first_name ?? ""} ${user.contestant.last_name} alle Olimpiadi Italiane di Informatica`;
+
+  const image = user.image
+    ? {
+        url: user.image.src,
+        width: user.image.width,
+        height: user.image.height,
+      }
+    : undefined;
+
   return {
-    title: `OII Stats - ${user.contestant.first_name ?? ""} ${user.contestant.last_name}`,
-    description: `Statistiche di ${user.contestant.first_name ?? ""} ${user.contestant.last_name} alle Olimpiadi Italiane di Informatica`,
+    title,
+    description,
+    openGraph: {
+      title,
+      type: "profile",
+      images: image,
+      url: `https://stats.olinfo.it/contestant/${id}`,
+      description,
+      firstName: user.contestant.first_name,
+      lastName: user.contestant.last_name,
+      username: user.contestant.username,
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@olimpiadi_info",
+      title,
+      description,
+      images: image,
+    },
   };
 }
 

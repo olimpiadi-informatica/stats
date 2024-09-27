@@ -20,9 +20,35 @@ type Props = {
 
 export async function generateMetadata({ params: { year } }: Props): Promise<Metadata> {
   const contest = await getContest(year);
+
+  const title = `OII Stats - ${contest.location.location ?? "OII"} ${year}`;
+  const description = `Statistiche e classifiche dell'edizione ${year} delle Olimpiadi Italiane di Informatica`;
+
+  const image = contest.image
+    ? {
+        url: contest.image.src,
+        width: contest.image.width,
+        height: contest.image.height,
+      }
+    : undefined;
+
   return {
-    title: `OII Stats - ${contest.location.location ?? "OII"} ${year}`,
-    description: `Statistiche e classifiche dell'edizione ${year} delle Olimpiadi Italiane di Informatica`,
+    title,
+    description,
+    openGraph: {
+      title,
+      type: "website",
+      images: image,
+      url: `https://stats.olinfo.it/contest/${year}`,
+      description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@olimpiadi_info",
+      title,
+      description,
+      images: image,
+    },
   };
 }
 
