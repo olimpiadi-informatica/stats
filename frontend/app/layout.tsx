@@ -9,6 +9,7 @@ import { Navbar } from "./navbar";
 export const metadata: Metadata = {
   title: "OII Stats",
   description: "Statistiche e classifiche delle Olimpiadi Italiane di Informatica",
+  metadataBase: new URL("https://stats.olinfo.it"),
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
