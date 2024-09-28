@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { Score } from "~/components/score";
 import { Table, TableHeaders, TableRow } from "~/components/table";
 import { TaskCard } from "~/components/task";
 import { getTask } from "~/lib/task";
 import { getTasks } from "~/lib/tasks";
-import { round } from "~/lib/utils";
 
 export async function generateStaticParams() {
   const tasks = await getTasks();
@@ -71,7 +71,13 @@ export default async function Page({ params: { year, name } }: Props) {
                 {user.contestant.first_name} {user.contestant.last_name}
               </Link>
             </div>
-            <div>{round(user.score)}</div>
+            <div>
+              <Score
+                score={user.score}
+                maxScore={task.max_score_possible}
+                className="w-16 mx-auto"
+              />
+            </div>
           </TableRow>
         ))}
       </Table>

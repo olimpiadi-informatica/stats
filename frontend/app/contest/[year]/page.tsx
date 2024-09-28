@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 
 import { ContestCard } from "~/components/contest";
 import InternationalBadge from "~/components/international";
 import { Medal } from "~/components/medal";
 import { RegionImage } from "~/components/region";
+import { Score } from "~/components/score";
 import { Table, TableHeaders, TableRow } from "~/components/table";
 import { getContestResults } from "~/lib/contest-results";
 import { getContest, getContests } from "~/lib/contests";
@@ -57,18 +59,26 @@ export default async function Page({ params: { year } }: Props) {
   const contest = await getContest(year);
   const results = await getContestResults(year);
   return (
-    <div className="flex flex-col gap-8">
+    <div
+      className="flex flex-col gap-8"
+      style={{ "--cols": contest.tasks.length + 6 } as CSSProperties}>
       <div className="mx-auto max-w-2xl">
         <ContestCard contest={contest} />
       </div>
-      <Table className="grid-cols-[repeat(10,auto)] text-center">
+      <Table className="grid-cols-[repeat(var(--cols),auto)] text-center">
         <TableHeaders>
           <div>#</div>
           <div>Nome</div>
           <div>Internazionali</div>
-          <div>Punteggio</div>
           <div>Regione</div>
-          <div className="col-span-4">Dettagli</div>
+          <div>Punteggio</div>
+          {results.tasks.map((task, i) => (
+            <div key={i} className="!opacity-100">
+              <Link href={`/task/${year}/${task}`} className="link">
+                {task}
+              </Link>
+            </div>
+          ))}
           <div className="w-min text-wrap">Partecipazioni precedenti</div>
         </TableHeaders>
         {results.results.map((result) => (
@@ -89,11 +99,6 @@ export default async function Page({ params: { year } }: Props) {
                 : "-"}
             </div>
             <div>
-              {result.score === null
-                ? "N/A"
-                : `${round(result.score)} / ${contest.max_score_possible}`}
-            </div>
-            <div>
               {result.region && result.regionImage ? (
                 <Link href={`/region/${result.region}/${contest.year}`} className="link">
                   <RegionImage
@@ -106,18 +111,16 @@ export default async function Page({ params: { year } }: Props) {
                 "-"
               )}
             </div>
-            <div className="col-span-4 grid grid-cols-subgrid text-left">
-              {results.tasks.map((task, i) => (
-                <div key={i}>
-                  <span className="inline-block min-w-8 text-center">
-                    {round(result.scores[i])}
-                  </span>{" "}
-                  <Link href={`/task/${year}/${task}`} className="link">
-                    {task}
-                  </Link>
-                </div>
-              ))}
-            </div>
+            <div>{round(result.score)}</div>
+            {result.scores.map((score, i) => (
+              <div key={i}>
+                <Score
+                  score={score}
+                  maxScore={contest.tasks[i].max_score_possible}
+                  className="w-16 mx-auto"
+                />
+              </div>
+            ))}
             <div>
               {result.past_participations.map((p) => (
                 <div key={p.year}>

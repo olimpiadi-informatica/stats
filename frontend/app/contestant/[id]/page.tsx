@@ -4,6 +4,7 @@ import Link from "next/link";
 import InternationalBadge from "~/components/international";
 import { Medal } from "~/components/medal";
 import { RegionImage } from "~/components/region";
+import { Score } from "~/components/score";
 import { Table, TableHeaders, TableRow } from "~/components/table";
 import { UserCard } from "~/components/user";
 import { type User, getUser } from "~/lib/user";
@@ -88,8 +89,8 @@ export default async function Page({ params: { id } }: Props) {
           <div>Anno</div>
           <div>Risultato</div>
           <div>Internazionali</div>
-          <div>Punteggio</div>
           <div>Regione</div>
+          <div>Punteggio</div>
           <div className="col-span-4">Dettagli</div>
         </TableHeaders>
         {user.participations.map((p) => (
@@ -109,7 +110,6 @@ export default async function Page({ params: { id } }: Props) {
                   ))
                 : "-"}
             </div>
-            <div>{getTotalScore(p)}</div>
             <div>
               {p.region && p.regionImage ? (
                 <Link href={`/region/${p.region}`} className="link">
@@ -123,16 +123,15 @@ export default async function Page({ params: { id } }: Props) {
                 "-"
               )}
             </div>
-            <div className="col-span-4 grid grid-cols-subgrid text-left">
-              {p.scores.map((score) => (
-                <div key={score.task}>
-                  <span className="inline-block min-w-8 text-center">{round(score.score)}</span>{" "}
-                  <Link href={`/task/${p.year}/${score.task}`} className="link">
-                    {score.task}
-                  </Link>
-                </div>
-              ))}
-            </div>
+            <div>{getTotalScore(p)}</div>
+            {p.scores.map((score) => (
+              <div key={score.task} className="flex flex-col items-center gap-1">
+                <Link href={`/task/${p.year}/${score.task}`} className="link">
+                  {score.task}
+                </Link>
+                <Score score={score.score} maxScore={score.max_score_possible} className="w-16" />
+              </div>
+            ))}
           </TableRow>
         ))}
       </Table>
@@ -142,11 +141,9 @@ export default async function Page({ params: { id } }: Props) {
 
 function getTotalScore(participation: User["participations"][number]) {
   let sum = 0;
-  let max = 0;
   for (const score of participation.scores) {
-    if (score.score === null || score.max_score_possible === null) return "N/A";
+    if (score.score === null) return "N/A";
     sum += score.score;
-    max += score.max_score_possible;
   }
-  return `${round(sum)} / ${max}`;
+  return round(sum);
 }
