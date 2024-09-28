@@ -40,7 +40,12 @@ $ yarn dev
 
 2. Enter the `utils/make_db` directory
 
-3. You need an app credentials file that allows the script to interact with the Google Docs APIs. Create such an app following [the official docs](https://developers.google.com/sheets/api/quickstart/python). From this step you should obtain a `credentials.json`.
+3. Login to gcloud with
+
+```
+gcloud auth application-default login --scopes=openid,https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/spreadsheets
+gcloud auth application-default set-quota-project A_GCP_PROJECT_ID
+```
 
 4. Generate the new database by running
 

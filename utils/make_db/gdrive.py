@@ -2,10 +2,13 @@ import os.path
 import pickle
 import itertools
 import logging
+from typing import Any, Dict, Generic, List, TYPE_CHECKING, Optional, TypeVar, Tuple
 
+from google import auth
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
+
+if TYPE_CHECKING:
+    from googleapiclient._apis.sheets.v4.resources import SheetsResource  # type: ignore
 
 logger = logging.getLogger("gdrive")
 
@@ -13,9 +16,8 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 
 class Drive:
-    def __init__(self, spreadsheet_id: str, request_cred=False, use_cache=True):
-        creds = self.get_creds(request_cred)
-        self.service = self.get_service(creds)
+    def __init__(self, spreadsheet_id: str, use_cache=True):
+        self.service = self._get_google_sheets_api()
         self.spreadsheet_id = spreadsheet_id
         self.cache = {}
         self.use_cache = use_cache
@@ -24,32 +26,17 @@ class Drive:
             with open(self.cache_file, "rb") as f:
                 self.cache = pickle.load(f)
 
-    @classmethod
-    def get_creds(cls, request_cred):
-        creds = None
-        if os.path.exists("token.pickle"):
-            with open("token.pickle", "rb") as token:
-                logging.info("Using Google Drive token at token.pickle")
-                creds = pickle.load(token)
-
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                logger.info("Token is expired, refreshing")
-                creds.refresh(Request())
-            else:
-                if not request_cred:
-                    raise RuntimeError("Credentials at token.pickle not found")
-                logger.warning(
-                    "Token not found, requesting new token using credentials.json"
-                )
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    "credentials.json",
-                    SCOPES,
-                )
-                creds = flow.run_local_server(port=0)
-            with open("token.pickle", "wb") as token:
-                pickle.dump(creds, token)
-        return creds
+    @staticmethod
+    def _get_google_sheets_api() -> "SheetsResource.SpreadsheetsResource":
+        logging.debug("Getting Google Spreadsheets API instance")
+        scopes = [
+            "https://www.googleapis.com/auth/cloud-platform"
+            "https://www.googleapis.com/auth/spreadsheets.readonly",
+        ]
+        credentials, _project_id = auth.default(scopes=scopes)
+        return build(
+            "sheets", "v4", credentials=credentials, cache_discovery=False
+        ).spreadsheets()
 
     @classmethod
     def get_service(cls, creds):

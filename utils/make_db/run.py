@@ -82,7 +82,7 @@ def main(args):
         else:
             raise RuntimeError("Pass --drop to overwrite the database")
 
-    drive = Drive(args.spreadsheet_id, args.request_credentials, args.use_cache)
+    drive = Drive(args.spreadsheet_id)
 
     storage = Storage(args.storage_dir)
 
