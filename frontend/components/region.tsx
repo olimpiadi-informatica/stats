@@ -23,7 +23,7 @@ export function RegionCard({ region }: { region: Region | Regions[number] }) {
         </div>
         <div>
           <span className="font-semibold">Partecipanti medi all'anno:</span>{" "}
-          {region.avg_contestants_per_year}
+          {round(region.avg_contestants_per_year)}
         </div>
         <div className="mt-2">
           <Medals {...region.medals} />
