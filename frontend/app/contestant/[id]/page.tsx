@@ -19,11 +19,31 @@ type Props = {
   params: { id: string };
 };
 
+function medalDescription(num: number, medal: string) {
+  if (num === 0) return "";
+  if (num === 1) return `una medaglia ${medal}`;
+  return `${num} medaglie ${medal}`;
+}
+
+function medalDescriptions(num_medals: User["num_medals"]) {
+  const medals = [
+    medalDescription(num_medals.gold, "d'oro"),
+    medalDescription(num_medals.silver, "d'argento"),
+    medalDescription(num_medals.bronze, "di bronzo"),
+  ].filter(Boolean);
+
+  if (medals.length === 0) return "";
+  if (medals.length >= 3) {
+    medals.unshift(medals.splice(0, medals.length - 1).join(", "));
+  }
+  return `, vincitore di ${medals.join(" e ")}`;
+}
+
 export async function generateMetadata({ params: { id } }: Props): Promise<Metadata> {
   const user = await getUser(id);
 
   const title = `OII Stats - ${user.contestant.first_name ?? ""} ${user.contestant.last_name}`;
-  const description = `Statistiche di ${user.contestant.first_name ?? ""} ${user.contestant.last_name} alle Olimpiadi Italiane di Informatica`;
+  const description = `Statistiche di ${user.contestant.first_name ?? ""} ${user.contestant.last_name} alle Olimpiadi Italiane di Informatica${medalDescriptions(user.num_medals)}`;
 
   const image = user.image
     ? {
