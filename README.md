@@ -14,19 +14,19 @@ The frontend is written with Next.js and at build time it reads all the JSON fil
 
 1. Clone this repository
 
-```
+```bash
 $ git clone https://github.com/algorithm-ninja/oii-stats.git
 ```
 
 2. Enter the `frontend/` directory
 
-```
+```bash
 $ cd frontend
 ```
 
 3. Start the dev Next.js server
 
-```
+```bash
 $ yarn dev
 ```
 
@@ -40,28 +40,27 @@ $ yarn dev
 
 2. Enter the `utils/make_db` directory
 
+```bash
+$ cd utils/make_db
+```
+
 3. Login to gcloud with
 
-```
-gcloud auth application-default login --scopes=openid,https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/spreadsheets
-gcloud auth application-default set-quota-project A_GCP_PROJECT_ID
-```
-
-4. Generate the new database by running
-
-```
-$ ./run $SPREADSHEET_ID ../../data --drop
+```bash
+$ gcloud auth application-default login --scopes=openid,https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/spreadsheets
+$ gcloud auth application-default set-quota-project A_GCP_PROJECT_ID
 ```
 
-> If it's the first time you follow this guide you may need the `token.pickle` file. To obtain it add `--request-credentials` to the command above.
+4. Create a virtual environment
 
-## Rebuilding the docker image locally
-
-After each push to `master` the CI will build the docker image.
-The image is published at `ghcr.io/algorithm-ninja/oii-stats-frontend:$tag` where `$tag` is the [version of the application](https://github.com/algorithm-ninja/oii-stats/pkgs/container/oii-stats-frontend).
-
-If you want to build the image locally you can use the following helper script:
-
+```bash
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
 ```
-$ ./utils/docker_build.sh
+
+5. Generate the new database by running
+
+```bash
+$ ./run.py $SPREADSHEET_ID ../../data --drop
 ```
