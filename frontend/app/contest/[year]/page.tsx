@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ContestCard } from "~/components/contest";
 import InternationalBadge from "~/components/international";
 import { Medal } from "~/components/medal";
+import { RegionImage } from "~/components/region";
 import { Table, TableHeaders, TableRow } from "~/components/table";
 import { getContestResults } from "~/lib/contest-results";
 import { getContest, getContests } from "~/lib/contests";
@@ -93,12 +94,16 @@ export default async function Page({ params: { year } }: Props) {
                 : `${round(result.score)} / ${contest.max_score_possible}`}
             </div>
             <div>
-              {result.region ? (
-                <Link href={`/region/${result.region}`} className="link">
-                  {result.region}
+              {result.region && result.regionImage ? (
+                <Link href={`/region/${result.region}/${contest.year}`} className="link">
+                  <RegionImage
+                    region={result.region}
+                    image={result.regionImage}
+                    className="size-8 !p-0 mx-auto"
+                  />
                 </Link>
               ) : (
-                "N/A"
+                "-"
               )}
             </div>
             <div className="col-span-4 grid grid-cols-subgrid text-left">

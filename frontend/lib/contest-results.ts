@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { z } from "zod";
 
 import { contestantSchema, internationalSchema, medalSchema, navigationSchema } from "~/lib/common";
+import { getRegionImage } from "~/lib/region";
 
 const pastParticipationSchema = z.object({
   year: z.number(),
@@ -20,7 +21,11 @@ const participantSchema = z
     medal: medalSchema,
     past_participations: pastParticipationSchema.array(),
   })
-  .strict();
+  .strict()
+  .transform(async (participant) => ({
+    ...participant,
+    regionImage: participant.region ? await getRegionImage(participant.region) : null,
+  }));
 
 const contestResultsSchema = z
   .object({
@@ -33,7 +38,7 @@ const contestResultsSchema = z
 export type ContestResults = z.infer<typeof contestResultsSchema>;
 
 export async function getContestResults(year: string | number): Promise<ContestResults> {
-  return contestResultsSchema.parse(
+  return contestResultsSchema.parseAsync(
     JSON.parse(await readFile(`../data/contests/${year}/results.json`, "utf8")),
   );
 }

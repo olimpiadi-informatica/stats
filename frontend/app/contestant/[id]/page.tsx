@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import InternationalBadge from "~/components/international";
 import { Medal } from "~/components/medal";
+import { RegionImage } from "~/components/region";
 import { Table, TableHeaders, TableRow } from "~/components/table";
 import { UserCard } from "~/components/user";
 import { type User, getUser } from "~/lib/user";
@@ -90,12 +91,16 @@ export default async function Page({ params: { id } }: Props) {
             </div>
             <div>{getTotalScore(p)}</div>
             <div>
-              {p.region ? (
+              {p.region && p.regionImage ? (
                 <Link href={`/region/${p.region}`} className="link">
-                  {p.region}
+                  <RegionImage
+                    region={p.region}
+                    image={p.regionImage}
+                    className="size-8 !p-0 mx-auto"
+                  />
                 </Link>
               ) : (
-                "N/A"
+                "-"
               )}
             </div>
             <div className="col-span-4 grid grid-cols-subgrid text-left">

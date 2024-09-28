@@ -4,6 +4,8 @@ import type { StaticImageData } from "next/image";
 
 import { z } from "zod";
 
+import { getRegionImage } from "~/lib/region";
+
 import { contestantSchema, internationalSchema, medalSchema, medalsSchema } from "./common";
 
 const taskSchema = z
@@ -23,7 +25,11 @@ const participationSchema = z
     region: z.string().nullable(),
     scores: taskSchema.array(),
   })
-  .strict();
+  .strict()
+  .transform(async (participation) => ({
+    ...participation,
+    regionImage: participation.region ? await getRegionImage(participation.region) : null,
+  }));
 
 const userSchema = z
   .object({
