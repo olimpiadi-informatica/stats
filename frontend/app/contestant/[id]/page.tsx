@@ -1,23 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import InternationalBadge from "~/components/international";
-import { Medal } from "~/components/medal";
-import { RegionImage } from "~/components/region";
-import { Score } from "~/components/score";
+import { UserCard } from "~/components/card/user";
 import { Table, TableHeaders, TableRow } from "~/components/table";
-import { UserCard } from "~/components/user";
-import { type User, getUser } from "~/lib/user";
-import { getUsers } from "~/lib/users";
-import { round } from "~/lib/utils";
+import {
+  ParticipationInternationals,
+  ParticipationRank,
+  ParticipationRegion,
+  ParticipationScore,
+  ParticipationTasks,
+} from "~/components/table-columns";
+import { getUserParticipations } from "~/lib/participations";
+import { type User, getUser, getUserIds } from "~/lib/users";
 
-export async function generateStaticParams() {
-  const users = await getUsers();
-  return users.map((user) => ({ id: user.contestant.id }));
+export function generateStaticParams() {
+  return getUserIds();
 }
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 function medalDescription(num: number, medal: string) {
@@ -26,11 +27,11 @@ function medalDescription(num: number, medal: string) {
   return `${num} medaglie ${medal}`;
 }
 
-function medalDescriptions(num_medals: User["num_medals"]) {
+function medalDescriptions(numMedals: User["medals"]) {
   const medals = [
-    medalDescription(num_medals.gold, "d'oro"),
-    medalDescription(num_medals.silver, "d'argento"),
-    medalDescription(num_medals.bronze, "di bronzo"),
+    medalDescription(numMedals.gold, "d'oro"),
+    medalDescription(numMedals.silver, "d'argento"),
+    medalDescription(numMedals.bronze, "di bronzo"),
   ].filter(Boolean);
 
   if (medals.length === 0) return "";
@@ -40,11 +41,12 @@ function medalDescriptions(num_medals: User["num_medals"]) {
   return `, vincitore di ${medals.join(" e ")}`;
 }
 
-export async function generateMetadata({ params: { id } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
   const user = await getUser(id);
 
-  const title = `OII Stats - ${user.contestant.first_name ?? ""} ${user.contestant.last_name}`;
-  const description = `Statistiche di ${user.contestant.first_name ?? ""} ${user.contestant.last_name}${medalDescriptions(user.num_medals)}`;
+  const title = `OII Stats - ${user.firstName ?? ""} ${user.lastName}`;
+  const description = `Statistiche di ${user.firstName ?? ""} ${user.lastName}${medalDescriptions(user.medals)}`;
 
   const image = user.image
     ? {
@@ -63,9 +65,9 @@ export async function generateMetadata({ params: { id } }: Props): Promise<Metad
       images: image,
       url: `https://stats.olinfo.it/contestant/${id}`,
       description,
-      firstName: user.contestant.first_name,
-      lastName: user.contestant.last_name,
-      username: user.contestant.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
     },
     twitter: {
       card: "summary_large_image",
@@ -77,8 +79,10 @@ export async function generateMetadata({ params: { id } }: Props): Promise<Metad
   };
 }
 
-export default async function Page({ params: { id } }: Props) {
+export default async function Page({ params }: Props) {
+  const { id } = await params;
   const user = await getUser(id);
+  const participations = await getUserParticipations(id);
   return (
     <div className="flex flex-col gap-8">
       <div className="mx-auto max-w-2xl">
@@ -93,7 +97,7 @@ export default async function Page({ params: { id } }: Props) {
           <div>Punteggio</div>
           <div className="col-span-4">Dettagli</div>
         </TableHeaders>
-        {user.participations.map((p) => (
+        {participations.map((p) => (
           <TableRow key={p.year}>
             <div>
               <Link href={`/contest/${p.year}`} className="link">
@@ -101,49 +105,21 @@ export default async function Page({ params: { id } }: Props) {
               </Link>
             </div>
             <div>
-              <Medal type={p.medal}>{p.rank === null ? "N/A" : `${p.rank}° posto`}</Medal>
+              <ParticipationRank participation={p} />
             </div>
             <div>
-              {p.internationals.length > 0
-                ? p.internationals.map((int) => (
-                    <InternationalBadge key={int.code} international={int} />
-                  ))
-                : "-"}
+              <ParticipationInternationals participation={p} />
             </div>
             <div>
-              {p.region && p.regionImage ? (
-                <Link href={`/region/${p.region}`} className="link">
-                  <RegionImage
-                    region={p.region}
-                    image={p.regionImage}
-                    className="size-8 !p-0 mx-auto"
-                  />
-                </Link>
-              ) : (
-                "-"
-              )}
+              <ParticipationRegion participation={p} />
             </div>
-            <div>{getTotalScore(p)}</div>
-            {p.scores.map((score) => (
-              <div key={score.task} className="flex flex-col items-center gap-1">
-                <Link href={`/task/${p.year}/${score.task}`} className="link">
-                  {score.task}
-                </Link>
-                <Score score={score.score} maxScore={score.max_score_possible} className="w-16" />
-              </div>
-            ))}
+            <div>
+              <ParticipationScore participation={p} />
+            </div>
+            <ParticipationTasks participation={p} links />
           </TableRow>
         ))}
       </Table>
     </div>
   );
-}
-
-function getTotalScore(participation: User["participations"][number]) {
-  let sum = 0;
-  for (const score of participation.scores) {
-    if (score.score === null) return "N/A";
-    sum += score.score;
-  }
-  return round(sum);
 }

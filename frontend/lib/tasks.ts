@@ -1,47 +1,57 @@
-import { readFile } from "node:fs/promises";
+import type { StaticImageData } from "next/image";
+import { cache } from "react";
 
-import { z } from "zod";
+import { and, desc, eq, max } from "drizzle-orm";
 
-import { getTaskImage } from "~/lib/task";
+import { db } from "./db";
+import { taskScores, tasks } from "./db/schema";
+import { withImage } from "./image";
 
-import { baseTaskSchema, navigationSchema } from "./common";
+export type Task = {
+  name: string;
+  title: string | null;
+  contestYear: number;
+  maxScore: number | null;
+  maxScorePossible: number | null;
+  link: string | null;
+  image: StaticImageData | null;
+};
 
-export const taskSchema = baseTaskSchema
-  .extend({
-    max_score: z.number().nullable(),
-    avg_score: z.number().nullable(),
-    navigation: navigationSchema(
-      z
-        .object({
-          year: z.number(),
-          name: z.string(),
-        })
-        .strict(),
-    ),
-  })
-  .strict()
-  .transform(async (task) => ({
-    ...task,
-    image: await getTaskImage(task.contest_year, task.name),
-  }));
+function getTaskQuery() {
+  return db
+    .select({
+      name: tasks.name,
+      title: tasks.title,
+      contestYear: tasks.contestYear,
+      maxScore: max(taskScores.score),
+      link: tasks.link,
+      maxScorePossible: tasks.maxScorePossible,
+    })
+    .from(tasks)
+    .innerJoin(taskScores, eq(taskScores.taskName, tasks.name))
+    .groupBy(tasks.name, tasks.title, tasks.contestYear, tasks.link, tasks.maxScorePossible);
+}
 
-const tasksSchema = z
-  .object({
-    tasks: z
-      .object({
-        year: z.number(),
-        tasks: taskSchema.array(),
-      })
-      .strict()
-      .array(),
-  })
-  .strict();
-
-export type Tasks = z.infer<typeof taskSchema>[];
-
-export async function getTasks(): Promise<Tasks> {
-  const { tasks } = await tasksSchema.parseAsync(
-    JSON.parse(await readFile("../data/tasks.json", "utf8")),
+export const getTask = cache(async (year: number, name: string): Promise<Task> => {
+  const [task] = await withImage(
+    getTaskQuery().where(and(eq(tasks.contestYear, year), eq(tasks.name, name))),
+    importImage,
   );
-  return tasks.flatMap((task) => task.tasks);
+  if (!task) throw new Error(`Task ${year}/${name} not found`);
+  return task;
+});
+
+export const getTasks = cache((): Promise<Task[]> => {
+  return withImage(getTaskQuery().orderBy(desc(tasks.contestYear), tasks.idx), importImage);
+});
+
+export const getContestTasks = cache((year: number): Promise<Task[]> => {
+  return withImage(
+    getTaskQuery().where(eq(tasks.contestYear, year)).orderBy(tasks.idx),
+    importImage,
+  );
+});
+
+function importImage(task: Omit<Task, "image">) {
+  return import(`/../static/tasks/${task.contestYear}/${task.name}.png?w=208&h=208&fit=inside`);
 }

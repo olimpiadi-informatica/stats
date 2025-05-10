@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { ContestCard } from "~/components/contest";
+import { ContestCard } from "~/components/card/contest";
 import { getContests } from "~/lib/contests";
 
 export const metadata: Metadata = {

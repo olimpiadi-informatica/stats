@@ -12,13 +12,12 @@ export const metadata: Metadata = {
 const CHUNK_SIZE = 50;
 
 export default async function Page() {
-  const all = await getUsers();
-  const users = all.slice(0, CHUNK_SIZE);
+  const firstChunk = await getUsers(0, CHUNK_SIZE);
 
   return (
     <>
       <h1 className="my-4 text-center text-4xl font-bold">Hall of Fame</h1>
-      <ContestantGrid firstChunk={users} />
+      <ContestantGrid firstChunk={firstChunk} />
     </>
   );
 }

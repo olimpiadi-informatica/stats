@@ -16,7 +16,7 @@ export function Search() {
 
   return (
     <>
-      <form role="search" className="join max-lg:hidden" action="/search" onSubmit={onSubmit}>
+      <form className="join max-lg:hidden" action="/search" onSubmit={onSubmit}>
         <input
           className="input join-item input-bordered"
           name="q"

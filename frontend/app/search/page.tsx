@@ -19,12 +19,9 @@ export default function Page() {
       <Form onSubmit={searchAction} className="mb-4 lg:hidden">
         <TextField
           field="q"
-          label="Parola da cercare"
+          label="Puoi cercare un partecipante, un problema o una gara"
           placeholder="Inserisci la parola da cercare"
         />
-        <div className="self-start px-1 text-sm text-base-content/60">
-          Puoi cercare un partecipante, un problema o una gara
-        </div>
         <SubmitButton className="!mt-2">Cerca</SubmitButton>
       </Form>
       <Suspense fallback={<Loading />}>

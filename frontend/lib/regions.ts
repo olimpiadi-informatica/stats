@@ -1,30 +1,56 @@
-import { readFile } from "node:fs/promises";
+import type { StaticImageData } from "next/image";
+import { cache } from "react";
 
-import { z } from "zod";
+import { and, count, eq, isNull, notExists } from "drizzle-orm";
 
-import { medalsSchema, navigationSchema } from "./common";
-import { getRegionImage } from "./region";
+import { getMedalsQuery } from "./common";
+import { db } from "./db";
+import { type Medal, contests, participations, regions } from "./db/schema";
+import { withImage } from "./image";
 
-export const regionSchema = z
-  .object({
-    id: z.string(),
-    name: z.string(),
-    navigation: navigationSchema(z.string()),
-    num_contestants: z.number(),
-    avg_contestants_per_year: z.number(),
-    medals: medalsSchema,
-    hosted: z.number().array(),
-  })
-  .strict()
-  .transform(async (region) => ({ ...region, image: await getRegionImage(region.id) }));
+export type Region = {
+  id: string;
+  name: string;
+  numContestants: number;
+  numYears: number;
+  medals: Record<Medal, number>;
+  image: StaticImageData | null;
+};
 
-const regionsSchema = z.object({ regions: regionSchema.array() }).strict();
+function getRegionQuery() {
+  return db
+    .select({
+      id: regions.id,
+      name: regions.name,
+      numContestants: count(),
+      numYears: db.$count(
+        contests,
+        notExists(
+          db
+            .select()
+            .from(participations)
+            .where(
+              and(eq(participations.contestYear, contests.year), isNull(participations.regionId)),
+            ),
+        ),
+      ),
+      medals: getMedalsQuery(),
+    })
+    .from(regions)
+    .leftJoin(participations, eq(participations.regionId, regions.id))
+    .groupBy(regions.id, regions.name);
+}
 
-export type Regions = z.infer<typeof regionsSchema>["regions"];
+export const getRegion = cache(async (id: string): Promise<Region> => {
+  const [region] = await withImage(getRegionQuery().where(eq(regions.id, id)), importImage);
+  if (!region) throw new Error(`Region ${id} not found`);
+  return region;
+});
 
-export async function getRegions(): Promise<Regions> {
-  const { regions } = await regionsSchema.parseAsync(
-    JSON.parse(await readFile("../data/regions.json", "utf8")),
-  );
-  return regions;
+export const getRegions = cache(async (): Promise<Region[]> => {
+  return withImage(getRegionQuery().orderBy(regions.name), importImage);
+});
+
+function importImage(region: Omit<Region, "image">) {
+  return import(`/../static/regions/${region.id}.svg`);
 }

@@ -1,35 +1,70 @@
-import { readFile } from "node:fs/promises";
+import type { StaticImageData } from "next/image";
+import { cache } from "react";
 
-import { z } from "zod";
+import { desc, eq, min, notLike, sql } from "drizzle-orm";
 
-import { contestantSchema, internationalSchema, medalSchema, medalsSchema } from "./common";
-import { getUserImage } from "./user";
+import { getMedalsQuery } from "./common";
+import { db } from "./db";
+import { type Medal, participations, users } from "./db/schema";
+import { withImage } from "./image";
 
-const participationSchema = z
-  .object({
-    year: z.number(),
-    internationals: internationalSchema.array(),
-    medal: medalSchema,
-  })
-  .strict();
+export type User = {
+  id: string;
+  firstName: string | null;
+  lastName: string;
+  username: string | null;
+  bestRank: number | null;
+  participations: string;
+  medals: Record<Medal, number>;
+  image: StaticImageData | null;
+};
 
-export const userSchema = z
-  .object({
-    contestant: contestantSchema,
-    num_medals: medalsSchema,
-    best_rank: z.number().nullable(),
-    participations: participationSchema.array(),
-  })
-  .strict()
-  .transform(async (user) => ({ ...user, image: await getUserImage(user.contestant.id) }));
+function getUserQuery() {
+  return db
+    .select({
+      id: users.id,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      username: users.username,
+      bestRank: min(participations.rank),
+      participations: sql<string>`GROUP_CONCAT(${participations.contestYear}, ', ' ORDER BY ${participations.contestYear} DESC)`,
+      medals: getMedalsQuery(),
+    })
+    .from(users)
+    .innerJoin(participations, eq(participations.userId, users.id))
+    .groupBy(users.id, users.firstName, users.lastName, users.id);
+}
 
-const usersSchema = z.object({ users: userSchema.array() }).strict();
+export const getUser = cache(async (userId: string): Promise<User> => {
+  const [user] = await withImage(getUserQuery().where(eq(users.id, userId)), importImage);
+  if (!user) throw new Error(`User ${userId} not found`);
+  return user;
+});
 
-export type Users = z.infer<typeof usersSchema>["users"];
-
-export async function getUsers(): Promise<Users> {
-  const { users } = await usersSchema.parseAsync(
-    JSON.parse(await readFile("../data/users.json", "utf8")),
+export const getUsers = cache(async (offset: number, limit: number): Promise<User[]> => {
+  return withImage(
+    getUserQuery()
+      .orderBy((user) => [
+        desc(sql`${user.medals} -> 'gold'`),
+        desc(sql`${user.medals} -> 'silver'`),
+        desc(sql`${user.medals} -> 'bronze'`),
+        notLike(users.lastName, "Bort%"), // nothing to see here
+        user.bestRank,
+        desc(user.participations),
+        users.firstName,
+        users.lastName,
+        users.id,
+      ])
+      .offset(offset)
+      .limit(limit),
+    importImage,
   );
-  return users;
+});
+
+export const getUserIds = cache(async (): Promise<Pick<User, "id">[]> => {
+  return db.select({ id: users.id }).from(users);
+});
+
+function importImage(user: Omit<User, "image">) {
+  return import(`/../static/contestants/${user.id}.jpg?w=208&h=208&fit=outside`);
 }

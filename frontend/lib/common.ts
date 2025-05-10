@@ -1,63 +1,13 @@
-import { type ZodTypeAny, z } from "zod";
+import { type SQL, eq, sql, sum } from "drizzle-orm";
 
-export const baseTaskSchema = z
-  .object({
-    contest_year: z.number(),
-    name: z.string(),
-    title: z.string(),
-    link: z.string().nullable(),
-    index: z.number(),
-    max_score_possible: z.number().nullable(),
-  })
-  .strict();
+import { type Medal, participations } from "./db/schema";
 
-export const contestantSchema = z
-  .object({
-    id: z.string(),
-    username: z.string().nullable(),
-    first_name: z.string().nullable(),
-    last_name: z.string(),
-  })
-  .strict();
-
-export type Contestant = z.infer<typeof contestantSchema>;
-
-export const internationalSchema = z
-  .object({
-    code: z.string(),
-    name: z.string(),
-    link: z.string().nullable(),
-    color: z.string(),
-  })
-  .strict();
-
-export type International = z.infer<typeof internationalSchema>;
-
-export const locationSchema = z
-  .object({
-    location: z.string().nullable(),
-    gmaps: z.string().nullable(),
-    latitude: z.number().nullable(),
-    longitude: z.number().nullable(),
-  })
-  .strict();
-
-export const medalSchema = z.enum(["gold", "silver", "bronze"]).nullable();
-
-export const medalsSchema = z
-  .object({
-    gold: z.number(),
-    silver: z.number(),
-    bronze: z.number(),
-  })
-  .strict();
-
-export function navigationSchema<T extends ZodTypeAny>(schema: T) {
-  return z
-    .object({
-      current: schema,
-      previous: schema.nullable(),
-      next: schema.nullable(),
-    })
-    .strict();
+export function getMedalsQuery(defaultValue: 0 | null = 0): SQL.Aliased<Record<Medal, number>> {
+  return sql`JSON_OBJECT(
+    'gold', IFNULL(${sum(eq(participations.medal, "gold"))}, ${defaultValue}),
+    'silver', IFNULL(${sum(eq(participations.medal, "silver"))}, ${defaultValue}),
+    'bronze', IFNULL(${sum(eq(participations.medal, "bronze"))}, ${defaultValue})
+  )`
+    .mapWith(JSON.parse)
+    .as("medals");
 }

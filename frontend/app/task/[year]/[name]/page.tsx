@@ -1,26 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { TaskCard } from "~/components/card/task";
 import { Score } from "~/components/score";
 import { Table, TableHeaders, TableRow } from "~/components/table";
-import { TaskCard } from "~/components/task";
-import { getTask } from "~/lib/task";
-import { getTasks } from "~/lib/tasks";
+import { getTaskTaskScores } from "~/lib/task-scores";
+import { getTask, getTasks } from "~/lib/tasks";
 
 export async function generateStaticParams() {
   const tasks = await getTasks();
-  return tasks.map(({ contest_year, name }) => ({ year: contest_year.toString(), name }));
+  return tasks.map(({ contestYear, name }) => ({ year: contestYear.toString(), name }));
 }
 
 type Props = {
-  params: { year: string; name: string };
+  params: Promise<{ year: string; name: string }>;
 };
 
-export async function generateMetadata({ params: { year, name } }: Props): Promise<Metadata> {
-  const task = await getTask(year, name);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { year, name } = await params;
+  const task = await getTask(+year, name);
 
   const title = `OII Stats - ${task.name}`;
-  const description = `Statistiche e classifiche del problema ${task.name} delle Olimpiadi Italiane di Informatica ${task.contest_year}`;
+  const description = `Statistiche e classifiche del problema ${task.name} delle Olimpiadi Italiane di Informatica ${task.contestYear}`;
 
   const image = task.image
     ? {
@@ -50,8 +51,12 @@ export async function generateMetadata({ params: { year, name } }: Props): Promi
   };
 }
 
-export default async function Page({ params: { year, name } }: Props) {
+export default async function Page({ params }: Props) {
+  const name = (await params).name;
+  const year = Number((await params).year);
   const task = await getTask(year, name);
+  const scores = await getTaskTaskScores(year, name);
+
   return (
     <div className="flex flex-col gap-8">
       <div className="mx-auto max-w-2xl">
@@ -63,18 +68,18 @@ export default async function Page({ params: { year, name } }: Props) {
           <div>Nome</div>
           <div>Punteggio</div>
         </TableHeaders>
-        {task.scores.map((user) => (
-          <TableRow key={user.contestant.id}>
-            <div>{user.rank ?? "N/A"}</div>
+        {scores.map((score) => (
+          <TableRow key={score.userId}>
+            <div>{score.rank ?? "N/A"}</div>
             <div>
-              <Link href={`/contestant/${user.contestant.id}`} className="link">
-                {user.contestant.first_name} {user.contestant.last_name}
+              <Link href={`/contestant/${score.userId}`} className="link">
+                {score.firstName} {score.lastName}
               </Link>
             </div>
             <div>
               <Score
-                score={user.score}
-                maxScore={task.max_score_possible}
+                score={score.score}
+                maxScore={task.maxScorePossible}
                 className="w-16 mx-auto"
               />
             </div>

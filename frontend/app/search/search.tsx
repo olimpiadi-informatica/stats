@@ -1,36 +1,36 @@
 import Link from "next/link";
 
-import { ContestCard } from "~/components/contest";
-import { RegionCard } from "~/components/region";
-import { TaskCard } from "~/components/task";
-import { UserCard } from "~/components/user";
+import { ContestCard } from "~/components/card/contest";
+import { RegionCard } from "~/components/card/region";
+import { TaskCard } from "~/components/card/task";
+import { UserCard } from "~/components/card/user";
 import type { SearchResultValue } from "~/lib/search";
 
 export function SearchCard({ v }: { v: SearchResultValue }) {
-  if ("contest" in v) {
+  if (v.contest) {
     return (
       <Link href={`/contest/${v.contest.year}`}>
         <ContestCard contest={v.contest} />
       </Link>
     );
   }
-  if ("region" in v) {
+  if (v.region) {
     return (
       <Link href={`/region/${v.region.id}`}>
         <RegionCard region={v.region} />
       </Link>
     );
   }
-  if ("task" in v) {
+  if (v.task) {
     return (
-      <Link href={`/task/${v.task.year}/${v.task.task.name}`}>
-        <TaskCard task={v.task.task} />
+      <Link href={`/task/${v.task.contestYear}/${v.task.name}`}>
+        <TaskCard task={v.task} />
       </Link>
     );
   }
-  if ("user" in v) {
+  if (v.user) {
     return (
-      <Link href={`/contestant/${v.user.contestant.id}`}>
+      <Link href={`/contestant/${v.user.id}`}>
         <UserCard user={v.user} />
       </Link>
     );

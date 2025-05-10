@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 
 import iconMask from "./icon-mask.png";
 
+export const dynamic = "force-static";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Statistiche OII",

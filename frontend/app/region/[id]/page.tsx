@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { round } from "lodash-es";
+import { RegionCard } from "~/components/card/region";
 import { Medals } from "~/components/medal";
-import { RegionCard } from "~/components/region";
 import { Table, TableHeaders, TableRow } from "~/components/table";
-import { getRegion } from "~/lib/region";
+import { getRegionContests } from "~/lib/region-contest";
+import { getRegion } from "~/lib/regions";
 import { getRegions } from "~/lib/regions";
-import { round } from "~/lib/utils";
 
 export async function generateStaticParams() {
   return getRegions();
 }
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export async function generateMetadata({ params: { id } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
   const region = await getRegion(id);
   return {
     title: `OII Stats - ${region.name}`,
@@ -24,8 +26,11 @@ export async function generateMetadata({ params: { id } }: Props): Promise<Metad
   };
 }
 
-export default async function Page({ params: { id } }: Props) {
+export default async function Page({ params }: Props) {
+  const { id } = await params;
   const region = await getRegion(id);
+  const contests = await getRegionContests(id);
+
   return (
     <div className="flex flex-col gap-8">
       <div className="mx-auto max-w-2xl">
@@ -38,27 +43,18 @@ export default async function Page({ params: { id } }: Props) {
           <div>Medagliati</div>
           <div>Medaglie</div>
         </TableHeaders>
-        {region.years.map((year) => (
-          <TableRow key={year.year}>
+        {contests.map((contest) => (
+          <TableRow key={contest.year}>
             <div className="min-w-64 text-wrap">
-              <Link href={`/region/${id}/${year.year}`} className="link">
-                {year.location.location} {year.year}
+              <Link href={`/region/${id}/${contest.year}`} className="link">
+                {contest.location} {contest.year}
               </Link>
-              {region.hosted.includes(year.year) && (
-                <span className="badge badge-warning badge-sm mx-2">HOST</span>
-              )}
+              {contest.hosted && <span className="badge badge-warning badge-sm mx-2">HOST</span>}
             </div>
-            <div>{year.num_contestants}</div>
+            <div>{contest.numContestants}</div>
+            <div>{round((contest.numMedalists / contest.numContestants) * 100, 1)}%</div>
             <div>
-              {round(
-                ((year.num_medals.gold + year.num_medals.silver + year.num_medals.bronze) /
-                  year.num_contestants) *
-                  100,
-              )}
-              %
-            </div>
-            <div>
-              <Medals {...year.num_medals} />
+              <Medals {...contest.medals} />
             </div>
           </TableRow>
         ))}

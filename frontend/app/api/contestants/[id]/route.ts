@@ -1,18 +1,19 @@
-import { getUsers } from "~/lib/users";
+import { getUserIds, getUsers } from "~/lib/users";
 
 const CHUNK_SIZE = 50;
 
 type Params = { id: string };
 
 export async function generateStaticParams() {
-  const users = await getUsers();
+  const users = await getUserIds();
   return Array.from(
     { length: Math.ceil(users.length / CHUNK_SIZE) + 1 },
     (_, id): Params => ({ id: id.toString() }),
   );
 }
 
-export async function GET(_request: Request, { params: { id } }: { params: Params }) {
-  const all = await getUsers();
-  return Response.json(all.slice(+id * CHUNK_SIZE, (+id + 1) * CHUNK_SIZE));
+export async function GET(_request: Request, { params }: { params: Promise<Params> }) {
+  const id = Number((await params).id);
+  const users = await getUsers(id * CHUNK_SIZE, (id + 1) * CHUNK_SIZE);
+  return Response.json(users);
 }

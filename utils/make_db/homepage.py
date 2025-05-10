@@ -18,19 +18,11 @@ def get_region_with_most_medals(storage, result):
     regions = [r for r in storage.regions]
     regions.sort(reverse=True, key=lambda r: medals_key(r.num_medals))
 
-    def output(region):
-        return {
-            "id": region.id,
-            "name": region.name,
-            "num_medals": region.num_medals,
-        }
-
     result.append(
         {
-            "region_with_most_medals": {
-                "first": output(regions[0]),
-                "second": output(regions[1]),
-            },
+            "type": "region_with_most_medals",
+            "region": regions[0].id,
+            "region2": regions[1].id,
         }
     )
 
@@ -42,11 +34,9 @@ def get_region_with_most_medals_per_participant(storage, result):
 
     result.append(
         {
-            "region_with_most_medals_per_participant": {
-                "id": best.id,
-                "name": best.name,
-                "medals_per_participant": key(best),
-            },
+            "type": "region_with_most_medals_per_participant",
+            "region": best.id,
+            "medals_per_participant": key(best),
         }
     )
 
@@ -58,12 +48,10 @@ def get_region_with_most_first_places(storage, result):
 
     result.append(
         {
-            "region_with_most_first_places": {
-                "id": best.id,
-                "name": best.name,
-                "num_first_places": key(best),
-            },
-        }
+            "type": "region_with_most_first_places",
+            "region": best.id,
+            "num_first_places": key(best),
+        },
     )
 
 
@@ -74,12 +62,10 @@ def get_region_with_most_participants(storage, result):
 
     result.append(
         {
-            "region_with_most_participants": {
-                "id": best.id,
-                "name": best.name,
-                "num_participants": key(best),
-            },
-        }
+            "type": "region_with_most_participants",
+            "region": best.id,
+            "num_participants": key(best),
+        },
     )
 
 
@@ -107,10 +93,8 @@ def get_best_student(storage, result):
 
     result.append(
         {
-            "best_student": {
-                "contestant": users[0].contestant,
-                "num_medals": users[0].num_medals,
-            },
+            "type": "user_best",
+            "user": users[0].id(),
         }
     )
 
@@ -120,10 +104,9 @@ def get_win_at_first_participation(storage, result):
     for u in users:
         result.append(
             {
-                "win_at_first_participation": {
-                    "contestant": u.contestant,
-                    "year": min(p.contest.year for p in u.participations),
-                },
+                "type": "user_win_at_first_participation",
+                "user": u.id(),
+                "year": min(p.contest.year for p in u.participations),
             }
         )
 
@@ -140,11 +123,10 @@ def get_student_with_most_participations(storage, result):
 
     result.append(
         {
-            "student_with_most_participations": {
-                "contestant": users[0].contestant,
-                "num_participations": key(user[0]),
-            },
-        }
+            "type": "user_with_most_participations",
+            "user": users[0].id(),
+            "num_participations": key(user[0]),
+        },
     )
 
 
@@ -166,12 +148,11 @@ def get_ioist_with_worst_rank(storage, result):
 
     result.append(
         {
-            "ioist_with_worst_rank": {
-                "contestant": participations[0].user.contestant,
-                "contest_year": participations[0].contest.year,
-                "rank": participations[0].rank,
-            },
-        }
+            "type": "user_ioist_with_worst_rank",
+            "user": participations[0].user.id(),
+            "year": participations[0].contest.year,
+            "rank": participations[0].rank,
+        },
     )
 
 
@@ -196,13 +177,10 @@ def get_task_with_lowest_avg_score(storage, result):
 
     result.append(
         {
-            "task_with_lowest_avg_score": {
-                "contest_year": best.contest.year,
-                "name": best.name,
-                "title": best.title,
-                "avg_score": best.avg_score,
-                "max_score_possible": best.max_score_possible,
-            }
+            "type": "task_with_lowest_avg_score",
+            "contest_year": best.contest.year,
+            "name": best.name,
+            "avg_score": best.avg_score,
         }
     )
 
@@ -216,13 +194,10 @@ def get_task_with_highest_avg_score(storage, result):
 
     result.append(
         {
-            "task_with_highest_avg_score": {
-                "contest_year": best.contest.year,
-                "name": best.name,
-                "title": best.title,
-                "avg_score": best.avg_score,
-                "max_score_possible": best.max_score_possible,
-            }
+            "type": "task_with_highest_avg_score",
+            "contest_year": best.contest.year,
+            "name": best.name,
+            "avg_score": best.avg_score,
         }
     )
 
@@ -236,13 +211,9 @@ def get_task_with_lowest_max_score(storage, result):
 
     result.append(
         {
-            "task_with_lowest_max_score": {
-                "contest_year": best.contest.year,
-                "name": best.name,
-                "title": best.title,
-                "max_score": best.max_score,
-                "max_score_possible": best.max_score_possible,
-            }
+            "type": "task_with_lowest_max_score",
+            "contest_year": best.contest.year,
+            "name": best.name,
         }
     )
 
@@ -253,13 +224,11 @@ def get_task_with_most_zeros(storage, result):
 
     result.append(
         {
-            "task_with_most_zeros": {
-                "contest_year": best.contest.year,
-                "name": best.name,
-                "title": best.title,
-                "num_zeros": best.num_zeros,
-                "num_participants": len(best.scores),
-            }
+            "type": "task_with_most_zeros",
+            "contest_year": best.contest.year,
+            "name": best.name,
+            "num_zeros": best.num_zeros,
+            "num_participants": len(best.scores),
         }
     )
 
@@ -270,13 +239,11 @@ def get_task_with_most_fullscores(storage, result):
 
     result.append(
         {
-            "task_with_most_fullscores": {
-                "contest_year": best.contest.year,
-                "name": best.name,
-                "title": best.title,
-                "num_fullscores": best.num_full_scores,
-                "num_participants": len(best.scores),
-            }
+            "type": "task_with_most_fullscores",
+            "contest_year": best.contest.year,
+            "name": best.name,
+            "num_fullscores": best.num_full_scores,
+            "num_participants": len(best.scores),
         }
     )
 
@@ -305,10 +272,8 @@ def get_contest_with_most_participants(storage, result):
 
     result.append(
         {
-            "contest_with_most_participants": {
-                "year": contests[0].year,
-                "num_participants": key(contests[0]),
-            }
+            "type": "contest_with_most_participants",
+            "year": contests[0].year,
         }
     )
 
@@ -324,10 +289,9 @@ def get_contest_with_most_ex_aequo(storage, result):
 
     result.append(
         {
-            "contest_with_most_ex_aequo": {
-                "year": contests[0].year,
-                "num_ex_aequo": key(contests[0]),
-            }
+            "type": "contest_with_most_ex_aequo",
+            "year": contests[0].year,
+            "num_ex_aequo": key(contests[0]),
         }
     )
 
@@ -343,10 +307,8 @@ def get_most_northern_contest(storage, result):
 
     result.append(
         {
-            "most_northern_contest": {
-                "year": contests[0].year,
-                "location": contests[0].location_info,
-            }
+            "type": "contest_most_northern",
+            "year": contests[0].year,
         }
     )
 
@@ -362,10 +324,8 @@ def get_most_southern_contest(storage, result):
 
     result.append(
         {
-            "most_southern_contest": {
-                "year": contests[0].year,
-                "location": contests[0].location_info,
-            }
+            "type": "contest_most_southern",
+            "year": contests[0].year,
         }
     )
 
@@ -381,11 +341,9 @@ def get_contest_with_most_girls(storage, result):
 
     result.append(
         {
-            "contest_with_most_girls": {
-                "year": contests[0].year,
-                "num_girls": contests[0].num_girls,
-                "num_participants": len(contests[0].participations),
-            }
+            "type": "contest_with_most_girls",
+            "year": contests[0].year,
+            "num_girls": contests[0].num_girls,
         }
     )
 
@@ -395,7 +353,7 @@ def get_num_boys_girls(storage, result):
         {"year": c.year, "num_boys": c.num_boys, "num_girls": c.num_girls}
         for c in storage.contests.values()
     ]
-    result.append({"num_boys_girls": {"years": years}})
+    result.append({"type": "contest_num_boys_girls", "years": years})
 
 
 def get_num_participants_per_year(storage, result):
@@ -403,7 +361,7 @@ def get_num_participants_per_year(storage, result):
         {"year": c.year, "num_participants": len(c.participations)}
         for c in storage.contests.values()
     ]
-    result.append({"num_participants_per_year": {"years": years}})
+    result.append({"type": "contest_num_participants_per_year", "years": years})
 
 
 def get_most_used_location(storage, result):
@@ -418,10 +376,8 @@ def get_most_used_location(storage, result):
 
     result.append(
         {
-            "most_used_location": {
-                "location": locations[0][1][0].location_info,
-                "years": [c.year for c in locations[0][1]],
-            }
+            "type": "contest_most_used_location",
+            "years": [c.year for c in locations[0][1]],
         }
     )
 

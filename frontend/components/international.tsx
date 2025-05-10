@@ -1,10 +1,13 @@
 import Link from "next/link";
 
-import type { International } from "~/lib/common";
+import { type International, getInternational } from "~/lib/internationals";
 
-export default function InternationalBadge({ international }: { international: International }) {
+export default async function InternationalBadge({ code }: { code: string }) {
+  const international = await getInternational(code);
   return (
-    <div className="badge mx-0.5 text-white" style={{ backgroundColor: international.color }}>
+    <div
+      className="badge mx-0.5 text-white"
+      style={{ backgroundColor: international.color ?? undefined }}>
       {international.link ? (
         <Link href={international.link}>
           <BadgeInner international={international} />

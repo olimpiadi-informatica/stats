@@ -1,62 +1,52 @@
-import { readFile } from "node:fs/promises";
-
 import type { StaticImageData } from "next/image";
+import { cache } from "react";
 
-import { z } from "zod";
+import { avg, count, desc, eq, max } from "drizzle-orm";
 
-import { baseTaskSchema, locationSchema, navigationSchema } from "./common";
+import { getMedalsQuery } from "./common";
+import { db } from "./db";
+import { type Medal, contests, participations } from "./db/schema";
+import { withImage } from "./image";
 
-const medalSchema = z
-  .object({
-    count: z.number().nullable(),
-    cutoff: z.number().nullable(),
-  })
-  .strict();
+export type Contest = {
+  year: number;
+  location: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  maxScore: number | null;
+  avgScore: number | null;
+  numContestants: number;
+  medals: Record<Medal, number>;
+  image: StaticImageData | null;
+};
 
-export const contestSchema = z
-  .object({
-    year: z.number(),
-    navigation: navigationSchema(z.number()),
-    location: locationSchema,
-    region: z.string().nullable(),
-    num_contestants: z.number(),
-    max_score: z.number().nullable(),
-    max_score_possible: z.number().nullable(),
-    avg_score: z.number().nullable(),
-    tasks: baseTaskSchema.array(),
-    medals: z
-      .object({
-        gold: medalSchema,
-        silver: medalSchema,
-        bronze: medalSchema,
-      })
-      .strict(),
-  })
-  .strict()
-  .transform(async (contest) => ({ ...contest, image: await getContestImage(contest.year) }));
-
-const contestsSchema = z.object({ contests: contestSchema.array() }).strict();
-
-export type Contest = z.infer<typeof contestSchema>;
-
-export async function getContest(year: number | string): Promise<Contest> {
-  return contestSchema.parseAsync(
-    JSON.parse(await readFile(`../data/contests/${year}.json`, "utf8")),
-  );
+function getContestQuery() {
+  return db
+    .select({
+      year: contests.year,
+      location: contests.location,
+      latitude: contests.latitude,
+      longitude: contests.longitude,
+      maxScore: max(participations.score),
+      avgScore: avg(participations.score).mapWith(Number),
+      numContestants: count(),
+      medals: getMedalsQuery(null),
+    })
+    .from(contests)
+    .innerJoin(participations, eq(participations.contestYear, contests.year))
+    .groupBy(contests.year, contests.location);
 }
 
-export async function getContests(): Promise<Contest[]> {
-  const { contests } = await contestsSchema.parseAsync(
-    JSON.parse(await readFile("../data/contests.json", "utf8")),
-  );
-  return contests;
-}
+export const getContest = cache(async (year: number): Promise<Contest> => {
+  const [contest] = await withImage(getContestQuery().where(eq(contests.year, year)), importImage);
+  if (!contest) throw new Error(`Contest ${year} not found`);
+  return contest;
+});
 
-export async function getContestImage(year: number | string): Promise<StaticImageData | null> {
-  try {
-    const { default: image } = await import(`/../static/contests/${year}.jpg?w=176`);
-    return image;
-  } catch {
-    return null;
-  }
+export const getContests = cache((): Promise<Contest[]> => {
+  return withImage(getContestQuery().orderBy(desc(contests.year)), importImage);
+});
+
+function importImage(contest: Omit<Contest, "image">) {
+  return import(`/../static/contests/${contest.year}.jpg?w=176`);
 }

@@ -1,7 +1,7 @@
-import { PageClient } from "~/app/(home)/page-client";
 import { getStats } from "~/lib/stats";
 
 import { ContestStatCard } from "./contest";
+import { PageClient } from "./page-client";
 import { RegionStatCard } from "./region";
 import { TaskStatCard } from "./task";
 import { UserStatCard } from "./user";

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { RegionCard } from "~/components/region";
+import { RegionCard } from "~/components/card/region";
 import { getRegions } from "~/lib/regions";
 
 export const metadata: Metadata = {

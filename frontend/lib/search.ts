@@ -1,32 +1,61 @@
-import { readFile } from "node:fs/promises";
+import { type Contest, getContests } from "./contests";
+import { type Region, getRegions } from "./regions";
+import { type Task, getTasks } from "./tasks";
+import { type User, getUsers } from "./users";
 
-import { z } from "zod";
+export type SearchResultValue = {
+  contest?: Contest;
+  region?: Region;
+  task?: Task;
+  user?: User;
+};
 
-import { contestSchema } from "./contests";
-import { regionSchema } from "./regions";
-import { taskSchema } from "./tasks";
-import { userSchema } from "./users";
+export type SearchResult = {
+  id: string;
+  k: string;
+  v: SearchResultValue;
+};
 
-const taskResultSchema = z.object({ task: taskSchema, year: z.number() }).strict();
+export function getContestSearchResults(): Promise<SearchResult[]> {
+  return getResults("contest", getContests, ["year"], ["location", "year"]);
+}
 
-const searchResultSchema = z
-  .object({
-    id: z.string(),
-    k: z.string(),
-    v: z.union([
-      z.object({ contest: contestSchema }).strict(),
-      z.object({ region: regionSchema }).strict(),
-      z.object({ task: taskResultSchema }).strict(),
-      z.object({ user: userSchema }).strict(),
-    ]),
-  })
-  .strict();
+export function getRegionSearchResults(): Promise<SearchResult[]> {
+  return getResults("region", getRegions, ["id"], ["id", "name"]);
+}
 
-export type SearchResult = z.infer<typeof searchResultSchema>;
-export type SearchResultValue = SearchResult["v"];
+export function getTaskSearchResults(): Promise<SearchResult[]> {
+  return getResults("task", getTasks, ["contestYear", "name"], ["name", "title"]);
+}
 
-const searchSchema = searchResultSchema.array();
+const CHUNK_SIZE = 200;
 
-export async function getSearchResults(): Promise<SearchResult[]> {
-  return searchSchema.parseAsync(JSON.parse(await readFile("../data/search.json", "utf8")));
+export async function* getUserSearchResults(): AsyncGenerator<SearchResult[]> {
+  for (let i = 0; ; i += CHUNK_SIZE) {
+    const results = await getResults(
+      "user",
+      () => getUsers(i, CHUNK_SIZE),
+      ["id"],
+      ["firstName", "lastName", "username"],
+    );
+    if (results.length === 0) break;
+    yield results;
+  }
+}
+
+async function getResults<
+  T extends keyof SearchResultValue,
+  V extends NonNullable<SearchResultValue[T]>,
+>(
+  type: T,
+  getValues: () => Promise<V[]>,
+  ids: (keyof V)[],
+  searchKeys: (keyof V)[],
+): Promise<SearchResult[]> {
+  const values = await getValues();
+  return values.map((v) => ({
+    id: [type, ...ids.map((f) => v[f])].join(":"),
+    k: searchKeys.map((f) => v[f]).join(" "),
+    v: { [type]: v },
+  }));
 }

@@ -2,32 +2,39 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 
-import InternationalBadge from "~/components/international";
-import { Medal } from "~/components/medal";
-import { RegionYearCard } from "~/components/region";
-import { Score } from "~/components/score";
+import { RegionYearCard } from "~/components/card/region";
 import { Table, TableHeaders, TableRow } from "~/components/table";
-import { getRegion } from "~/lib/region";
-import { type RegionResults, getRegionResults } from "~/lib/region-results";
+import {
+  ParticipationInternationals,
+  ParticipationName,
+  ParticipationRank,
+  ParticipationScore,
+  ParticipationTasks,
+  TaskHeaders,
+} from "~/components/table-columns";
+import { getContestParticipations } from "~/lib/participations";
+import { getRegionContest, getRegionContests } from "~/lib/region-contest";
+import { getRegion } from "~/lib/regions";
 import { getRegions } from "~/lib/regions";
-import { round } from "~/lib/utils";
+import { getContestTasks } from "~/lib/tasks";
 
 export async function generateStaticParams() {
   const regions = await getRegions();
   const regionYears = await Promise.all(
     regions.map(async ({ id }) => {
-      const region = await getRegion(id);
-      return region.years.map(({ year }) => ({ id, year: year.toString() }));
+      const regionContest = await getRegionContests(id);
+      return regionContest.map(({ year }) => ({ id, year: year.toString() }));
     }),
   );
   return regionYears.flat();
 }
 
 type Props = {
-  params: { id: string; year: string };
+  params: Promise<{ id: string; year: string }>;
 };
 
-export async function generateMetadata({ params: { id, year } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id, year } = await params;
   const region = await getRegion(id);
   return {
     title: `OII Stats - ${region.name} ${year}`,
@@ -36,84 +43,52 @@ export async function generateMetadata({ params: { id, year } }: Props): Promise
 }
 
 export default async function Page({ params }: Props) {
-  const year = Number(params.year);
-  const region = await getRegion(params.id);
-  const results = await getRegionResults(params.id);
+  const year = Number((await params).year);
+  const regionId = (await params).id;
 
-  const result = results.results.find((result) => result.year === year)!;
-  const summary = region.years.find((year) => year.year === result.year)!;
-
-  const tasks = result.contestants[0].task_scores.map((task) => task.name);
+  const region = await getRegion(regionId);
+  const regionContest = await getRegionContest(regionId, year);
+  const participations = await getContestParticipations(year, regionId);
+  const tasks = await getContestTasks(year);
 
   return (
     <div className="flex flex-col gap-8">
       <div className="mx-auto max-w-2xl">
-        <RegionYearCard region={region} year={year} />
+        <RegionYearCard region={region} regionContest={regionContest} />
       </div>
       <div style={{ "--cols": tasks.length + 4 } as CSSProperties}>
         <h3 className="m-4 text-center text-2xl font-bold">
-          <Link href={`/contest/${result.year}`} className="link">
-            {summary?.location.location ?? "OII"} {result.year}
+          <Link href={`/contest/${year}`} className="link">
+            {regionContest.location ?? "OII"} {regionContest.year}
           </Link>
         </h3>
-        <Table className="grid-cols-[repeat(8,auto)] text-center">
+        <Table className="grid-cols-[repeat(var(--cols),auto)] text-center">
           <TableHeaders>
             <div>Nome</div>
             <div>Risultato</div>
             <div>Internazionali</div>
             <div>Punteggio</div>
-            {tasks.map((task) => (
-              <div key={task} className="!opacity-100">
-                <Link href={`/task/${year}/${task}`} className="link">
-                  {task}
-                </Link>
-              </div>
-            ))}
+            <TaskHeaders tasks={tasks} />
           </TableHeaders>
-          {result.contestants.map((user) => (
-            <TableRow key={user.contestant.id}>
+          {participations.map((p) => (
+            <TableRow key={p.userId}>
               <div>
-                <Link href={`/contestant/${user.contestant.id}`} className="link">
-                  {user.contestant.first_name} {user.contestant.last_name}
-                </Link>
+                <ParticipationName participation={p} />
               </div>
               <div>
-                <Medal type={user.medal}>
-                  {user.rank === null ? "N/A" : `${user.rank}° posto`}
-                </Medal>
+                <ParticipationRank participation={p} />
               </div>
               <div>
-                {user.internationals.length > 0
-                  ? user.internationals.map((int) => (
-                      <InternationalBadge international={int} key={int.code} />
-                    ))
-                  : "-"}
+                <ParticipationInternationals participation={p} />
               </div>
-              <div>{getTotalScore(user)}</div>
-              {user.task_scores.map((task) => (
-                <div key={task.name}>
-                  <Score
-                    score={task.score}
-                    maxScore={task.max_score_possible}
-                    className="w-16 mx-auto"
-                  />
-                </div>
-              ))}
+              <div>
+                <ParticipationScore participation={p} />
+              </div>
+              <ParticipationTasks participation={p} />
             </TableRow>
           ))}
         </Table>
       </div>
     </div>
   );
-}
-
-type Participation = RegionResults["results"][number]["contestants"][number];
-
-function getTotalScore(participation: Participation) {
-  let total = 0;
-  for (const score of participation.task_scores) {
-    if (score.score === null) return "N/A";
-    total += score.score;
-  }
-  return round(total);
 }

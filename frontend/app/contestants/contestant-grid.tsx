@@ -7,16 +7,16 @@ import { VirtuosoGrid } from "react-virtuoso";
 import { preload } from "swr";
 import useSWRInfinite from "swr/infinite";
 
+import { UserCard } from "~/components/card/user";
 import { Loading } from "~/components/placeholder";
-import { UserCard } from "~/components/user";
-import type { Users } from "~/lib/users";
+import type { User } from "~/lib/users";
 
 type Props = {
-  firstChunk: Users;
+  firstChunk: User[];
 };
 
 export function ContestantGrid({ firstChunk }: Props) {
-  const { data, size, setSize } = useSWRInfinite<Users>(
+  const { data, size, setSize } = useSWRInfinite<User[]>(
     (index) => ["competitors", index],
     contestantsFetcher,
     {
@@ -43,7 +43,7 @@ export function ContestantGrid({ firstChunk }: Props) {
         setSize(size + 1);
       }}
       itemContent={(_index, user) => (
-        <Link href={`/contestant/${user.contestant.id}`}>
+        <Link href={`/contestant/${user.id}`}>
           <UserCard user={user} />
         </Link>
       )}

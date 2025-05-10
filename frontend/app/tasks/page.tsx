@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { TaskCard } from "~/components/task";
+import { TaskCard } from "~/components/card/task";
 import { getTasks } from "~/lib/tasks";
 
 export const metadata: Metadata = {
@@ -17,8 +17,8 @@ export default async function Page() {
       <div className="grid gap-4 xl:grid-cols-2">
         {tasks.map((task) => (
           <Link
-            key={`${task.contest_year}/${task.name}`}
-            href={`/task/${task.contest_year}/${task.name}`}>
+            key={`${task.contestYear}/${task.name}`}
+            href={`/task/${task.contestYear}/${task.name}`}>
             <TaskCard task={task} />
           </Link>
         ))}
