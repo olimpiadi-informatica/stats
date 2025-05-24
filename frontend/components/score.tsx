@@ -19,15 +19,11 @@ export function Score({
       className={clsx(
         "block rounded-box text-black border border-black/10",
         className,
-        (percent === 100 && "font-bold") ||
-          (percent > 90 && "bg-emerald-600") ||
-          (percent > 75 && "bg-emerald-500") ||
-          (percent > 60 && "bg-emerald-400") ||
-          (percent > 45 && "bg-emerald-300") ||
-          (percent > 30 && "bg-emerald-200") ||
-          (percent > 15 && "bg-emerald-100") ||
-          "bg-emerald-50",
-      )}>
+        percent > 99.9 && "font-bold",
+      )}
+      style={{
+        backgroundColor: `color-mix(in srgb, rgb(5 150 105) ${percent}%, rgb(236 253 245))`,
+      }}>
       {round(score, 1)}
     </span>
   );
