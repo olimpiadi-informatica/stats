@@ -1,6 +1,6 @@
 import { extname, join } from "node:path";
 
-import sizeOf from "image-size";
+import { imageSizeFromFile } from "image-size/fromFile";
 import { interpolateName } from "loader-utils";
 import sharp from "sharp";
 
@@ -14,7 +14,7 @@ export default async function imageLoader(source) {
 
   let image;
   if (extname(this.resourcePath) === ".svg") {
-    const size = sizeOf(this.resourcePath);
+    const size = await imageSizeFromFile(this.resourcePath);
     image = {
       src: emitFile(this, "/static/media/[name].[hash:8].[ext]", source),
       width: size.width,
