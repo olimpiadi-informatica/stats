@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { type International, getInternational } from "~/lib/internationals";
+import { getInternational, type International } from "~/lib/internationals";
 
 export default async function InternationalBadge({ code }: { code: string }) {
   const international = await getInternational(code);

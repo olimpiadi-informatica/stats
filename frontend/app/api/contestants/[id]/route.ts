@@ -14,6 +14,6 @@ export async function generateStaticParams() {
 
 export async function GET(_request: Request, { params }: { params: Promise<Params> }) {
   const id = Number((await params).id);
-  const users = await getUsers(id * CHUNK_SIZE, (id + 1) * CHUNK_SIZE);
+  const users = await getUsers(id * CHUNK_SIZE, CHUNK_SIZE);
   return Response.json(users);
 }

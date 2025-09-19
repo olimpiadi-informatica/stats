@@ -1,7 +1,7 @@
 import { type Contest, getContests } from "./contests";
-import { type Region, getRegions } from "./regions";
-import { type Task, getTasks } from "./tasks";
-import { type User, getUsers } from "./users";
+import { getRegions, type Region } from "./regions";
+import { getTasks, type Task } from "./tasks";
+import { getUsers, type User } from "./users";
 
 export type SearchResultValue = {
   contest?: Contest;

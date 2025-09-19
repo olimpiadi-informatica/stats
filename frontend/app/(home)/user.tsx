@@ -6,7 +6,7 @@ import { Card, CardBody } from "@olinfo/react-components";
 import { UserImage } from "~/components/card/user";
 import { Medals } from "~/components/medal";
 import type { UserStat } from "~/lib/stats";
-import { type User, getUser } from "~/lib/users";
+import { getUser, type User } from "~/lib/users";
 
 export async function UserStatCard({ stat }: { stat: UserStat }) {
   switch (stat.type) {
@@ -57,13 +57,7 @@ export async function UserStatCard({ stat }: { stat: UserStat }) {
   }
 }
 
-function BaseUserStatCard({
-  user,
-  children,
-}: {
-  user: User;
-  children: ReactNode;
-}) {
+function BaseUserStatCard({ user, children }: { user: User; children: ReactNode }) {
   return (
     <Card className="!flex-col">
       <UserImage user={user} className="mx-auto mt-4 size-52 rounded-box" />

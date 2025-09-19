@@ -14,8 +14,7 @@ import {
 } from "~/components/table-columns";
 import { getContestParticipations } from "~/lib/participations";
 import { getRegionContest, getRegionContests } from "~/lib/region-contest";
-import { getRegion } from "~/lib/regions";
-import { getRegions } from "~/lib/regions";
+import { getRegion, getRegions } from "~/lib/regions";
 import { getContestTasks } from "~/lib/tasks";
 
 export async function generateStaticParams() {

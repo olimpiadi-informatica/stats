@@ -5,7 +5,7 @@ import { avg, count, desc, eq, max } from "drizzle-orm";
 
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
-import { type Medal, contests, participations } from "./db/schema";
+import { contests, type Medal, participations } from "./db/schema";
 import { withImage } from "./image";
 
 export type Contest = {

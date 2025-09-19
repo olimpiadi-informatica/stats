@@ -6,7 +6,7 @@ import { round } from "lodash-es";
 
 import { TaskImage } from "~/components/card/task";
 import type { TaskStat } from "~/lib/stats";
-import { type Task, getTask } from "~/lib/tasks";
+import { getTask, type Task } from "~/lib/tasks";
 
 export async function TaskStatCard({ stat }: { stat: TaskStat }) {
   switch (stat.type) {
@@ -87,13 +87,7 @@ export async function TaskStatCard({ stat }: { stat: TaskStat }) {
   }
 }
 
-function BaseTaskStatCard({
-  task,
-  children,
-}: {
-  task: Task;
-  children: ReactNode;
-}) {
+function BaseTaskStatCard({ task, children }: { task: Task; children: ReactNode }) {
   return (
     <Card className="!flex-col">
       {task.image && <TaskImage task={task} className="mx-auto mt-4 w-52 *:rounded-box" />}

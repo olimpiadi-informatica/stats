@@ -6,12 +6,12 @@ import { RegionImage } from "~/components/card/region";
 import InternationalBadge from "~/components/international";
 import { Medal } from "~/components/medal";
 import { Score } from "~/components/score";
-import { type Participation, getUserParticipations } from "~/lib/participations";
+import { getUserParticipations, type Participation } from "~/lib/participations";
 import { getRegion } from "~/lib/regions";
 import { getUserTaskScores } from "~/lib/task-scores";
 import type { Task } from "~/lib/tasks";
 
-export async function TaskHeaders({ tasks }: { tasks: Task[] }) {
+export function TaskHeaders({ tasks }: { tasks: Task[] }) {
   return tasks.map((task) => (
     <div key={task.name} className="!opacity-100">
       <Link href={`/task/${task.contestYear}/${task.name}`} className="link">
@@ -32,7 +32,10 @@ export function ParticipationName({ participation: p }: { participation: Partici
 export function ParticipationRank({
   participation: p,
   short,
-}: { participation: Participation; short?: boolean }) {
+}: {
+  participation: Participation;
+  short?: boolean;
+}) {
   return (
     <Medal type={p.medal}>{p.rank === null ? "N/A" : short ? p.rank : `${p.rank}° posto`}</Medal>
   );
@@ -49,9 +52,7 @@ export async function ParticipationRegion({ participation }: { participation: Pa
   );
 }
 
-export async function ParticipationInternationals({
-  participation,
-}: { participation: Participation }) {
+export function ParticipationInternationals({ participation }: { participation: Participation }) {
   if (!participation.internationals) return "-";
 
   return participation.internationals
@@ -59,7 +60,7 @@ export async function ParticipationInternationals({
     .map((int) => <InternationalBadge key={int} code={int} />);
 }
 
-export async function ParticipationScore({ participation }: { participation: Participation }) {
+export function ParticipationScore({ participation }: { participation: Participation }) {
   const score = participation.score;
   if (score === null) return "N/A";
   return round(score, 1);
@@ -68,7 +69,10 @@ export async function ParticipationScore({ participation }: { participation: Par
 export async function ParticipationTasks({
   participation,
   links,
-}: { participation: Participation; links?: boolean }) {
+}: {
+  participation: Participation;
+  links?: boolean;
+}) {
   const scores = await getUserTaskScores(participation.userId, participation.year);
 
   return scores.map((score) => (
@@ -85,7 +89,9 @@ export async function ParticipationTasks({
 
 export async function ParticipationPastResults({
   participation,
-}: { participation: Participation }) {
+}: {
+  participation: Participation;
+}) {
   const userParticipations = await getUserParticipations(participation.userId);
 
   return userParticipations

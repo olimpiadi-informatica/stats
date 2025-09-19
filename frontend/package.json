@@ -36,7 +36,7 @@
     "typescript": "^5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1",
+    "@biomejs/biome": "=2.2.4",
     "drizzle-kit": "^0.31"
   },
   "postcss": {

@@ -32,7 +32,10 @@ export function RegionCard({ region }: { region: Region }) {
 export function RegionYearCard({
   region,
   regionContest,
-}: { region: Region; regionContest: RegionContest }) {
+}: {
+  region: Region;
+  regionContest: RegionContest;
+}) {
   return (
     <Card className="h-full">
       <RegionImage region={region} className="size-52 flex-none max-sm:mx-auto max-sm:mt-4" />
@@ -52,13 +55,7 @@ export function RegionYearCard({
   );
 }
 
-export function RegionImage({
-  region,
-  className,
-}: {
-  region: Region;
-  className?: string;
-}) {
+export function RegionImage({ region, className }: { region: Region; className?: string }) {
   return (
     <Image
       src={region.image!}

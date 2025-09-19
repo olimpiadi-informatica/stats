@@ -1,4 +1,5 @@
 import { relations } from "drizzle-orm/relations";
+
 import { contests, participations, regions, taskScores, tasks, users } from "./schema";
 
 export const tasksRelations = relations(tasks, ({ one, many }) => ({

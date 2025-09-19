@@ -27,7 +27,7 @@ $ cd frontend
 3. Start the dev Next.js server
 
 ```bash
-$ yarn dev
+$ pnpm dev
 ```
 
 4. Any changes should trigger an automatic page reload thanks to Next.js

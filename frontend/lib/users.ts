@@ -26,13 +26,16 @@ function getUserQuery() {
       firstName: users.firstName,
       lastName: users.lastName,
       username: users.username,
-      bestRank: min(participations.rank),
-      participations: sql<string>`GROUP_CONCAT(${participations.contestYear}, ', ' ORDER BY ${participations.contestYear} DESC)`,
+      bestRank: min(participations.rank).as("best_rank"),
+      participations:
+        sql<string>`GROUP_CONCAT(${participations.contestYear}, ', ' ORDER BY ${participations.contestYear} DESC)`.as(
+          "years",
+        ),
       medals: getMedalsQuery(),
     })
     .from(users)
     .innerJoin(participations, eq(participations.userId, users.id))
-    .groupBy(users.id, users.firstName, users.lastName, users.id);
+    .groupBy(users.id, users.firstName, users.lastName, users.username);
 }
 
 export const getUser = cache(async (userId: string): Promise<User> => {
@@ -41,13 +44,13 @@ export const getUser = cache(async (userId: string): Promise<User> => {
   return user;
 });
 
-export const getUsers = cache(async (offset: number, limit: number): Promise<User[]> => {
+export const getUsers = cache((offset: number, limit: number): Promise<User[]> => {
   return withImage(
     getUserQuery()
       .orderBy((user) => [
-        desc(sql`${user.medals} -> 'gold'`),
-        desc(sql`${user.medals} -> 'silver'`),
-        desc(sql`${user.medals} -> 'bronze'`),
+        desc(sql`JSON_EXTRACT(${user.medals}, '$.gold')`),
+        desc(sql`JSON_EXTRACT(${user.medals}, '$.silver')`),
+        desc(sql`JSON_EXTRACT(${user.medals}, '$.bronze')`),
         notLike(users.lastName, "Bort%"), // nothing to see here
         user.bestRank,
         desc(user.participations),
@@ -61,7 +64,7 @@ export const getUsers = cache(async (offset: number, limit: number): Promise<Use
   );
 });
 
-export const getUserIds = cache(async (): Promise<Pick<User, "id">[]> => {
+export const getUserIds = cache((): Promise<Pick<User, "id">[]> => {
   return db.select({ id: users.id }).from(users);
 });
 

@@ -35,13 +35,7 @@ export function ContestCard({ contest }: { contest: Contest }) {
   );
 }
 
-export function ContestImage({
-  contest,
-  className,
-}: {
-  contest: Contest;
-  className?: string;
-}) {
+export function ContestImage({ contest, className }: { contest: Contest; className?: string }) {
   return contest.image ? (
     <Image
       src={contest.image}

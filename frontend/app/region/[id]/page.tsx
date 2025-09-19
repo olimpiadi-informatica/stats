@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { round } from "lodash-es";
+
 import { RegionCard } from "~/components/card/region";
 import { Medals } from "~/components/medal";
 import { Table, TableHeaders, TableRow } from "~/components/table";
 import { getRegionContests } from "~/lib/region-contest";
-import { getRegion } from "~/lib/regions";
-import { getRegions } from "~/lib/regions";
+import { getRegion, getRegions } from "~/lib/regions";
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return getRegions();
 }
 

@@ -4,7 +4,7 @@ import { and, count, desc, eq, sql } from "drizzle-orm";
 
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
-import { type Medal, contests, participations } from "./db/schema";
+import { contests, type Medal, participations } from "./db/schema";
 
 export type RegionContest = {
   year: number;

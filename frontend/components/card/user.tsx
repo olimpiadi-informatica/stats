@@ -20,8 +20,8 @@ export function UserCard({ user, links }: { user: User; links?: boolean }) {
           <span className="font-semibold">Partecipazioni:</span> {user.participations}
         </div>
         <div>
-          <span className="font-semibold">Miglior piazzamento:</span> {user.bestRank ?? "N/A"}°
-          posto
+          <span className="font-semibold">Miglior piazzamento:</span>{" "}
+          {user.bestRank ? `${user.bestRank}° posto` : "N/A"}
         </div>
         {links && user.username && (
           <div>
@@ -41,13 +41,7 @@ export function UserCard({ user, links }: { user: User; links?: boolean }) {
   );
 }
 
-export function UserImage({
-  user,
-  className,
-}: {
-  user: User;
-  className?: string;
-}) {
+export function UserImage({ user, className }: { user: User; className?: string }) {
   return user.image ? (
     <Image
       src={user.image}

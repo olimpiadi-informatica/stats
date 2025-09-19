@@ -5,7 +5,7 @@ import { and, count, eq, isNull, notExists } from "drizzle-orm";
 
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
-import { type Medal, contests, participations, regions } from "./db/schema";
+import { contests, type Medal, participations, regions } from "./db/schema";
 import { withImage } from "./image";
 
 export type Region = {
@@ -47,7 +47,7 @@ export const getRegion = cache(async (id: string): Promise<Region> => {
   return region;
 });
 
-export const getRegions = cache(async (): Promise<Region[]> => {
+export const getRegions = cache((): Promise<Region[]> => {
   return withImage(getRegionQuery().orderBy(regions.name), importImage);
 });
 

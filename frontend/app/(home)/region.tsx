@@ -5,7 +5,7 @@ import { Card, CardBody } from "@olinfo/react-components";
 import { round } from "lodash-es";
 
 import { RegionImage } from "~/components/card/region";
-import { type Region, getRegion } from "~/lib/regions";
+import { getRegion, type Region } from "~/lib/regions";
 import type { RegionStat } from "~/lib/stats";
 
 export async function RegionStatCard({ stat }: { stat: RegionStat }) {
@@ -83,13 +83,7 @@ export async function RegionStatCard({ stat }: { stat: RegionStat }) {
   }
 }
 
-function BaseRegionStatCard({
-  region,
-  children,
-}: {
-  region: Region;
-  children: ReactNode;
-}) {
+function BaseRegionStatCard({ region, children }: { region: Region; children: ReactNode }) {
   return (
     <Card className="!flex-col">
       <RegionImage region={region} className="mx-auto mt-4 size-52" />

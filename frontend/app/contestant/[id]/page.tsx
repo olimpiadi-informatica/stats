@@ -11,7 +11,7 @@ import {
   ParticipationTasks,
 } from "~/components/table-columns";
 import { getUserParticipations } from "~/lib/participations";
-import { type User, getUser, getUserIds } from "~/lib/users";
+import { getUser, getUserIds, type User } from "~/lib/users";
 
 export function generateStaticParams() {
   return getUserIds();

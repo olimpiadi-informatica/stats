@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Layout } from "@olinfo/react-components";
 
 import "./globals.css";
+
 import { Navbar } from "./navbar";
 
 export const metadata: Metadata = {

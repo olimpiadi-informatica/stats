@@ -39,8 +39,8 @@ export function ContestantGrid({ firstChunk }: Props) {
       initialItemCount={16}
       data={data?.flat() ?? firstChunk}
       endReached={() => {
-        preload(["competitors", size + 1], contestantsFetcher);
-        setSize(size + 1);
+        void preload(["competitors", size + 1], contestantsFetcher);
+        void setSize(size + 1);
       }}
       itemContent={(_index, user) => (
         <Link href={`/contestant/${user.id}`}>
