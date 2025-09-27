@@ -268,7 +268,7 @@ class Participation:
         self.rank = cast_or_none(int, rank)
         self.school = school
         self.venue = venue
-        self.medal = MEDAL_NAMES[medal] if medal else None
+        self.medal = MEDAL_NAMES[medal] if medal and medal != 'H' else None
         if internationals:
             self.internationals = [
                 self.storage.internationals[name] for name in internationals.split(",")
