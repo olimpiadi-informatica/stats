@@ -23,7 +23,7 @@
     "lodash-es": "^4",
     "lucide-react": ">=0.395 <1",
     "minisearch": "^7",
-    "next": "^15",
+    "next": "^16",
     "prop-types": "^15",
     "react": "^19",
     "react-dom": "^19",
