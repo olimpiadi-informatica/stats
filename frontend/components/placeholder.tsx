@@ -2,7 +2,7 @@ import { Card, CardBody } from "@olinfo/react-components";
 
 import { Medals } from "~/components/medal";
 
-export function CardPlaceholder() {
+export function CardPlaceholder({ showHonorable = false }: { showHonorable?: boolean } = {}) {
   return (
     <Card className="h-full">
       <div className="skeleton size-52 flex-none rounded-none max-sm:mx-auto max-sm:mt-4 max-sm:rounded-box" />
@@ -14,6 +14,10 @@ export function CardPlaceholder() {
             gold={<span className="skeleton inline-block h-4 w-5 translate-y-1/4 scale-y-150" />}
             silver={<span className="skeleton inline-block h-4 w-5 translate-y-1/4 scale-y-150" />}
             bronze={<span className="skeleton inline-block h-4 w-5 translate-y-1/4 scale-y-150" />}
+            honorable={
+              <span className="skeleton inline-block h-4 w-5 translate-y-1/4 scale-y-150" />
+            }
+            showHonorable={showHonorable}
           />
         </div>
       </CardBody>
@@ -21,13 +25,18 @@ export function CardPlaceholder() {
   );
 }
 
-export function Loading() {
+export function Loading({
+  showHonorable = false,
+}: {
+  showHonorable?: boolean;
+  context?: unknown;
+} = {}) {
   return (
     <div className="grid gap-4 xl:grid-cols-2">
-      <CardPlaceholder />
-      <CardPlaceholder />
-      <CardPlaceholder />
-      <CardPlaceholder />
+      <CardPlaceholder showHonorable={showHonorable} />
+      <CardPlaceholder showHonorable={showHonorable} />
+      <CardPlaceholder showHonorable={showHonorable} />
+      <CardPlaceholder showHonorable={showHonorable} />
     </div>
   );
 }

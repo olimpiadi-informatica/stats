@@ -1,11 +1,10 @@
-import type { StaticImageData } from "next/image";
 import { cache } from "react";
 
 import { and, desc, eq, max } from "drizzle-orm";
 
 import { db } from "./db";
 import { taskScores, tasks } from "./db/schema";
-import { withImage } from "./image";
+import { getImageMetadata, type ImageData, withImage } from "./image";
 
 export type Task = {
   name: string;
@@ -14,7 +13,7 @@ export type Task = {
   maxScore: number | null;
   maxScorePossible: number | null;
   link: string | null;
-  image: StaticImageData | null;
+  image: ImageData | null;
 };
 
 function getTaskQuery() {
@@ -35,23 +34,23 @@ function getTaskQuery() {
 export const getTask = cache(async (year: number, name: string): Promise<Task> => {
   const [task] = await withImage(
     getTaskQuery().where(and(eq(tasks.contestYear, year), eq(tasks.name, name))),
-    importImage,
+    getTaskImage,
   );
   if (!task) throw new Error(`Task ${year}/${name} not found`);
   return task;
 });
 
 export const getTasks = cache((): Promise<Task[]> => {
-  return withImage(getTaskQuery().orderBy(desc(tasks.contestYear), tasks.idx), importImage);
+  return withImage(getTaskQuery().orderBy(desc(tasks.contestYear), tasks.idx), getTaskImage);
 });
 
 export const getContestTasks = cache((year: number): Promise<Task[]> => {
   return withImage(
     getTaskQuery().where(eq(tasks.contestYear, year)).orderBy(tasks.idx),
-    importImage,
+    getTaskImage,
   );
 });
 
-function importImage(task: Omit<Task, "image">) {
-  return import(`/../static/tasks/${task.contestYear}/${task.name}.png?w=208&h=208&fit=inside`);
+function getTaskImage(task: Omit<Task, "image">) {
+  return getImageMetadata("tasks", `${task.contestYear}/${task.name}`);
 }

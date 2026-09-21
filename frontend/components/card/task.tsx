@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { Card, CardBody } from "@olinfo/react-components";
 import clsx from "clsx";
-import { round } from "lodash-es";
+import { round } from "es-toolkit";
 
 import { Image } from "~/components/image";
 import type { Task } from "~/lib/tasks";

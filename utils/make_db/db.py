@@ -13,6 +13,7 @@ MEDAL_NAMES = {
     "G": "gold",
     "S": "silver",
     "B": "bronze",
+    "H": "honorable",
 }
 
 
@@ -142,7 +143,7 @@ class User:
     def num_medals(self):
         medals = {"gold": 0, "silver": 0, "bronze": 0}
         for participation in self.participations:
-            if participation.medal is not None:
+            if participation.medal is not None and participation.medal in medals:
                 medals[participation.medal] += 1
         return medals
 
@@ -268,7 +269,7 @@ class Participation:
         self.rank = cast_or_none(int, rank)
         self.school = school
         self.venue = venue
-        self.medal = MEDAL_NAMES[medal] if medal and medal != 'H' else None
+        self.medal = MEDAL_NAMES[medal] if medal else None
         if internationals:
             self.internationals = [
                 self.storage.internationals[name] for name in internationals.split(",")
@@ -324,7 +325,7 @@ class Region:
     def num_medals(self):
         medals = {"gold": 0, "silver": 0, "bronze": 0}
         for p in self.participations:
-            if p.medal:
+            if p.medal and p.medal in medals:
                 medals[p.medal] += 1
         return medals
 

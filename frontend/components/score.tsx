@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { round } from "lodash-es";
+import { round } from "es-toolkit";
 
 export function Score({
   score,

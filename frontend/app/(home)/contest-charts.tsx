@@ -25,7 +25,9 @@ export function ContestLocation({ contest }: { contest: Contest }) {
         dx={labelUp ? -30 : 30}
         dy={labelUp ? -30 : 30}
         curve={-0.5}
-        connectorProps={{ className: "stroke-error stroke-2 [stroke-linecap:round]" }}
+        connectorProps={{
+          className: "stroke-error stroke-2 [stroke-linecap:round]",
+        }}
         markerEnd="url(#arrow)">
         <defs>
           <marker id="arrow" orient="auto" markerWidth="3" markerHeight="4" refX="0.1" refY="2">

@@ -2,7 +2,7 @@
 
 import { Card, CardBody } from "@olinfo/react-components";
 import clsx from "clsx";
-import { round } from "lodash-es";
+import { round } from "es-toolkit";
 
 import { Image } from "~/components/image";
 import { Medals } from "~/components/medal";
@@ -28,7 +28,7 @@ export function ContestCard({ contest }: { contest: Contest }) {
           {contest.avgScore == null ? "N/A" : round(contest.avgScore, 1)}
         </div>
         <div className="mt-2">
-          <Medals {...contest.medals} />
+          <Medals {...contest.medals} showHonorable={contest.year >= 2025} />
         </div>
       </CardBody>
     </Card>

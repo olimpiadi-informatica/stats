@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Card, CardBody } from "@olinfo/react-components";
-import { round } from "lodash-es";
+import { round } from "es-toolkit";
 
 import { TaskImage } from "~/components/card/task";
 import type { TaskStat } from "~/lib/stats";

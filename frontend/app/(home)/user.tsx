@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Card, CardBody } from "@olinfo/react-components";
 
 import { UserImage } from "~/components/card/user";
-import { Medals } from "~/components/medal";
+import { hasHonorableEligibility, Medals } from "~/components/medal";
 import type { UserStat } from "~/lib/stats";
 import { getUser, type User } from "~/lib/users";
 
@@ -21,7 +21,7 @@ export async function UserStatCard({ stat }: { stat: UserStat }) {
             </Link>
             .
           </div>
-          <Medals {...user.medals} />
+          <Medals {...user.medals} showHonorable={hasHonorableEligibility(user)} />
         </BaseUserStatCard>
       );
     }

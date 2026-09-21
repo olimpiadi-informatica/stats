@@ -9,7 +9,10 @@ import { getTask, getTasks } from "~/lib/tasks";
 
 export async function generateStaticParams() {
   const tasks = await getTasks();
-  return tasks.map(({ contestYear, name }) => ({ year: contestYear.toString(), name }));
+  return tasks.map(({ contestYear, name }) => ({
+    year: contestYear.toString(),
+    name,
+  }));
 }
 
 type Props = {

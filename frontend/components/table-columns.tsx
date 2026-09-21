@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { round } from "lodash-es";
+import { round } from "es-toolkit";
 
 import { RegionImage } from "~/components/card/region";
 import InternationalBadge from "~/components/international";

@@ -10,19 +10,22 @@ import {
 
 import { Image } from "~/components/image";
 import { Search } from "~/components/search";
+import { getImageMetadata } from "~/lib/image";
 
-// @ts-expect-error
-import logoDark from "./oiistats-dark.png?h=32";
-// @ts-expect-error
-import logoLight from "./oiistats-light.png?h=32";
+export async function Navbar() {
+  const logoDark = await getImageMetadata("navbar", "oiistats-dark");
+  const logoLight = await getImageMetadata("navbar", "oiistats-light");
 
-export function Navbar() {
   return (
     <BaseNavbar color="bg-base-300 text-base-content">
       <NavbarBrand>
         <picture>
-          <source media="(prefers-color-scheme: dark)" srcSet={logoDark.srcSet} />
-          <Image src={logoLight} alt="Logo OII stats" className="h-full w-auto flex-none" />
+          {logoDark && (
+            <source media="(prefers-color-scheme: dark)" srcSet={logoDark.srcSet || logoDark.src} />
+          )}
+          {logoLight && (
+            <Image src={logoLight} alt="Logo OII stats" className="h-full w-auto flex-none" />
+          )}
         </picture>
       </NavbarBrand>
       <NavbarMenu>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Card, CardBody } from "@olinfo/react-components";
-import { round } from "lodash-es";
+import { round } from "es-toolkit";
 
 import { RegionImage } from "~/components/card/region";
 import { getRegion, type Region } from "~/lib/regions";

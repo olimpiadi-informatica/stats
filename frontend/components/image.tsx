@@ -1,7 +1,7 @@
-import type { StaticImageData } from "next/image";
+import type { ImageData } from "~/lib/image";
 
 type Props = {
-  src: StaticImageData & { srcSet?: string };
+  src: ImageData;
   alt: string;
   className?: string;
 };

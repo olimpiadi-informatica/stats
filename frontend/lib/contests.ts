@@ -1,4 +1,3 @@
-import type { StaticImageData } from "next/image";
 import { cache } from "react";
 
 import { avg, count, desc, eq, max } from "drizzle-orm";
@@ -6,7 +5,7 @@ import { avg, count, desc, eq, max } from "drizzle-orm";
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
 import { contests, type Medal, participations } from "./db/schema";
-import { withImage } from "./image";
+import { getImageMetadata, type ImageData, withImage } from "./image";
 
 export type Contest = {
   year: number;
@@ -17,7 +16,7 @@ export type Contest = {
   avgScore: number | null;
   numContestants: number;
   medals: Record<Medal, number>;
-  image: StaticImageData | null;
+  image: ImageData | null;
 };
 
 function getContestQuery() {
@@ -38,15 +37,18 @@ function getContestQuery() {
 }
 
 export const getContest = cache(async (year: number): Promise<Contest> => {
-  const [contest] = await withImage(getContestQuery().where(eq(contests.year, year)), importImage);
+  const [contest] = await withImage(
+    getContestQuery().where(eq(contests.year, year)),
+    getContestImage,
+  );
   if (!contest) throw new Error(`Contest ${year} not found`);
   return contest;
 });
 
 export const getContests = cache((): Promise<Contest[]> => {
-  return withImage(getContestQuery().orderBy(desc(contests.year)), importImage);
+  return withImage(getContestQuery().orderBy(desc(contests.year)), getContestImage);
 });
 
-function importImage(contest: Omit<Contest, "image">) {
-  return import(`/../static/contests/${contest.year}.jpg?w=176`);
+function getContestImage(contest: Omit<Contest, "image">) {
+  return getImageMetadata("contests", contest.year.toString());
 }

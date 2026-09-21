@@ -6,7 +6,8 @@ export function getMedalsQuery(defaultValue: 0 | null = 0): SQL.Aliased<Record<M
   return sql`JSON_OBJECT(
     'gold', COALESCE(${sum(eq(participations.medal, "gold"))}, ${defaultValue}),
     'silver', COALESCE(${sum(eq(participations.medal, "silver"))}, ${defaultValue}),
-    'bronze', COALESCE(${sum(eq(participations.medal, "bronze"))}, ${defaultValue})
+    'bronze', COALESCE(${sum(eq(participations.medal, "bronze"))}, ${defaultValue}),
+    'honorable', COALESCE(${sum(eq(participations.medal, "honorable"))}, ${defaultValue})
     )`
     .mapWith(JSON.parse)
     .as("medals");

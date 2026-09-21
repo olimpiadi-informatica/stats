@@ -2,7 +2,7 @@
 
 import { Card, CardBody } from "@olinfo/react-components";
 import clsx from "clsx";
-import { round } from "lodash-es";
+import { round } from "es-toolkit";
 
 import { Image } from "~/components/image";
 import { Medals } from "~/components/medal";
@@ -22,7 +22,7 @@ export function RegionCard({ region }: { region: Region }) {
           {round(region.numContestants / region.numYears, 1)}
         </div>
         <div className="mt-2">
-          <Medals {...region.medals} />
+          <Medals {...region.medals} showHonorable={true} />
         </div>
       </CardBody>
     </Card>
@@ -48,7 +48,7 @@ export function RegionYearCard({
           {round((regionContest.numMedalists / regionContest.numContestants) * 100, 1)}%
         </div>
         <div className="mt-2">
-          <Medals {...regionContest.medals} />
+          <Medals {...regionContest.medals} showHonorable={regionContest.year >= 2025} />
         </div>
       </CardBody>
     </Card>

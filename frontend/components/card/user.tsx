@@ -6,7 +6,7 @@ import { Card, CardBody } from "@olinfo/react-components";
 import clsx from "clsx";
 
 import { Image } from "~/components/image";
-import { Medals } from "~/components/medal";
+import { hasHonorableEligibility, Medals } from "~/components/medal";
 import type { User } from "~/lib/users";
 
 export function UserCard({ user, links }: { user: User; links?: boolean }) {
@@ -34,7 +34,7 @@ export function UserCard({ user, links }: { user: User; links?: boolean }) {
           </div>
         )}
         <div className="mt-2">
-          <Medals {...user.medals} />
+          <Medals {...user.medals} showHonorable={hasHonorableEligibility(user)} />
         </div>
       </CardBody>
     </Card>

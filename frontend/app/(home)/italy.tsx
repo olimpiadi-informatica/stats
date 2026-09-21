@@ -3,8 +3,11 @@
 import type { ReactNode } from "react";
 
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+import { feature } from "topojson-client";
 
-import italyRegions from "./italy-regions.json";
+import italyRegions from "./italy-regions";
+
+const italyGeoJson = feature(italyRegions, italyRegions.objects.ITA_adm1);
 
 export function ItalyMap({ className, children }: { className?: string; children?: ReactNode }) {
   return (
@@ -16,7 +19,7 @@ export function ItalyMap({ className, children }: { className?: string; children
       width={300}
       height={300}
       className={className}>
-      <Geographies geography={italyRegions}>
+      <Geographies geography={italyGeoJson}>
         {({ geographies }) =>
           geographies.map((geo) => (
             <Geography

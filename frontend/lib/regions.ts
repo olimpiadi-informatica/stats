@@ -1,4 +1,3 @@
-import type { StaticImageData } from "next/image";
 import { cache } from "react";
 
 import { and, count, eq, isNull, notExists } from "drizzle-orm";
@@ -6,7 +5,7 @@ import { and, count, eq, isNull, notExists } from "drizzle-orm";
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
 import { contests, type Medal, participations, regions } from "./db/schema";
-import { withImage } from "./image";
+import { getImageMetadata, type ImageData, withImage } from "./image";
 
 export type Region = {
   id: string;
@@ -14,7 +13,7 @@ export type Region = {
   numContestants: number;
   numYears: number;
   medals: Record<Medal, number>;
-  image: StaticImageData | null;
+  image: ImageData | null;
 };
 
 function getRegionQuery() {
@@ -42,15 +41,15 @@ function getRegionQuery() {
 }
 
 export const getRegion = cache(async (id: string): Promise<Region> => {
-  const [region] = await withImage(getRegionQuery().where(eq(regions.id, id)), importImage);
+  const [region] = await withImage(getRegionQuery().where(eq(regions.id, id)), getRegionImage);
   if (!region) throw new Error(`Region ${id} not found`);
   return region;
 });
 
 export const getRegions = cache((): Promise<Region[]> => {
-  return withImage(getRegionQuery().orderBy(regions.name), importImage);
+  return withImage(getRegionQuery().orderBy(regions.name), getRegionImage);
 });
 
-function importImage(region: Omit<Region, "image">) {
-  return import(`/../static/regions/${region.id}.svg`);
+function getRegionImage(region: Omit<Region, "image">) {
+  return getImageMetadata("regions", region.id);
 }

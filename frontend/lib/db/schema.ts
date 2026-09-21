@@ -32,7 +32,7 @@ export const tasks = sqliteTable("tasks", {
   link: text(),
 });
 
-export type Medal = "gold" | "silver" | "bronze";
+export type Medal = "gold" | "silver" | "bronze" | "honorable";
 
 export const participations = sqliteTable(
   "participations",

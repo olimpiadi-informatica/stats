@@ -1,4 +1,3 @@
-import type { StaticImageData } from "next/image";
 import { cache } from "react";
 
 import { desc, eq, min, notLike, sql } from "drizzle-orm";
@@ -6,7 +5,7 @@ import { desc, eq, min, notLike, sql } from "drizzle-orm";
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
 import { type Medal, participations, users } from "./db/schema";
-import { withImage } from "./image";
+import { getImageMetadata, type ImageData, withImage } from "./image";
 
 export type User = {
   id: string;
@@ -16,7 +15,7 @@ export type User = {
   bestRank: number | null;
   participations: string;
   medals: Record<Medal, number>;
-  image: StaticImageData | null;
+  image: ImageData | null;
 };
 
 function getUserQuery() {
@@ -39,7 +38,7 @@ function getUserQuery() {
 }
 
 export const getUser = cache(async (userId: string): Promise<User> => {
-  const [user] = await withImage(getUserQuery().where(eq(users.id, userId)), importImage);
+  const [user] = await withImage(getUserQuery().where(eq(users.id, userId)), getUserImage);
   if (!user) throw new Error(`User ${userId} not found`);
   return user;
 });
@@ -60,7 +59,7 @@ export const getUsers = cache((offset: number, limit: number): Promise<User[]> =
       ])
       .offset(offset)
       .limit(limit),
-    importImage,
+    getUserImage,
   );
 });
 
@@ -68,6 +67,6 @@ export const getUserIds = cache((): Promise<Pick<User, "id">[]> => {
   return db.select({ id: users.id }).from(users);
 });
 
-function importImage(user: Omit<User, "image">) {
-  return import(`/../static/contestants/${user.id}.jpg?w=208&h=208&fit=outside`);
+function getUserImage(user: Omit<User, "image">) {
+  return getImageMetadata("contestants", user.id);
 }

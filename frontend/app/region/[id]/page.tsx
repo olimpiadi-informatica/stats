@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { round } from "lodash-es";
+import { round } from "es-toolkit";
 
 import { RegionCard } from "~/components/card/region";
 import { Medals } from "~/components/medal";
@@ -54,7 +54,7 @@ export default async function Page({ params }: Props) {
             <div>{contest.numContestants}</div>
             <div>{round((contest.numMedalists / contest.numContestants) * 100, 1)}%</div>
             <div>
-              <Medals {...contest.medals} />
+              <Medals {...contest.medals} showHonorable={contest.year >= 2025} />
             </div>
           </TableRow>
         ))}
