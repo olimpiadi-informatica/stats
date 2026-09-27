@@ -18,6 +18,7 @@ export function ContestCard({ contest }: { contest: Contest }) {
       <CardBody title={`${contest.location ?? "OII"} ${contest.year}`}>
         <div>
           <span className="font-semibold">Partecipanti:</span> {contest.numContestants}
+          {contest.numOnlineContestants > 0 && ` + ${contest.numOnlineContestants}*`}
         </div>
         <div>
           <span className="font-semibold">Punteggio massimo ottenuto:</span>{" "}

@@ -21,7 +21,10 @@ function getRegionContestQuery(regionId: string) {
       year: contests.year,
       location: contests.location,
       hosted: sql`${eq(contests.regionId, regionId)}`.mapWith(Boolean).as("hosted"),
-      numContestants: count(),
+      numContestants:
+        sql<number>`COALESCE(SUM(CASE WHEN ${participations.type} = 'official' THEN 1 ELSE 0 END), 0)`.mapWith(
+          Number,
+        ),
       numMedalists: count(participations.medal),
       medals: getMedalsQuery(),
     })

@@ -1,6 +1,6 @@
 import { cache } from "react";
 
-import { avg, count, desc, eq, max } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
@@ -15,6 +15,8 @@ export type Contest = {
   maxScore: number | null;
   avgScore: number | null;
   numContestants: number;
+  numOnlineContestants: number;
+  numUnofficialContestants: number;
   medals: Record<Medal, number>;
   image: ImageData | null;
 };
@@ -26,9 +28,26 @@ function getContestQuery() {
       location: contests.location,
       latitude: contests.latitude,
       longitude: contests.longitude,
-      maxScore: max(participations.score),
-      avgScore: avg(participations.score).mapWith(Number),
-      numContestants: count(),
+      maxScore: sql<
+        number | null
+      >`MAX(CASE WHEN ${participations.type} = 'official' THEN ${participations.score} END)`,
+      avgScore: sql<
+        number | null
+      >`AVG(CASE WHEN ${participations.type} = 'official' THEN ${participations.score} END)`.mapWith(
+        Number,
+      ),
+      numContestants:
+        sql<number>`COALESCE(SUM(CASE WHEN ${participations.type} = 'official' THEN 1 ELSE 0 END), 0)`.mapWith(
+          Number,
+        ),
+      numOnlineContestants:
+        sql<number>`COALESCE(SUM(CASE WHEN ${participations.type} = 'online' THEN 1 ELSE 0 END), 0)`.mapWith(
+          Number,
+        ),
+      numUnofficialContestants:
+        sql<number>`COALESCE(SUM(CASE WHEN ${participations.type} = 'unofficial' THEN 1 ELSE 0 END), 0)`.mapWith(
+          Number,
+        ),
       medals: getMedalsQuery(null),
     })
     .from(contests)

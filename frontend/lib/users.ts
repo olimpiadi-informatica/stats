@@ -27,7 +27,7 @@ function getUserQuery() {
       username: users.username,
       bestRank: min(participations.rank).as("best_rank"),
       participations:
-        sql<string>`GROUP_CONCAT(${participations.contestYear}, ', ' ORDER BY ${participations.contestYear} DESC)`.as(
+        sql<string>`COALESCE(GROUP_CONCAT(CASE WHEN ${participations.type} != 'unofficial' THEN ${participations.contestYear} END, ', ' ORDER BY ${participations.contestYear} DESC), '')`.as(
           "years",
         ),
       medals: getMedalsQuery(),

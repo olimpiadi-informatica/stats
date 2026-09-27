@@ -33,6 +33,7 @@ export const tasks = sqliteTable("tasks", {
 });
 
 export type Medal = "gold" | "silver" | "bronze" | "honorable";
+export type ParticipationType = "official" | "online" | "unofficial";
 
 export const participations = sqliteTable(
   "participations",
@@ -49,6 +50,7 @@ export const participations = sqliteTable(
     medal: text().$type<Medal>(),
     internationals: text(),
     score: real(),
+    type: text("type").$type<ParticipationType>().notNull().default("official"),
   },
   (table) => [
     primaryKey({

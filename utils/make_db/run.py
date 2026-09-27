@@ -22,6 +22,8 @@ STATIC_COLUMNS = {
     "gender",
     "venue",
     "internationals",
+    "username",
+    "type",
     "score",
 }
 
@@ -82,7 +84,7 @@ def main(args):
         else:
             raise RuntimeError("Pass --drop to overwrite the database")
 
-    drive = Drive(args.spreadsheet_id)
+    drive = Drive(args.spreadsheet_id, use_cache=args.use_cache)
 
     storage = Storage(args.storage_dir)
 

@@ -87,6 +87,11 @@ export default async function Page({ params }: Props) {
             </TableRow>
           ))}
         </Table>
+        {participations.some((p) => p.type === "online") && (
+          <p className="text-sm text-base-content/70 italic px-2 mt-2">
+            * Partecipazione online con proctoring
+          </p>
+        )}
       </div>
     </div>
   );

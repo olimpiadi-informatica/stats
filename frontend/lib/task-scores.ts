@@ -3,7 +3,7 @@ import { cache } from "react";
 import { and, desc, eq, sql } from "drizzle-orm";
 
 import { db } from "./db";
-import { taskScores, tasks, users } from "./db/schema";
+import { type ParticipationType, participations, taskScores, tasks, users } from "./db/schema";
 
 export type UserTaskScore = {
   year: number;
@@ -36,6 +36,7 @@ export type TaskTaskScore = {
   score: number | null;
   maxScorePossible: number | null;
   rank: number | null;
+  type: ParticipationType;
 };
 
 export const getTaskTaskScores = cache(
@@ -47,13 +48,25 @@ export const getTaskTaskScores = cache(
         lastName: users.lastName,
         score: taskScores.score,
         maxScorePossible: tasks.maxScorePossible,
-        rank: sql<number>`RANK() OVER (ORDER BY ${taskScores.score} DESC)`.as("rank"),
+        rank: sql<
+          number | null
+        >`CASE WHEN ${participations.type} = 'official' THEN RANK() OVER (PARTITION BY ${participations.type} ORDER BY ${taskScores.score} DESC) ELSE NULL END`.as(
+          "rank",
+        ),
+        type: participations.type,
       })
       .from(taskScores)
       .innerJoin(users, eq(users.id, taskScores.userId))
       .innerJoin(
         tasks,
         and(eq(taskScores.taskName, tasks.name), eq(taskScores.contestYear, tasks.contestYear)),
+      )
+      .innerJoin(
+        participations,
+        and(
+          eq(participations.userId, taskScores.userId),
+          eq(participations.contestYear, taskScores.contestYear),
+        ),
       )
       .where(and(eq(taskScores.contestYear, year), eq(taskScores.taskName, taskName)))
       .orderBy(desc(taskScores.score), users.firstName, users.lastName, users.id);

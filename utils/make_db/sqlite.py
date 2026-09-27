@@ -63,6 +63,7 @@ def finish_sqlite(storage: "Storage"):
             medal TEXT,
             internationals TEXT,
             score REAL,
+            type TEXT NOT NULL DEFAULT 'official',
             PRIMARY KEY(user_id, contest_year),
             FOREIGN KEY(user_id) REFERENCES users(id),
             FOREIGN KEY(contest_year) REFERENCES contests(year),
@@ -174,9 +175,9 @@ def finish_users(storage: "Storage", con: Connection):
                 """
                 INSERT INTO participations (
                     user_id, contest_year, rank, school,
-                    region_id, medal, internationals, score
+                    region_id, medal, internationals, score, type
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     user.id(),
@@ -191,6 +192,7 @@ def finish_users(storage: "Storage", con: Connection):
                         else None
                     ),
                     p.score,
+                    p.type,
                 ),
             )
 

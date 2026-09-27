@@ -23,7 +23,7 @@ export function Medals({ gold, silver, bronze, honorable, showHonorable }: Medal
 }
 
 export function hasHonorableEligibility(user: { participations: string }) {
-  return user.participations.split(", ").some((y) => Number(y) >= 2025);
+  return Boolean(user.participations?.split(", ").some((y) => Number(y) >= 2025));
 }
 
 type MedalProps = {

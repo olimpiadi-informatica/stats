@@ -106,14 +106,14 @@ def get_win_at_first_participation(storage, result):
             {
                 "type": "user_win_at_first_participation",
                 "user": u.id(),
-                "year": min(p.contest.year for p in u.participations),
+                "year": min(p.contest.year for p in u.participations if p.is_official),
             }
         )
 
 
 def get_student_with_most_participations(storage, result):
     users = [u for u in storage.users]
-    key = lambda u: len(u.participations)
+    key = lambda u: len([p for p in u.participations if p.is_official])
     users.sort(key=key, reverse=True)
 
     # ex-aequo
@@ -125,7 +125,7 @@ def get_student_with_most_participations(storage, result):
         {
             "type": "user_with_most_participations",
             "user": users[0].id(),
-            "num_participations": key(user[0]),
+            "num_participations": key(users[0]),
         },
     )
 
@@ -136,7 +136,7 @@ def get_ioist_with_worst_rank(storage, result):
         for u in storage.users
         for p in u.participations
         for i in p.internationals
-        if i.code == "IOI"
+        if i.code == "IOI" and p.rank is not None and p.is_official
     ]
     key = lambda p: p.rank
     participations.sort(key=key, reverse=True)
@@ -220,7 +220,12 @@ def get_task_with_lowest_max_score(storage, result):
 
 def get_task_with_most_zeros(storage, result):
     tasks = [t for y in storage.tasks.values() for t in y.values()]
-    best = max(tasks, key=lambda t: default(t.num_zeros, 0) / len(t.scores))
+    best = max(
+        tasks,
+        key=lambda t: default(t.num_zeros, 0) / len(t.official_scores)
+        if t.official_scores
+        else 0,
+    )
 
     result.append(
         {
@@ -228,14 +233,19 @@ def get_task_with_most_zeros(storage, result):
             "contest_year": best.contest.year,
             "name": best.name,
             "num_zeros": best.num_zeros,
-            "num_participants": len(best.scores),
+            "num_participants": len(best.official_scores),
         }
     )
 
 
 def get_task_with_most_fullscores(storage, result):
     tasks = [t for y in storage.tasks.values() for t in y.values()]
-    best = max(tasks, key=lambda t: default(t.num_full_scores, 0) / len(t.scores))
+    best = max(
+        tasks,
+        key=lambda t: default(t.num_full_scores, 0) / len(t.official_scores)
+        if t.official_scores
+        else 0,
+    )
 
     result.append(
         {
@@ -243,7 +253,7 @@ def get_task_with_most_fullscores(storage, result):
             "contest_year": best.contest.year,
             "name": best.name,
             "num_fullscores": best.num_full_scores,
-            "num_participants": len(best.scores),
+            "num_participants": len(best.official_scores),
         }
     )
 
@@ -263,7 +273,7 @@ def task(storage):
 
 def get_contest_with_most_participants(storage, result):
     contests = [c for c in storage.contests.values()]
-    key = lambda c: len(c.participations)
+    key = lambda c: c.num_contestants
     contests.sort(key=key, reverse=True)
 
     if key(contests[0]) == key(contests[1]):
@@ -332,7 +342,7 @@ def get_most_southern_contest(storage, result):
 
 def get_contest_with_most_girls(storage, result):
     contests = [c for c in storage.contests.values()]
-    key = lambda c: c.num_girls / len(c.participations)
+    key = lambda c: c.num_girls / c.num_contestants if c.num_contestants else 0
     contests.sort(key=key, reverse=True)
 
     if key(contests[0]) == key(contests[1]):
@@ -358,7 +368,7 @@ def get_num_boys_girls(storage, result):
 
 def get_num_participants_per_year(storage, result):
     years = [
-        {"year": c.year, "num_participants": len(c.participations)}
+        {"year": c.year, "num_participants": c.num_contestants}
         for c in storage.contests.values()
     ]
     result.append({"type": "contest_num_participants_per_year", "years": years})

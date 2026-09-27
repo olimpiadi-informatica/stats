@@ -1,9 +1,9 @@
 import { cache } from "react";
 
-import { and, desc, eq, max } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 
 import { db } from "./db";
-import { taskScores, tasks } from "./db/schema";
+import { participations, taskScores, tasks } from "./db/schema";
 import { getImageMetadata, type ImageData, withImage } from "./image";
 
 export type Task = {
@@ -22,12 +22,24 @@ function getTaskQuery() {
       name: tasks.name,
       title: tasks.title,
       contestYear: tasks.contestYear,
-      maxScore: max(taskScores.score),
+      maxScore: sql<
+        number | null
+      >`MAX(CASE WHEN ${participations.type} = 'official' THEN ${taskScores.score} END)`,
       link: tasks.link,
       maxScorePossible: tasks.maxScorePossible,
     })
     .from(tasks)
-    .innerJoin(taskScores, eq(taskScores.taskName, tasks.name))
+    .innerJoin(
+      taskScores,
+      and(eq(taskScores.taskName, tasks.name), eq(taskScores.contestYear, tasks.contestYear)),
+    )
+    .innerJoin(
+      participations,
+      and(
+        eq(participations.userId, taskScores.userId),
+        eq(participations.contestYear, taskScores.contestYear),
+      ),
+    )
     .groupBy(tasks.name, tasks.title, tasks.contestYear, tasks.link, tasks.maxScorePossible);
 }
 

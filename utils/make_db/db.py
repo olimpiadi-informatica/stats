@@ -113,7 +113,10 @@ class User:
             if isinstance(birth, datetime.datetime):
                 self.birth = birth.date()
             elif isinstance(birth, str):
-                day, month, year = map(int, birth.split("/"))
+                if "/" in birth:
+                    day, month, year = map(int, birth.split("/"))
+                elif "-" in birth:
+                    year, month, day = map(int, birth.split("-"))
                 self.birth = datetime.date(year, month, day)
         self.gender = gender
         self.username = username
@@ -149,7 +152,10 @@ class User:
 
     @cached_property
     def win_at_first_participation(self):
-        first = min(self.participations, key=lambda p: p.contest.year)
+        official = [p for p in self.participations if p.is_official]
+        if not official:
+            return False
+        first = min(official, key=lambda p: p.contest.year)
         return first.rank == 1
 
 
@@ -180,6 +186,30 @@ class Contest:
     def participations(self):
         return self.storage.participations[self.year]
 
+    @property
+    def official_participations(self):
+        return [p for p in self.participations if p.is_official]
+
+    @property
+    def online_participations(self):
+        return [p for p in self.participations if p.is_online]
+
+    @property
+    def unofficial_participations(self):
+        return [p for p in self.participations if p.is_unofficial]
+
+    @cached_property
+    def num_contestants(self):
+        return len(self.official_participations)
+
+    @cached_property
+    def num_online(self):
+        return len(self.online_participations)
+
+    @cached_property
+    def num_unofficial(self):
+        return len(self.unofficial_participations)
+
     @cached_property
     def max_score(self) -> float:
         return sum_with_none(t.max_score for t in self.tasks.values())
@@ -189,15 +219,15 @@ class Contest:
         max_score = self.max_score
         if max_score is None:
             return None
-        return sum(1 for p in self.participations if p.score == max_score)
+        return sum(1 for p in self.official_participations if p.score == max_score)
 
     @cached_property
     def num_girls(self):
-        return sum(1 for p in self.participations if p.user.gender == "F")
+        return sum(1 for p in self.official_participations if p.user.gender == "F")
 
     @cached_property
     def num_boys(self):
-        return sum(1 for p in self.participations if p.user.gender == "M")
+        return sum(1 for p in self.official_participations if p.user.gender == "M")
 
 
 class Task:
@@ -223,15 +253,19 @@ class Task:
     def scores(self):
         return self.storage.task_scores[self.contest.year][self.name]
 
+    @property
+    def official_scores(self):
+        return [s for s in self.scores if s.participation.is_official]
+
     @cached_property
     def max_score(self):
-        return max_with_none(s.score for s in self.scores)
+        return max_with_none(s.score for s in self.official_scores)
 
     @cached_property
     def avg_score(self):
-        if not self.scores:
+        if not self.official_scores:
             return None
-        scores = [s.score for s in self.scores]
+        scores = [s.score for s in self.official_scores]
         if any(s is None for s in scores):
             return None
         return sum(scores) / len(scores)
@@ -240,13 +274,13 @@ class Task:
     def num_zeros(self):
         if self.max_score_possible is None:
             return None
-        return sum(1 for s in self.scores if s.score == 0)
+        return sum(1 for s in self.official_scores if s.score == 0)
 
     @cached_property
     def num_full_scores(self):
         if self.max_score_possible is None:
             return None
-        return sum(1 for s in self.scores if s.score == self.max_score_possible)
+        return sum(1 for s in self.official_scores if s.score == self.max_score_possible)
 
 
 class Participation:
@@ -261,11 +295,13 @@ class Participation:
         medal: Optional[str],
         internationals: Optional[str],
         score: Optional[str],
+        type: Optional[str] = None,
         **kwargs,
     ):
         self.storage = storage
         self.user = user
         self.contest = contest
+        self.type = type or "official"
         self.rank = cast_or_none(int, rank)
         self.school = school
         self.venue = venue
@@ -280,6 +316,18 @@ class Participation:
         user.participations.append(self)
         # automatically added on TaskScore construction
         self.scores = []
+
+    @property
+    def is_official(self):
+        return self.type == "official"
+
+    @property
+    def is_online(self):
+        return self.type == "online"
+
+    @property
+    def is_unofficial(self):
+        return self.type == "unofficial"
 
     @property
     def region(self):
@@ -313,7 +361,7 @@ class Region:
         participations = []
         for contest in self.storage.participations.values():
             participations.extend(
-                [p for p in contest if venue_to_region(p.venue) == self.id]
+                [p for p in contest if venue_to_region(p.venue) == self.id and p.is_official]
             )
         return participations
 

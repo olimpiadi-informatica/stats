@@ -17,7 +17,7 @@ export function UserCard({ user, links }: { user: User; links?: boolean }) {
       </div>
       <CardBody title={`${user.firstName ?? ""} ${user.lastName}`}>
         <div>
-          <span className="font-semibold">Partecipazioni:</span> {user.participations}
+          <span className="font-semibold">Partecipazioni:</span> {user.participations || "Nessuna"}
         </div>
         <div>
           <span className="font-semibold">Miglior piazzamento:</span>{" "}

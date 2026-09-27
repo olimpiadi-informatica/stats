@@ -22,6 +22,21 @@ export function TaskHeaders({ tasks }: { tasks: Task[] }) {
 }
 
 export function ParticipationName({ participation: p }: { participation: Participation }) {
+  if (p.type === "online") {
+    return (
+      <span className="italic">
+        <Link href={`/contestant/${p.userId}`} className="link">
+          {p.firstName} {p.lastName}
+        </Link>
+        <abbr
+          title="Partecipazione online con proctoring"
+          className="cursor-help no-underline ml-1 font-normal not-italic">
+          *
+        </abbr>
+      </span>
+    );
+  }
+
   return (
     <Link href={`/contestant/${p.userId}`} className="link">
       {p.firstName} {p.lastName}
@@ -36,9 +51,25 @@ export function ParticipationRank({
   participation: Participation;
   short?: boolean;
 }) {
-  return (
-    <Medal type={p.medal}>{p.rank === null ? "N/A" : short ? p.rank : `${p.rank}° posto`}</Medal>
-  );
+  if (p.type === "unofficial") {
+    return <span className="text-base-content/70 italic text-sm">Non ufficiale</span>;
+  }
+  const content = p.rank === null ? "-" : short ? p.rank : `${p.rank}° posto`;
+  if (p.type === "online") {
+    return (
+      <span className="inline-flex items-center justify-center">
+        <Medal type={p.medal}>{content}</Medal>
+        {!short && (
+          <abbr
+            title="Partecipazione online con proctoring"
+            className="cursor-help no-underline ml-1 font-normal not-italic">
+            *
+          </abbr>
+        )}
+      </span>
+    );
+  }
+  return <Medal type={p.medal}>{content}</Medal>;
 }
 
 export async function ParticipationRegion({ participation }: { participation: Participation }) {
@@ -95,7 +126,7 @@ export async function ParticipationPastResults({
   const userParticipations = await getUserParticipations(participation.userId);
 
   return userParticipations
-    .filter((p) => p.year < participation.year)
+    .filter((p) => p.year < participation.year && p.type !== "unofficial")
     .map((p) => (
       <div key={p.year}>
         <Medal type={p.medal}>

@@ -73,11 +73,24 @@ export default async function Page({ params }: Props) {
         </TableHeaders>
         {scores.map((score) => (
           <TableRow key={score.userId}>
-            <div>{score.rank ?? "N/A"}</div>
+            <div>{score.rank ?? "-"}</div>
             <div>
-              <Link href={`/contestant/${score.userId}`} className="link">
-                {score.firstName} {score.lastName}
-              </Link>
+              {score.type === "online" ? (
+                <span className="italic">
+                  <Link href={`/contestant/${score.userId}`} className="link">
+                    {score.firstName} {score.lastName}
+                  </Link>
+                  <abbr
+                    title="Partecipazione online con proctoring"
+                    className="cursor-help no-underline ml-1 font-normal not-italic">
+                    *
+                  </abbr>
+                </span>
+              ) : (
+                <Link href={`/contestant/${score.userId}`} className="link">
+                  {score.firstName} {score.lastName}
+                </Link>
+              )}
             </div>
             <div>
               <Score
@@ -89,6 +102,11 @@ export default async function Page({ params }: Props) {
           </TableRow>
         ))}
       </Table>
+      {scores.some((s) => s.type === "online") && (
+        <p className="text-sm text-base-content/70 italic px-2">
+          * Partecipazione online con proctoring
+        </p>
+      )}
     </div>
   );
 }

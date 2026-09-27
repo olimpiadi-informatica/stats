@@ -64,48 +64,97 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
   const year = Number((await params).year);
   const contest = await getContest(year);
-  const participations = await getContestParticipations(year);
+  const allParticipations = await getContestParticipations(year);
   const tasks = await getContestTasks(year);
 
+  const officialAndOnline = allParticipations.filter((p) => p.type !== "unofficial");
+  const unofficial = allParticipations.filter((p) => p.type === "unofficial");
+  const hasOnline = officialAndOnline.some((p) => p.type === "online");
+
   return (
-    <div className="flex flex-col gap-8" style={{ "--cols": tasks.length + 6 } as CSSProperties}>
+    <div className="flex flex-col gap-8">
       <div className="mx-auto max-w-2xl">
         <ContestCard contest={contest} />
       </div>
-      <Table className="grid-cols-[repeat(var(--cols),auto)] text-center">
-        <TableHeaders>
-          <div>#</div>
-          <div>Nome</div>
-          <div>Internazionali</div>
-          <div>Regione</div>
-          <div>Punteggio</div>
-          <TaskHeaders tasks={tasks} />
-          <div className="w-min text-wrap">Partecipazioni precedenti</div>
-        </TableHeaders>
-        {participations.map((p) => (
-          <TableRow key={p.userId}>
-            <div>
-              <ParticipationRank participation={p} short />
-            </div>
-            <div>
-              <ParticipationName participation={p} />
-            </div>
-            <div>
-              <ParticipationInternationals participation={p} />
-            </div>
-            <div>
-              <ParticipationRegion participation={p} />
-            </div>
-            <div>
-              <ParticipationScore participation={p} />
-            </div>
-            <ParticipationTasks participation={p} />
-            <div>
-              <ParticipationPastResults participation={p} />
-            </div>
-          </TableRow>
-        ))}
-      </Table>
+      <div className="flex flex-col gap-2" style={{ "--cols": tasks.length + 6 } as CSSProperties}>
+        <Table className="grid-cols-[repeat(var(--cols),auto)] text-center">
+          <TableHeaders>
+            <div>#</div>
+            <div>Nome</div>
+            <div>Internazionali</div>
+            <div>Regione</div>
+            <div>Punteggio</div>
+            <TaskHeaders tasks={tasks} />
+            <div className="w-min text-wrap">Partecipazioni precedenti</div>
+          </TableHeaders>
+          {officialAndOnline.map((p) => (
+            <TableRow key={p.userId}>
+              <div>
+                <ParticipationRank participation={p} short />
+              </div>
+              <div>
+                <ParticipationName participation={p} />
+              </div>
+              <div>
+                <ParticipationInternationals participation={p} />
+              </div>
+              <div>
+                <ParticipationRegion participation={p} />
+              </div>
+              <div>
+                <ParticipationScore participation={p} />
+              </div>
+              <ParticipationTasks participation={p} />
+              <div>
+                <ParticipationPastResults participation={p} />
+              </div>
+            </TableRow>
+          ))}
+        </Table>
+        {hasOnline && (
+          <p className="text-sm text-base-content/70 italic px-2">
+            * Partecipazione online con proctoring
+          </p>
+        )}
+      </div>
+
+      {unofficial.length > 0 && (
+        <div
+          className="flex flex-col gap-4 mt-4"
+          style={{ "--cols": tasks.length + 5 } as CSSProperties}>
+          <h3 className="text-2xl font-bold">Partecipanti non ufficiali</h3>
+          <Table className="grid-cols-[repeat(var(--cols),auto)] text-center">
+            <TableHeaders>
+              <div>Nome</div>
+              <div>Internazionali</div>
+              <div>Regione</div>
+              <div>Punteggio</div>
+              <TaskHeaders tasks={tasks} />
+              <div className="w-min text-wrap">Partecipazioni precedenti</div>
+            </TableHeaders>
+            {unofficial.map((p) => (
+              <TableRow key={p.userId}>
+                <div>
+                  <ParticipationName participation={p} />
+                </div>
+                <div>
+                  <ParticipationInternationals participation={p} />
+                </div>
+                <div>
+                  <ParticipationRegion participation={p} />
+                </div>
+                <div>
+                  <ParticipationScore participation={p} />
+                </div>
+                <ParticipationTasks participation={p} />
+                <div>
+                  <ParticipationPastResults participation={p} />
+                </div>
+              </TableRow>
+            ))}
+          </Table>
+        </div>
+      )}
     </div>
   );
 }

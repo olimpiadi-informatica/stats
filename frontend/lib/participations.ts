@@ -3,7 +3,7 @@ import { cache } from "react";
 import { and, desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "./db";
-import { type Medal, participations, users } from "./db/schema";
+import { type Medal, type ParticipationType, participations, users } from "./db/schema";
 
 export type Participation = {
   userId: string;
@@ -15,6 +15,7 @@ export type Participation = {
   medal: Medal | null;
   internationals: string | null;
   score: number | null;
+  type: ParticipationType;
 };
 
 function getParticipationQuery() {
@@ -29,6 +30,7 @@ function getParticipationQuery() {
       medal: participations.medal,
       internationals: participations.internationals,
       score: participations.score,
+      type: participations.type,
     })
     .from(participations)
     .innerJoin(users, eq(users.id, participations.userId));
@@ -44,6 +46,7 @@ export const getContestParticipations = cache(
         ),
       )
       .orderBy(
+        desc(participations.score),
         isNull(participations.rank),
         participations.rank,
         users.firstName,
