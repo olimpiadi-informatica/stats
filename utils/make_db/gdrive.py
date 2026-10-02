@@ -1,3 +1,4 @@
+import sys
 import os.path
 import pickle
 import itertools
@@ -5,7 +6,9 @@ import logging
 from typing import Any, Dict, Generic, List, TYPE_CHECKING, Optional, TypeVar, Tuple
 
 from google import auth
+from google.auth.exceptions import DefaultCredentialsError, RefreshError
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 if TYPE_CHECKING:
     from googleapiclient._apis.sheets.v4.resources import SheetsResource  # type: ignore
@@ -13,6 +16,45 @@ if TYPE_CHECKING:
 logger = logging.getLogger("gdrive")
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+
+
+def handle_google_api_error(err: Exception) -> None:
+    if isinstance(err, RefreshError):
+        print(
+            "\n"
+            "====================================================================\n"
+            "❌ ERRORE: Il token di autenticazione Google è scaduto o è stato revocato.\n"
+            "\n"
+            "👉 Per rinnovare le credenziali, esegui nel terminale:\n"
+            "   gcloud auth application-default login\n"
+            "====================================================================\n",
+            file=sys.stderr,
+        )
+    elif isinstance(err, DefaultCredentialsError):
+        print(
+            "\n"
+            "====================================================================\n"
+            "❌ ERRORE: Credenziali Google non trovate.\n"
+            "\n"
+            "👉 Per configurare le credenziali, esegui nel terminale:\n"
+            "   gcloud auth application-default login\n"
+            "====================================================================\n",
+            file=sys.stderr,
+        )
+    elif isinstance(err, HttpError):
+        status = err.resp.status if hasattr(err, "resp") else "N/A"
+        print(
+            "\n"
+            "====================================================================\n"
+            f"❌ ERRORE Google Sheets API (HTTP {status}): {err}\n"
+            "\n"
+            "👉 Verifica che lo spreadsheet ID sia corretto e che il tuo account\n"
+            "   Google abbia i permessi di accesso al documento.\n"
+            "====================================================================\n",
+            file=sys.stderr,
+        )
+    else:
+        print(f"\n❌ Errore durante l'accesso a Google Sheets: {err}\n", file=sys.stderr)
 
 
 class Drive:
@@ -30,13 +72,16 @@ class Drive:
     def _get_google_sheets_api() -> "SheetsResource.SpreadsheetsResource":
         logging.debug("Getting Google Spreadsheets API instance")
         scopes = [
-            "https://www.googleapis.com/auth/cloud-platform"
             "https://www.googleapis.com/auth/spreadsheets.readonly",
         ]
-        credentials, _project_id = auth.default(scopes=scopes)
-        return build(
-            "sheets", "v4", credentials=credentials, cache_discovery=False
-        ).spreadsheets()
+        try:
+            credentials, _project_id = auth.default(scopes=scopes)
+            return build(
+                "sheets", "v4", credentials=credentials, cache_discovery=False
+            ).spreadsheets()
+        except (DefaultCredentialsError, RefreshError) as e:
+            handle_google_api_error(e)
+            sys.exit(1)
 
     @classmethod
     def get_service(cls, creds):
@@ -46,11 +91,15 @@ class Drive:
         if self.use_cache and range in self.cache:
             logger.debug("Using cached table for %s", range)
             return self.cache[range]
-        result = (
-            self.service.values()
-            .get(spreadsheetId=self.spreadsheet_id, range=range)
-            .execute()
-        )
+        try:
+            result = (
+                self.service.values()
+                .get(spreadsheetId=self.spreadsheet_id, range=range)
+                .execute()
+            )
+        except (RefreshError, DefaultCredentialsError, HttpError) as e:
+            handle_google_api_error(e)
+            sys.exit(1)
         values = result.get("values", [])
 
         header = values[0]
@@ -74,7 +123,11 @@ class Drive:
         return self._get_table_cached(range)
 
     def list_sheets(self):
-        metadata = self.service.get(spreadsheetId=self.spreadsheet_id).execute()
+        try:
+            metadata = self.service.get(spreadsheetId=self.spreadsheet_id).execute()
+        except (RefreshError, DefaultCredentialsError, HttpError) as e:
+            handle_google_api_error(e)
+            sys.exit(1)
         sheets = metadata.get("sheets", "")
         names = []
         for sheet in sheets:

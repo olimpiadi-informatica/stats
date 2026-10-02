@@ -52,7 +52,11 @@ export default async function Page({ params }: Props) {
               {contest.hosted && <span className="badge badge-warning badge-sm mx-2">HOST</span>}
             </div>
             <div>{contest.numContestants}</div>
-            <div>{round((contest.numMedalists / contest.numContestants) * 100, 1)}%</div>
+            <div>
+              {contest.numContestants > 0
+                ? `${round((contest.numMedalists / contest.numContestants) * 100, 1)}%`
+                : "0%"}
+            </div>
             <div>
               <Medals {...contest.medals} showHonorable={contest.year >= 2025} />
             </div>

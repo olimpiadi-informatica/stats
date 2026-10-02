@@ -1,6 +1,6 @@
 import { cache } from "react";
 
-import { and, count, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
@@ -25,7 +25,10 @@ function getRegionContestQuery(regionId: string) {
         sql<number>`COALESCE(SUM(CASE WHEN ${participations.type} = 'official' THEN 1 ELSE 0 END), 0)`.mapWith(
           Number,
         ),
-      numMedalists: count(participations.medal),
+      numMedalists:
+        sql<number>`COALESCE(SUM(CASE WHEN ${participations.type} = 'official' AND ${participations.medal} IN ('gold', 'silver', 'bronze') THEN 1 ELSE 0 END), 0)`.mapWith(
+          Number,
+        ),
       medals: getMedalsQuery(),
     })
     .from(contests)

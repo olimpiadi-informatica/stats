@@ -78,17 +78,18 @@ def get_task_coefficients(raw_participations: List[OrderedDict], task_names: Lis
 
 
 def main(args):
-    if os.path.exists(args.storage_dir):
-        if args.drop:
-            shutil.rmtree(args.storage_dir)
-        else:
-            raise RuntimeError("Pass --drop to overwrite the database")
+    if os.path.exists(args.storage_dir) and not args.drop:
+        raise RuntimeError("Pass --drop to overwrite the database")
 
     drive = Drive(args.spreadsheet_id, use_cache=args.use_cache)
+    internationals_data = drive.get_table("internationals")
+
+    if os.path.exists(args.storage_dir):
+        shutil.rmtree(args.storage_dir)
 
     storage = Storage(args.storage_dir)
 
-    for intern in drive.get_table("internationals"):
+    for intern in internationals_data:
         international = International(storage, **intern)
         storage.internationals[international.code] = international
 

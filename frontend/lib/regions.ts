@@ -1,6 +1,6 @@
 import { cache } from "react";
 
-import { and, count, eq, isNull, notExists } from "drizzle-orm";
+import { and, eq, isNull, notExists, sql } from "drizzle-orm";
 
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
@@ -21,7 +21,10 @@ function getRegionQuery() {
     .select({
       id: regions.id,
       name: regions.name,
-      numContestants: count(),
+      numContestants:
+        sql<number>`COALESCE(SUM(CASE WHEN ${participations.type} = 'official' THEN 1 ELSE 0 END), 0)`.mapWith(
+          Number,
+        ),
       numYears: db.$count(
         contests,
         notExists(

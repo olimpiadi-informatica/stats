@@ -19,7 +19,7 @@ export function RegionCard({ region }: { region: Region }) {
         </div>
         <div>
           <span className="font-semibold">Partecipanti medi all'anno:</span>{" "}
-          {round(region.numContestants / region.numYears, 1)}
+          {region.numYears > 0 ? round(region.numContestants / region.numYears, 1) : 0}
         </div>
         <div className="mt-2">
           <Medals {...region.medals} showHonorable={true} />
@@ -45,7 +45,9 @@ export function RegionYearCard({
         </div>
         <div>
           <span className="font-semibold">Medagliati:</span>{" "}
-          {round((regionContest.numMedalists / regionContest.numContestants) * 100, 1)}%
+          {regionContest.numContestants > 0
+            ? `${round((regionContest.numMedalists / regionContest.numContestants) * 100, 1)}%`
+            : "0%"}
         </div>
         <div className="mt-2">
           <Medals {...regionContest.medals} showHonorable={regionContest.year >= 2025} />

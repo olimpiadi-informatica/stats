@@ -59,13 +59,6 @@ export function ParticipationRank({
     return (
       <span className="inline-flex items-center justify-center">
         <Medal type={p.medal}>{content}</Medal>
-        {!short && (
-          <abbr
-            title="Partecipazione online con proctoring"
-            className="cursor-help no-underline ml-1 font-normal not-italic">
-            *
-          </abbr>
-        )}
       </span>
     );
   }
