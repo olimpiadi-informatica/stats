@@ -1,6 +1,6 @@
 import { cache } from "react";
 
-import { desc, eq, min, notLike, sql } from "drizzle-orm";
+import { desc, eq, notLike, sql } from "drizzle-orm";
 
 import { getMedalsQuery } from "./common";
 import { db } from "./db";
@@ -25,12 +25,16 @@ function getUserQuery() {
       firstName: users.firstName,
       lastName: users.lastName,
       username: users.username,
-      bestRank: min(participations.rank).as("best_rank"),
+      bestRank: sql<
+        number | null
+      >`MIN(CASE WHEN ${participations.type} != 'unofficial' THEN ${participations.rank} END)`.as(
+        "best_rank",
+      ),
       participations:
         sql<string>`COALESCE(GROUP_CONCAT(CASE WHEN ${participations.type} != 'unofficial' THEN ${participations.contestYear} END, ', ' ORDER BY ${participations.contestYear} DESC), '')`.as(
           "years",
         ),
-      medals: getMedalsQuery(),
+      medals: getMedalsQuery(0, true),
     })
     .from(users)
     .innerJoin(participations, eq(participations.userId, users.id))

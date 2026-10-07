@@ -12,6 +12,7 @@ export type RegionContest = {
   hosted: boolean;
   numContestants: number;
   numMedalists: number;
+  bestRank: number | null;
   medals: Record<Medal, number>;
 };
 
@@ -29,6 +30,11 @@ function getRegionContestQuery(regionId: string) {
         sql<number>`COALESCE(SUM(CASE WHEN ${participations.type} = 'official' AND ${participations.medal} IN ('gold', 'silver', 'bronze') THEN 1 ELSE 0 END), 0)`.mapWith(
           Number,
         ),
+      bestRank: sql<
+        number | null
+      >`MIN(CASE WHEN ${participations.type} = 'official' THEN ${participations.rank} END)`.mapWith(
+        (rank) => (rank === null ? null : Number(rank)),
+      ),
       medals: getMedalsQuery(),
     })
     .from(contests)

@@ -36,11 +36,12 @@ export default async function Page({ params }: Props) {
       <div className="mx-auto max-w-2xl">
         <RegionCard region={region} />
       </div>
-      <Table className="grid-cols-[repeat(4,auto)] text-center">
+      <Table className="grid-cols-[repeat(5,auto)] text-center">
         <TableHeaders>
           <div>Edizione</div>
           <div>Partecipanti</div>
           <div>Medagliati</div>
+          <div>Miglior piazzamento</div>
           <div>Medaglie</div>
         </TableHeaders>
         {contests.map((contest) => (
@@ -57,6 +58,7 @@ export default async function Page({ params }: Props) {
                 ? `${round((contest.numMedalists / contest.numContestants) * 100, 1)}%`
                 : "0%"}
             </div>
+            <div>{contest.bestRank === null ? "-" : `${contest.bestRank}°`}</div>
             <div>
               <Medals {...contest.medals} showHonorable={contest.year >= 2025} />
             </div>

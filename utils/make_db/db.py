@@ -146,7 +146,7 @@ class User:
     def num_medals(self):
         medals = {"gold": 0, "silver": 0, "bronze": 0}
         for participation in self.participations:
-            if participation.medal is not None and participation.medal in medals:
+            if participation.is_official and participation.medal is not None and participation.medal in medals:
                 medals[participation.medal] += 1
         return medals
 
